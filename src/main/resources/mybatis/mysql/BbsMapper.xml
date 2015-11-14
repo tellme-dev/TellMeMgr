@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hotel.dao.BbsMapper" >
+  <resultMap id="BaseResultMap" type="com.hotel.model.Bbs" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="customer_id" property="customerId" jdbcType="INTEGER" />
+    <result column="bbs_type" property="bbsType" jdbcType="INTEGER" />
+    <result column="category_id" property="categoryId" jdbcType="INTEGER" />
+    <result column="post_type" property="postType" jdbcType="INTEGER" />
+    <result column="target_type" property="targetType" jdbcType="INTEGER" />
+    <result column="target_id" property="targetId" jdbcType="INTEGER" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="path" property="path" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="text" property="text" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="TINYINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="browse_count" property="browseCount" jdbcType="INTEGER" />
+    <result column="agree_count" property="agreeCount" jdbcType="INTEGER" />
+    <result column="answer_count" property="answerCount" jdbcType="INTEGER" />
+    <result column="delete_user_id" property="deleteUserId" jdbcType="INTEGER" />
+    <result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, customer_id, bbs_type, category_id, post_type, target_type, target_id, parent_id, 
+    level, path, title, text, score, create_time, browse_count, agree_count, answer_count, 
+    delete_user_id, delete_time, time_stamp
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_bbs
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_bbs
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hotel.model.Bbs" >
+    insert into t_bbs (id, customer_id, bbs_type, 
+      category_id, post_type, target_type, 
+      target_id, parent_id, level, 
+      path, title, text, 
+      score, create_time, browse_count, 
+      agree_count, answer_count, delete_user_id, 
+      delete_time, time_stamp)
+    values (#{id,jdbcType=INTEGER}, #{customerId,jdbcType=INTEGER}, #{bbsType,jdbcType=INTEGER}, 
+      #{categoryId,jdbcType=INTEGER}, #{postType,jdbcType=INTEGER}, #{targetType,jdbcType=INTEGER}, 
+      #{targetId,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{level,jdbcType=INTEGER}, 
+      #{path,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR}, 
+      #{score,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{browseCount,jdbcType=INTEGER}, 
+      #{agreeCount,jdbcType=INTEGER}, #{answerCount,jdbcType=INTEGER}, #{deleteUserId,jdbcType=INTEGER}, 
+      #{deleteTime,jdbcType=TIMESTAMP}, #{timeStamp,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hotel.model.Bbs" >
+    insert into t_bbs
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="customerId != null" >
+        customer_id,
+      </if>
+      <if test="bbsType != null" >
+        bbs_type,
+      </if>
+      <if test="categoryId != null" >
+        category_id,
+      </if>
+      <if test="postType != null" >
+        post_type,
+      </if>
+      <if test="targetType != null" >
+        target_type,
+      </if>
+      <if test="targetId != null" >
+        target_id,
+      </if>
+      <if test="parentId != null" >
+        parent_id,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="path != null" >
+        path,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="text != null" >
+        text,
+      </if>
+      <if test="score != null" >
+        score,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="browseCount != null" >
+        browse_count,
+      </if>
+      <if test="agreeCount != null" >
+        agree_count,
+      </if>
+      <if test="answerCount != null" >
+        answer_count,
+      </if>
+      <if test="deleteUserId != null" >
+        delete_user_id,
+      </if>
+      <if test="deleteTime != null" >
+        delete_time,
+      </if>
+      <if test="timeStamp != null" >
+        time_stamp,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=INTEGER},
+      </if>
+      <if test="bbsType != null" >
+        #{bbsType,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null" >
+        #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="postType != null" >
+        #{postType,jdbcType=INTEGER},
+      </if>
+      <if test="targetType != null" >
+        #{targetType,jdbcType=INTEGER},
+      </if>
+      <if test="targetId != null" >
+        #{targetId,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="path != null" >
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="text != null" >
+        #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        #{score,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="browseCount != null" >
+        #{browseCount,jdbcType=INTEGER},
+      </if>
+      <if test="agreeCount != null" >
+        #{agreeCount,jdbcType=INTEGER},
+      </if>
+      <if test="answerCount != null" >
+        #{answerCount,jdbcType=INTEGER},
+      </if>
+      <if test="deleteUserId != null" >
+        #{deleteUserId,jdbcType=INTEGER},
+      </if>
+      <if test="deleteTime != null" >
+        #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeStamp != null" >
+        #{timeStamp,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hotel.model.Bbs" >
+    update t_bbs
+    <set >
+      <if test="customerId != null" >
+        customer_id = #{customerId,jdbcType=INTEGER},
+      </if>
+      <if test="bbsType != null" >
+        bbs_type = #{bbsType,jdbcType=INTEGER},
+      </if>
+      <if test="categoryId != null" >
+        category_id = #{categoryId,jdbcType=INTEGER},
+      </if>
+      <if test="postType != null" >
+        post_type = #{postType,jdbcType=INTEGER},
+      </if>
+      <if test="targetType != null" >
+        target_type = #{targetType,jdbcType=INTEGER},
+      </if>
+      <if test="targetId != null" >
+        target_id = #{targetId,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        parent_id = #{parentId,jdbcType=INTEGER},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="path != null" >
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="text != null" >
+        text = #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="score != null" >
+        score = #{score,jdbcType=TINYINT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="browseCount != null" >
+        browse_count = #{browseCount,jdbcType=INTEGER},
+      </if>
+      <if test="agreeCount != null" >
+        agree_count = #{agreeCount,jdbcType=INTEGER},
+      </if>
+      <if test="answerCount != null" >
+        answer_count = #{answerCount,jdbcType=INTEGER},
+      </if>
+      <if test="deleteUserId != null" >
+        delete_user_id = #{deleteUserId,jdbcType=INTEGER},
+      </if>
+      <if test="deleteTime != null" >
+        delete_time = #{deleteTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeStamp != null" >
+        time_stamp = #{timeStamp,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hotel.model.Bbs" >
+    update t_bbs
+    set customer_id = #{customerId,jdbcType=INTEGER},
+      bbs_type = #{bbsType,jdbcType=INTEGER},
+      category_id = #{categoryId,jdbcType=INTEGER},
+      post_type = #{postType,jdbcType=INTEGER},
+      target_type = #{targetType,jdbcType=INTEGER},
+      target_id = #{targetId,jdbcType=INTEGER},
+      parent_id = #{parentId,jdbcType=INTEGER},
+      level = #{level,jdbcType=INTEGER},
+      path = #{path,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      text = #{text,jdbcType=VARCHAR},
+      score = #{score,jdbcType=TINYINT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      browse_count = #{browseCount,jdbcType=INTEGER},
+      agree_count = #{agreeCount,jdbcType=INTEGER},
+      answer_count = #{answerCount,jdbcType=INTEGER},
+      delete_user_id = #{deleteUserId,jdbcType=INTEGER},
+      delete_time = #{deleteTime,jdbcType=TIMESTAMP},
+      time_stamp = #{timeStamp,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
