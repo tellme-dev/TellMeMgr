@@ -2,7 +2,9 @@ package com.hotel.model;
 
 import java.util.Date;
 
-public class Advertisement {
+import com.hotel.common.utils.Page;
+
+public class Advertisement extends Page {
     private Integer id;
 
     private String name;
