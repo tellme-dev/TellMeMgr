@@ -25,7 +25,7 @@ public interface UserService {
     
 	public ReturnResult<User> login(String loginName, String passwd,boolean rememberMe) throws Exception;
 
-	void SaveorUpdateUser(User user);
+	void saveorUpdateUser(User user);
 
 	User getUserByPrimaryKey(Integer userId);
 

@@ -1,5 +1,7 @@
 package com.hotel.model;
 
+import java.util.List;
+
 import com.hotel.common.utils.Page;
 
 public class Org extends Page {
@@ -14,8 +16,29 @@ public class Org extends Page {
     private String path;
 
     private Integer hotelId;
+    
+    //自定义
+    private List<Org> children;
+    
+    private String text;
 
-    public Integer getId() {
+    public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public List<Org> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<Org> children) {
+		this.children = children;
+	}
+
+	public Integer getId() {
         return id;
     }
 

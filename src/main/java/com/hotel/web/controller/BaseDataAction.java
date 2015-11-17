@@ -11,12 +11,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.hotel.common.JsonResult;
 import com.hotel.common.utils.Constants;
 import com.hotel.model.Bbs;
 import com.hotel.model.Function;
 import com.hotel.model.ItemTag;
+import com.hotel.model.Org;
 import com.hotel.model.Region;
 import com.hotel.model.User;
+import com.hotel.service.BaseDataService;
 import com.hotel.service.FunctionService;
 import com.hotel.viewmodel.BaseData;
 
@@ -29,9 +32,8 @@ public class BaseDataAction extends BaseAction {
 		@Resource(name="functionService")
 		private FunctionService functionService;
 
-		// [end]
-
-		// [start] 员工公司模块 ---- 页面跳转
+		@Resource(name="baseDataService")
+		private BaseDataService baseDataService;
 
 		
 		/**
@@ -93,6 +95,26 @@ public class BaseDataAction extends BaseAction {
 			return "web/base/itemTagList";
 		}
 		
+		@RequestMapping(value = "/orgComboList.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+		public String logInitOrg(
+				HttpServletRequest request,
+				HttpServletResponse response) {
+			JsonResult<Org> json = new JsonResult<Org>();
+			json.setCode(new Integer(0));
+			json.setMessage("获取失败!");
+			try{
+				List<Org> list = baseDataService.getOrgComboList(0);
+				if(list.size()>0){
+					json.setCode(new Integer(1));
+					json.setMessage("保存成功!");
+					json.setList(list);
+				}
+				//request.setAttribute("region", itemTag);
+				return json.toString();
+			}catch(Exception e){
+				return json.toString();
+			}
+		}
 
 		// [end]
 

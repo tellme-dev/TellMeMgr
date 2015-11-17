@@ -1,5 +1,7 @@
 package com.hotel.dao;
 
+import java.util.List;
+
 import com.hotel.model.Org;
 
 @MyBatisRepository
@@ -15,4 +17,6 @@ public interface OrgMapper {
     int updateByPrimaryKeySelective(Org record);
 
     int updateByPrimaryKey(Org record);
+
+	List<Org> getOrganList(Integer pid);
 }

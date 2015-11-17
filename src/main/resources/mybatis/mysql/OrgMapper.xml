@@ -10,13 +10,13 @@
     <result column="hotel_id" property="hotelId" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, parent_id, level, path, hotel_id
+    o.id, o.name, o.parent_id, o.level, o.path, o.hotel_id
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from t_org
-    where id = #{id,jdbcType=INTEGER}
+    from t_org o
+    where o.id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from t_org
@@ -103,4 +103,10 @@
       hotel_id = #{hotelId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="getOrganList" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_org o
+    where o.parent_id = #{pid,jdbcType=INTEGER}
+  </select>
 </mapper>
