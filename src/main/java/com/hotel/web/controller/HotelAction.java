@@ -16,6 +16,7 @@ import com.hotel.model.Function;
 import com.hotel.model.Hotel;
 import com.hotel.model.User;
 import com.hotel.service.FunctionService;
+import com.hotel.service.HotelService;
 
 @Scope("prototype")
 @Controller
@@ -25,6 +26,8 @@ public class HotelAction extends BaseAction {
 	// [start] 接口引用
 	@Resource(name="functionService")
 	private FunctionService functionService;
+	@Resource(name="hotelService")
+	private HotelService hotelService;
 
 	// [end]
 
@@ -46,6 +49,11 @@ public class HotelAction extends BaseAction {
 		if (hotel.getPageNo() == null)
 			hotel.setPageNo(1);
 		hotel.setPageSize(Constants.DEFAULT_PAGE_SIZE);
+		
+		List<Hotel> lh = hotelService.getPageHotel(hotel);
+		int count = hotelService.getPageHotelCount(hotel);
+		hotel.setTotalCount(count);
+
 		//加载菜单
 		List<Function> lf = functionService.getFunctionByParentUrl("/web/hotel/hotelList.do");
 		User user = new User();
@@ -53,6 +61,7 @@ public class HotelAction extends BaseAction {
 		request.getSession().setAttribute(Constants.USER_SESSION_NAME,user);
 		//request.setAttribute("company", company);
 		request.setAttribute("hotel", hotel);
+		request.setAttribute("hotelList", lh);
 		return "web/hotel/hotelList";
 	}
 	

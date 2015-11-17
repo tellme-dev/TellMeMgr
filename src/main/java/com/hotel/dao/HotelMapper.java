@@ -1,5 +1,7 @@
 package com.hotel.dao;
 
+import java.util.List;
+
 import com.hotel.model.Hotel;
 
 @MyBatisRepository
@@ -15,4 +17,8 @@ public interface HotelMapper {
     int updateByPrimaryKeySelective(Hotel record);
 
     int updateByPrimaryKey(Hotel record);
+    
+    List<Hotel> getPageHotel(Hotel hotel);
+    
+    int getPageHotelCount(Hotel hotel);
 }
