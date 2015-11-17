@@ -85,16 +85,16 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public List<User> getUserPageList(User example) {
+	public List<User> getUserPageList(User user) {
 		// TODO Auto-generated method stub
-		return null;
+		return userMapper.getUserPageList(user);
 	}
 
 
 	@Override
-	public int getUserPageListCount(User example) {
+	public int getUserPageListCount(User user) {
 		// TODO Auto-generated method stub
-		return 0;
+		return userMapper.getUserPageListCount(user);
 	}
 
 

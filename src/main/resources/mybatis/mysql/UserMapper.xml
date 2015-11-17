@@ -114,10 +114,46 @@
       salt = #{salt,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <sql id="query_sql">
+  		from t_user u left join t_org org on u.org_id = org.id
+  		where 1=1
+  	  <if test="name != null" >
+        u.name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        u.org_id = #{orgId,jdbcType=INTEGER},
+      </if>
+      <if test="psd != null" >
+        u.psd = #{psd,jdbcType=VARCHAR},
+      </if>
+      <if test="isUsed != null" >
+        u.is_used = #{isUsed,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        u.create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="salt != null" >
+        u.salt = #{salt,jdbcType=VARCHAR},
+      </if>
+  		order by u.create_time
+  </sql>
+  
   <select id="getUserByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select 
     <include refid="Base_Column_List" />
     from t_user u
     where u.name = #{name,jdbcType=INTEGER} 
+  </select>
+  <select id="getUserPageList" resultMap="BaseResultMap" parameterType="com.hotel.model.User" >
+     select <include refid="Base_Column_List" />,c.name as COMPANYNAME
+	  		<include refid="query_sql"/>
+    <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+        limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+  
+     
+  <select id="getUserPageListCount" resultType="java.lang.Integer" parameterType="com.hotel.model.User" >
+    select count(*) <include refid="query_sql"/>
   </select>
 </mapper>

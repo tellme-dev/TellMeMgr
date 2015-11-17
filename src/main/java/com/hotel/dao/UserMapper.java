@@ -1,5 +1,7 @@
 package com.hotel.dao;
 
+import java.util.List;
+
 import com.hotel.model.User;
 
 @MyBatisRepository
@@ -16,5 +18,10 @@ public interface UserMapper {
 
     int updateByPrimaryKey(User record);
 
+    //新添加的方法
 	User getUserByName(String username);
+
+	List<User> getUserPageList(User user);
+
+	int getUserPageListCount(User user);
 }
