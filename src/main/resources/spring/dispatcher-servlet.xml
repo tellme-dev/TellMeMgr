@@ -62,16 +62,23 @@
 	            </bean>
 	            <bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter"/>
 	            <bean class="org.springframework.http.converter.xml.XmlAwareFormHttpMessageConverter"/>
-         		<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" p:supportedMediaTypes="text/html; charset=utf-8" />
-				<!-- <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-					<property name="objectMapper" ref="jacksonObjectMapper" />
+         		<!--<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter" p:supportedMediaTypes="text/html; charset=utf-8" />-->
+				<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+					<!-- <property name="objectMapper" ref="jacksonObjectMapper" />
 					<property name="supportedMediaTypes">
 						<list>
 							<value>text/html;charset=UTF-8</value>
 							<value>application/json;charset=UTF-8</value>
 						</list>
-					</property>
-				</bean> -->
+					</property> -->
+					<property name="supportedMediaTypes">
+            			<list>
+                			<value>text/html;charset=UTF-8</value>
+                			<value>text/json;charset=UTF-8</value>
+                			<value>application/json;charset=UTF-8</value>
+            			</list>
+        			</property>
+				</bean>
 			 </list> 
         </property>
     </bean>  

@@ -26,7 +26,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
         <mysql.version>5.1.20</mysql.version>  
         <mybatis.version>3.2.4</mybatis.version>
         <!-- spring版本号 -->
-        <spring.version>3.2.4.RELEASE</spring.version>
+        <spring.version>4.2.0.RELEASE</spring.version>
+        <com.fasterxml.jackson.version>2.6.3</com.fasterxml.jackson.version>
 	</properties>
 	  
 	<dependencies>
@@ -238,11 +239,25 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 		  <artifactId>handlebars-jackson2</artifactId>
 		  <version>0.12.0</version>
 		</dependency> -->
+		
 		<dependency>
            <groupId>org.codehaus.jackson</groupId>
            <artifactId>jackson-mapper-asl</artifactId>
-           <version>1.9.4</version>
-     </dependency>
+           <version>1.9.13</version>
+     	</dependency>
+     	
+     	<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>${com.fasterxml.jackson.version}</version>
+		</dependency>
+     	
+     	<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${com.fasterxml.jackson.version}</version>
+		</dependency>
+     	
 		<!-- freemarker包。 用于动态SQL -->
 		<!-- <dependency>
 			<groupId>freemarker</groupId>
@@ -302,12 +317,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			<version>1.43.0</version>
 		</dependency>
 		
-		<!--  缓存组件：memcached -->
-		<dependency>  
-		    <groupId>com.danga</groupId>  
-		    <artifactId>memcached</artifactId>  
-		    <version>2.6.6</version>
-		</dependency>
+
 		
 		<dependency>
 		  <groupId>org.mybatis</groupId>
