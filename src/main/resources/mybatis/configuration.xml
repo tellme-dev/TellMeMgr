@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+PUBLIC "-//ibatis.apache.org//DTD Config 3.0//EN"
+"http://ibatis.apache.org/dtd/ibatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias type="com.hotel.manager.model.UserInfo" alias="BaseUser"/>
+	</typeAliases>
+	<typeHandlers>
+		<!-- java布尔值与数据库整型之间的转换。true对应1,false对应0 -->
+		<typeHandler handler="com.tiyi.tyapp.common.typehandler.BooleanToIntegerTypeHandler" javaType="Boolean" jdbcType="INTEGER"/>
+	</typeHandlers>
+	<!-- mapper文件的装载通过spring的mapperLocations指定 --> 
+	<mappers>
+		<mapper resource="com/hotel/manager/dao/mapper/UserMapper.xml"/>
+		<mapper resource="com/hotel/manager/dao/mapper/DemoMapper.xml"/>
+	</mappers>
+	
+</configuration>

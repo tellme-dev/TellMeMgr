@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hotel.dao.AdvertisementMapper" >
+  <resultMap id="BaseResultMap" type="com.hotel.model.Advertisement" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="key" property="key" jdbcType="VARCHAR" />
+    <result column="target_type" property="targetType" jdbcType="TINYINT" />
+    <result column="target_id" property="targetId" jdbcType="INTEGER" />
+    <result column="target_content" property="targetContent" jdbcType="VARCHAR" />
+    <result column="is_used" property="isUsed" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, key, target_type, target_id, target_content, is_used, create_time, time_stamp
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_ad
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_ad
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hotel.model.Advertisement" >
+    insert into t_ad (id, name, key, 
+      target_type, target_id, target_content, 
+      is_used, create_time, time_stamp
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{key,jdbcType=VARCHAR}, 
+      #{targetType,jdbcType=TINYINT}, #{targetId,jdbcType=INTEGER}, #{targetContent,jdbcType=VARCHAR}, 
+      #{isUsed,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{timeStamp,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hotel.model.Advertisement" >
+    insert into t_ad
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="key != null" >
+        key,
+      </if>
+      <if test="targetType != null" >
+        target_type,
+      </if>
+      <if test="targetId != null" >
+        target_id,
+      </if>
+      <if test="targetContent != null" >
+        target_content,
+      </if>
+      <if test="isUsed != null" >
+        is_used,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="timeStamp != null" >
+        time_stamp,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="key != null" >
+        #{key,jdbcType=VARCHAR},
+      </if>
+      <if test="targetType != null" >
+        #{targetType,jdbcType=TINYINT},
+      </if>
+      <if test="targetId != null" >
+        #{targetId,jdbcType=INTEGER},
+      </if>
+      <if test="targetContent != null" >
+        #{targetContent,jdbcType=VARCHAR},
+      </if>
+      <if test="isUsed != null" >
+        #{isUsed,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeStamp != null" >
+        #{timeStamp,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hotel.model.Advertisement" >
+    update t_ad
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="key != null" >
+        key = #{key,jdbcType=VARCHAR},
+      </if>
+      <if test="targetType != null" >
+        target_type = #{targetType,jdbcType=TINYINT},
+      </if>
+      <if test="targetId != null" >
+        target_id = #{targetId,jdbcType=INTEGER},
+      </if>
+      <if test="targetContent != null" >
+        target_content = #{targetContent,jdbcType=VARCHAR},
+      </if>
+      <if test="isUsed != null" >
+        is_used = #{isUsed,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeStamp != null" >
+        time_stamp = #{timeStamp,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hotel.model.Advertisement" >
+    update t_ad
+    set name = #{name,jdbcType=VARCHAR},
+      key = #{key,jdbcType=VARCHAR},
+      target_type = #{targetType,jdbcType=TINYINT},
+      target_id = #{targetId,jdbcType=INTEGER},
+      target_content = #{targetContent,jdbcType=VARCHAR},
+      is_used = #{isUsed,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      time_stamp = #{timeStamp,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

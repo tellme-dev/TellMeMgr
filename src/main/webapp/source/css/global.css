@@ -1,0 +1,33 @@
+@charset "utf-8";
+/* ============全局设置库============== */
+body{background-color:#E4E9EF;margin:0;padding:0;color:#4c4c4c; font-family:Arial, "微软雅黑", "宋体" !important;font-size:16px;}
+ul{margin:0; padding:0;}
+li{list-style-type:none;}
+i{display:block;}
+img{border:0;}
+em{font-style:normal;}
+a:link{color:#4a9bd3;text-decoration:none;}
+a:visited{color:#4a9bd3;}
+a:hover{color:#FF6336;}
+.cl{clear:both;}
+.fl{float:left !important;}
+.fr{float:right !important;}
+.fno{float:none !important;}
+.fit{width:100% !important;}
+.no-border{border:none !important;}
+.txt-center{text-align:center;}
+.txt-right{text-align:right;}
+.img-center{vertical-align:middle;}
+.hide{display:none;}
+.show{display:block !important;}
+
+/* ============框架============== */
+#main{width:100%;height:auto;margin:0 auto;}
+#header{width:100%;height:70px;margin:0 auto;background-color:#1B8CF2;}
+#content{width:100%;height:auto;margin:0 auto;}
+.con-left{float:left;width:210px;height:100%;background-color:#3A464E;border-top:1px solid #323C42;}
+.con-right{padding:20px 25px 0 25px;margin-left:210px;border-top:1px solid #C3C6CB;}
+
+
+
+
