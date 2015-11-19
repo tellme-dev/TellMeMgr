@@ -5,10 +5,10 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
     <result column="note" property="note" jdbcType="VARCHAR" />
-    <result column="is_self" property="isSelf" jdbcType="BIT" />
+    <result column="tag_type" property="tagType" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, note, is_self
+    id, name, note, tag_type
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -22,9 +22,9 @@
   </delete>
   <insert id="insert" parameterType="com.hotel.model.ItemTag" >
     insert into t_Item_tag (id, name, note, 
-      is_self)
+      tag_type)
     values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, 
-      #{isSelf,jdbcType=BIT})
+      #{tagType,jdbcType=BIT})
   </insert>
   <insert id="insertSelective" parameterType="com.hotel.model.ItemTag" >
     insert into t_Item_tag
@@ -39,7 +39,7 @@
         note,
       </if>
       <if test="isSelf != null" >
-        is_self,
+        tag_type,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
@@ -53,7 +53,7 @@
         #{note,jdbcType=VARCHAR},
       </if>
       <if test="isSelf != null" >
-        #{isSelf,jdbcType=BIT},
+        #{tagType,jdbcType=BIT},
       </if>
     </trim>
   </insert>
@@ -67,7 +67,7 @@
         note = #{note,jdbcType=VARCHAR},
       </if>
       <if test="isSelf != null" >
-        is_self = #{isSelf,jdbcType=BIT},
+        tag_Type = #{tagType,jdbcType=BIT},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
@@ -76,7 +76,15 @@
     update t_Item_tag
     set name = #{name,jdbcType=VARCHAR},
       note = #{note,jdbcType=VARCHAR},
-      is_self = #{isSelf,jdbcType=BIT}
+      tag_type = #{tagType,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="getTagFromMin" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_Item_tag
+    where tag_type >= #{tagType,jdbcType=INTEGER}
+  </select>
+  
 </mapper>

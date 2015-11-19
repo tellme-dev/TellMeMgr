@@ -9,7 +9,7 @@ public class ItemTag extends Page {
 
     private String note;
 
-    private Boolean isSelf;
+    private Integer tagType;
 
     public Integer getId() {
         return id;
@@ -35,11 +35,11 @@ public class ItemTag extends Page {
         this.note = note;
     }
 
-    public Boolean getIsSelf() {
-        return isSelf;
-    }
+	public Integer getTagType() {
+		return tagType;
+	}
 
-    public void setIsSelf(Boolean isSelf) {
-        this.isSelf = isSelf;
-    }
+	public void setTagType(Integer tagType) {
+		this.tagType = tagType;
+	}
 }

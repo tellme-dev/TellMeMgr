@@ -3,6 +3,7 @@ package com.hotel.service;
 import java.util.List;
 
 import com.hotel.model.Hotel;
+import com.hotel.model.ItemTagAssociation;
 
 public interface HotelService {
 
@@ -10,4 +11,5 @@ public interface HotelService {
     
     public int getPageHotelCount(Hotel hotel);
 	
+    List<ItemTagAssociation> getTagTypeItem(int tagType);
 }
