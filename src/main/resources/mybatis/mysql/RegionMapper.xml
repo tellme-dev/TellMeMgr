@@ -90,4 +90,29 @@
       name = #{name,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="getAllRegion" resultMap="BaseResultMap" parameterType="com.hotel.model.Region">
+  select 
+  <include refid="Base_Column_List" />
+  from t_region
+  </select>
+  
+  <select id="getProvinceRegion" resultMap="BaseResultMap" parameterType="com.hotel.model.Region">
+  select 
+  <include refid="Base_Column_List" />
+  from t_region where parent_id=0
+  </select>
+  
+  <select id="getCityRegion" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_region where parent_id = #{provinceId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getAreaRegion" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_region where parent_id = #{cityId,jdbcType=INTEGER}
+  </select>
+  
 </mapper>

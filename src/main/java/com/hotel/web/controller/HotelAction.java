@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.hotel.common.utils.Constants;
 import com.hotel.model.Function;
 import com.hotel.model.Hotel;
+import com.hotel.model.Region;
 import com.hotel.model.User;
+import com.hotel.service.BaseDataService;
 import com.hotel.service.FunctionService;
 import com.hotel.service.HotelService;
 
@@ -28,6 +30,8 @@ public class HotelAction extends BaseAction {
 	private FunctionService functionService;
 	@Resource(name="hotelService")
 	private HotelService hotelService;
+	@Resource(name="baseDataService")
+	private BaseDataService baseDataService;
 
 	// [end]
 
@@ -53,6 +57,8 @@ public class HotelAction extends BaseAction {
 		List<Hotel> lh = hotelService.getPageHotel(hotel);
 		int count = hotelService.getPageHotelCount(hotel);
 		hotel.setTotalCount(count);
+		
+		List<Region> regions = baseDataService.getProvinceRegion();
 
 		//加载菜单
 		List<Function> lf = functionService.getFunctionByParentUrl("/web/hotel/hotelList.do");
@@ -62,6 +68,7 @@ public class HotelAction extends BaseAction {
 		//request.setAttribute("company", company);
 		request.setAttribute("hotel", hotel);
 		request.setAttribute("hotelList", lh);
+		request.setAttribute("regionList", regions);
 		return "web/hotel/hotelList";
 	}
 	
