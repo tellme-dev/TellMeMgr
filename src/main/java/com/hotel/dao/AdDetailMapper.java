@@ -1,5 +1,7 @@
 package com.hotel.dao;
 
+import java.util.List;
+
 import com.hotel.model.AdDetail;
 
 @MyBatisRepository
@@ -10,9 +12,11 @@ public interface AdDetailMapper {
 
     int insertSelective(AdDetail record);
 
-    AdDetail selectByPrimaryKey(Integer id);
+    List<AdDetail> selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(AdDetail record);
 
     int updateByPrimaryKey(AdDetail record);
+
+	List<AdDetail> selectByAdId(Integer adId);
 }

@@ -90,4 +90,10 @@
       time_stamp = #{timeStamp,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectByAdId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_ad_detail
+    where ad_id = #{adId,jdbcType=INTEGER}
+  </select>
 </mapper>

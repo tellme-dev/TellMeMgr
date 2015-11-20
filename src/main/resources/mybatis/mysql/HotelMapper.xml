@@ -10,13 +10,13 @@
     <result column="latitude" property="latitude" jdbcType="DECIMAL" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, text, region_id, longitude, latitude
+    h.id, h.name, h.text, h.region_id, h.longitude, h.latitude
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from t_hotle
-    where id = #{id,jdbcType=INTEGER}
+    from t_hotle h
+    where h.id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from t_hotle
@@ -103,4 +103,9 @@
       latitude = #{latitude,jdbcType=DECIMAL}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectHotelList" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_hotle h
+  </select>
 </mapper>

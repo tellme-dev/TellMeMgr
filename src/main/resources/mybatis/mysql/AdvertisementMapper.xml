@@ -13,13 +13,14 @@
     <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, name, key, target_type, target_id, target_content, is_used, create_time, time_stamp
+    a.id, a.name, a.key, a.target_type, a.target_id, a.target_content, a.is_used, a.create_time, a.time_stamp
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
-    <include refid="Base_Column_List" />
-    from t_ad
-    where id = #{id,jdbcType=INTEGER}
+    <include refid="Base_Column_List" />,t.name as targetName
+    from t_ad a 
+  	left join t_Item_tag t on a.target_id = t.id
+  	where a.id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from t_ad
@@ -138,4 +139,56 @@
       time_stamp = #{timeStamp,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <sql id="query_sql">
+  		from t_ad a 
+  		left join t_ad_detail ad on a.id = ad.ad_id
+  		left join t_Item_tag t on a.target_id = t.id
+  		where 1=1
+  	  <if test="name != null" >
+        and a.name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="key != null" >
+        and a.key = #{key,jdbcType=VARCHAR}
+      </if>
+      <if test="targetType != null" >
+        and a.target_type = #{targetType,jdbcType=TINYINT}
+      </if>
+      <if test="targetId != null" >
+        and a.target_id = #{targetId,jdbcType=INTEGER}
+      </if>
+      <if test="targetContent != null" >
+        and a.target_content = #{targetContent,jdbcType=VARCHAR}
+      </if>
+      <if test="isUsed != null" >
+        and a.is_used = #{isUsed,jdbcType=BIT}
+      </if>
+      <if test="createTime != null" >
+        and a.create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="timeStamp != null" >
+        and a.time_stamp = #{timeStamp,jdbcType=TIMESTAMP}
+      </if>
+  		group by a.id order by a.create_time  
+  </sql>
+  
+  <select id="getAdPageList" resultMap="BaseResultMap" parameterType="com.hotel.model.Advertisement" >
+     select <include refid="Base_Column_List" />,t.name as targetName
+	  		<include refid="query_sql"/>
+    <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+        limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+     
+  <select id="getAdPageListCount" resultType="java.lang.Integer" parameterType="com.hotel.model.Advertisement" >
+    select count(*) 
+    from t_ad a
+  </select>
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />,t.name as targetName,
+    (SELECT GROUP_CONCAT(ad.text) FROM t_ad_detail ad where ad.ad_id = a.id) as imageText,
+    (SELECT GROUP_CONCAT(ad.image_url) FROM t_ad_detail ad where ad.ad_id = a.id) as imageUrl
+    <include refid="query_sql"/>
+  </select>
 </mapper>

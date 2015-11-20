@@ -16,6 +16,7 @@ import com.hotel.model.Bbs;
 import com.hotel.model.Function;
 import com.hotel.model.Hotel;
 import com.hotel.model.User;
+import com.hotel.service.AdvertisementService;
 import com.hotel.service.FunctionService;
 
 @Scope("prototype")
@@ -26,7 +27,6 @@ public class BbsAction extends BaseAction {
 	// [start] 接口引用
 	@Resource(name="functionService")
 	private FunctionService functionService;
-
 	// [end]
 
 	// [start] 员工公司模块 ---- 页面跳转
@@ -52,7 +52,6 @@ public class BbsAction extends BaseAction {
 		User user = new User();
 		user.setChildMenuList(lf);
 		request.getSession().setAttribute(Constants.USER_SESSION_NAME,user);
-		//request.setAttribute("company", company);
 		request.setAttribute("bbs", bbs);
 		return "web/bbs/bbsList";
 	}

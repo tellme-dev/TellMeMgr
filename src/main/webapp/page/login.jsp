@@ -12,7 +12,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <META http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport' />
-<title>易维管理平台-登录</title>
+<title>挑米酒店管理-登录</title>
 <link type="text/css" href="<%=basePath%>source/css/base.css" rel="stylesheet"/>
 <link type="text/css" href="<%=basePath%>source/css/global.css" rel="stylesheet"/>
 <link type="text/css" href="<%=basePath%>source/js/easyUI/themes/default/easyui.css" rel="stylesheet"/>
@@ -108,19 +108,19 @@ function login(){
             </div>
            
             <div class="fl login-line"></div>
-            <div class="fl login-right txt-center">
+            <%-- <div class="fl login-right txt-center">
                 <img src="<%=basePath%>source/images/twocode.png" class="twocode"/>
                 <p class="login-rows font-size12 mt20">
                 	<a href="#">扫一扫</a>
                     <a href="#" class="ml20">下载员工版APP</a>
                 </p>
-            </div>
+            </div> --%>
         </div>
          </form>
         <div class="cl"></div>
     </div>
     <div class="bottom">
-    	<p>&copy;天翼运维中心 2015. ALL rights reserved.</p>
+    	<p>&copy;</p>
     </div>
 </body>
 </html>

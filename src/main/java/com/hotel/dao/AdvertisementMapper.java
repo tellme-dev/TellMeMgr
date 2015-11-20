@@ -1,5 +1,7 @@
 package com.hotel.dao;
 
+import java.util.List;
+
 import com.hotel.model.Advertisement;
 
 @MyBatisRepository
@@ -15,4 +17,10 @@ public interface AdvertisementMapper {
     int updateByPrimaryKeySelective(Advertisement record);
 
     int updateByPrimaryKey(Advertisement record);
+
+	List<Advertisement> getAdPageList(Advertisement ad);
+
+	int getAdPageListCount(Advertisement ad);
+
+	Advertisement selectById(Integer id);
 }

@@ -14,8 +14,8 @@
 	content="width=device-width, initial-scale=1, minimum-scale=1  ,maximum-scale=1, user-scalable=no" /> 
 <script type="text/javascript">
 	$(document).ready(function() {
-		setShowStates();
-		initOrg();
+		//setShowStates();
+		initOrg(0);
 	});   
 	function setShowStates(){
 		$("#userName").attr("readonly","readonly");
@@ -54,9 +54,17 @@
 		}
 	}; 
 	function initOrg(){
-	    $('#orgtree').combotree( {  
-          url : 'orgComboList.do',  
-          onSelect : function(node) {  
+		
+	    $('#orgtree1').combobox( { 
+          url : 'jsonLoadOrgList.do?pid=0', 
+          valueField:'id',
+          textField:'name',
+          onChange:function(){
+        	$('#orgtree2').combobox("setValue","");
+        	var pid = $('#orgtree1').combobox("getValue");
+	    	initOrg2(pid);	
+	      }
+          /* onSelect : function(node) {  
             var tree = $(this).tree;  
             //选中的节点是否为叶子节点,如果不是叶子节点,清除选中  
             var isLeaf = tree('isLeaf', node.target);  
@@ -64,7 +72,30 @@
                 //清除选中  
                 $('#orgtree').combotree('clear');  
             }  
-         }  
+         }   */
+       });  
+	}
+	function initOrg2(pid){
+	    $('#orgtree2').combobox( {  
+          url : 'jsonLoadOrgList.do?pid='+pid,
+        	  valueField:'id',
+              textField:'name',
+              onChange:function(){
+              	var pid = $('#orgtree2').combobox("getValue");
+      	    	initOrg3(pid);	
+      	      }
+       });  
+	}
+	function initOrg3(pid){
+	    $('#orgtree3').combobox( {  
+          url : 'jsonLoadOrgList.do?pid='+pid,
+        	  valueField:'id',
+              textField:'name',
+              onChange:function(){
+            	    /*此pid为最后一级选择的id，将她放到
+                	var pid = $('#orgtree3').combobox("getValue"); */
+                	
+        	      }
        });  
 	}
 </script>
@@ -84,7 +115,7 @@
 					<span class="yw-bi-now">用户信息</span>
 				</div>
 				<div class="fr mt10">
-					<span class="yw-btn bg-green mr26" id="editBtn" onclick="editUser();">编辑</span> 
+					<!-- <span class="yw-btn bg-green mr26" id="editBtn" onclick="editUser();">编辑</span> --> 
 					<span class="yw-btn bg-red mr26" id="saveBtn" onclick="saveUser(this);">保存</span>
 				</div>
 			</div>
@@ -101,20 +132,10 @@
 						<tr>
 							<td width="10%" align="center">所属机构：</td>
 							<td>
-							    <input id="orgtree" />
+							    <input id="orgtree1" class="easyui-combobox" data-options="editable:false"/>
+							    <input id="orgtree2" class="easyui-combobox" data-options="editable:false"/>
+							    <input id="orgtree3" name="orgId" class="easyui-combobox"data-options="editable:false"/>
 							</td>
-							<%-- <td>
-								<select id="org" name="org" style="width:254px;height:30px;" class="easyui-combotree">
-								 	 <c:if test="${userinfo.sex == 0 }">
-								 	    <c:forEach var="item" items="${orginfo}">
-								 	        <option selected="selected" value="${item.id}">${item.orgName}</option>
-    		                            </c:forEach>
-								 	 </c:if>    
-								 	 <c:if test="${userinfo.orgName != null }">
-								 	 	<option  value="-1">=请选择性别=</option><option value="0">男</option><option selected="selected" value="1">女</option>
-								 	 </c:if>   
-								</select>
-							</td> --%>
 						</tr>
 						<%-- <tr>
 							<td align="center">角色：</td>
