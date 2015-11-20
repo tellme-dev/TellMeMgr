@@ -315,8 +315,9 @@ function uploadFile(){
 		
 		var xhr = new XMLHttpRequest();
         xhr.open("post", FileController, true);
-        xhr.onload = function () {
+        xhr.onload = function (res) {
         	alert("上传完成!");
+        	alert(res);
         };
 
 		xhr.send(form);
