@@ -1,5 +1,6 @@
 package com.hotel.web.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -10,10 +11,10 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hotel.common.JsonResult;
 import com.hotel.common.utils.Constants;
-import com.hotel.model.Bbs;
 import com.hotel.model.Function;
 import com.hotel.model.ItemTag;
 import com.hotel.model.Org;
@@ -114,6 +115,43 @@ public class BaseDataAction extends BaseAction {
 			}catch(Exception e){
 				return json.toString();
 			}
+		}
+		
+		@ResponseBody
+		@RequestMapping(value = "/jsonLoadRegionCityComboList.do", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+		public List<Region> loadRegionCity(HttpServletRequest request, HttpServletResponse response) {
+			
+			List<Region> list = new ArrayList<Region>();
+			String provinceId = request.getParameter("provinceId");
+			try{
+				List<Region> temp = baseDataService.getCityRegion(Integer.parseInt(provinceId));
+				if(temp != null && temp.size() > 0){
+					list = temp;
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return list;
+		}
+		
+		@ResponseBody
+		@RequestMapping(value = "/jsonLoadRegionAreaComboList.do", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+		public List<Region> loadRegionArae(
+				HttpServletRequest request,
+				HttpServletResponse response) {
+			
+			List<Region> list = new ArrayList<Region>();
+			String cityId = request.getParameter("cityId");
+			
+			try{
+				List<Region> temp = baseDataService.getAreaRegion(Integer.parseInt(cityId));
+				if(temp != null && temp.size() > 0){
+					list = temp;
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return list;
 		}
 
 		// [end]

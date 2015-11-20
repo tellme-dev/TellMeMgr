@@ -125,4 +125,12 @@
       is_used = #{isUsed,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="getItemByHotel" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_item
+    where hotel_id = #{hotelId,jdbcType=INTEGER}
+  </select>
+  
 </mapper>
