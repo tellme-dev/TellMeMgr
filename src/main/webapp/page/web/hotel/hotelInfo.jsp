@@ -25,7 +25,7 @@
 var map_show = null;
 var map_edit = null;
 
-var img_arr = new Array();
+var tempImgArr = new Array();
 
 
 		$(document).ready(function(){
@@ -62,8 +62,6 @@ var img_arr = new Array();
 				}
 			});
 			
-			initImgEvent();
-			
 			map_show = new AMap.Map('show_mapContainer', {
 		      // 设置中心点
 		      center: [104.065735, 30.659462],
@@ -98,23 +96,6 @@ function search(){
 } 
 function pagesearch(){
 	hotelForm.submit();
-}
-
-//初始化
-function initImgEvent(){
-	var arr = document.getElementsByName("img_item");
-	if(arr != null && arr.length > 0){
-		for(var i = 0, len = arr.length; i < len; i ++){
-			var img;
-			if(i == 0){
-				img = new ImgItem(i, arr[i]);
-			}else{
-				img = new ImgItem(i, arr[i]);
-			}
-			img_arr.push(img);
-			img.register();
-		}
-	};
 }
 
 //显示地理位置区域
@@ -303,25 +284,62 @@ function save(){
 	
 }
 
-function uploadFile(){
+function addFile(){
 	var fileItem = document.getElementById("item_file");
 	if(fileItem.value != ""){
 		
 		var obj = fileItem.files[0];
-		var FileController = "${pageContext.request.contextPath}/web/hotel/jsonLoadUploadItem.do";
-		var form = new FormData();
-		form.append("suffix", "png");
-		form.append("file", obj);
+		//alert(obj.type); image/png
+		var reader = new FileReader();
+		reader.readAsDataURL(obj);
+		reader.onload = function(e){
+			addImgItem(obj, this.result);
+		};
 		
-		var xhr = new XMLHttpRequest();
-        xhr.open("post", FileController, true);
-        xhr.onload = function (res) {
-        	alert("上传完成!");
-        	alert(res);
-        };
-
-		xhr.send(form);
 	}
+}
+
+function deleteFile(){
+	if(tempImgArr.length > 0){
+		for(var i = 0; i < tempImgArr.length; i ++){
+			
+		}
+	}
+}
+
+/**
+* 添加缓存的酒店元素
+*/
+function addImgItem(file, url){
+	var tempView = document.getElementById("temp_img_view");
+	var imgItem = document.createElement("div");
+	imgItem.className = "fl border ml10 mt10 ht160";
+	imgItem.align = "center";
+	
+	var imgView = document.createElement("div");
+	var img = document.createElement("img");
+	img.className = "photo_show";
+	img.src = url;
+	imgView.appendChild(img);
+	
+	var txtView = document.createElement("div");
+	txtView.className = "wid120 mt10";
+	var txt = document.createElement("font");
+	txt.className = "txt ts12";
+	txt.innerHTML = document.getElementById("item_info").value;
+	txtView.appendChild(txt);
+	
+	imgItem.appendChild(imgView);
+	imgItem.appendChild(txtView);
+	
+	tempView.appendChild(imgItem);
+	
+	var objectImgItem = new ObjectImgItem(1, imgItem);
+	objectImgItem.setFile(file);
+	objectImgItem.setUrl(url);
+	objectImgItem.register();
+	
+	tempImgArr.push(objectImgItem);
 }
 
 //====================
@@ -329,14 +347,16 @@ function uploadFile(){
 //====================
 
 /**
-* ImgItem
+* ObjectImgItem
 */
-var ImgItem = function(id, obj){
+var ObjectImgItem = function(id, obj){
 	this.id = id;
 	this.obj = obj;
 	this.selected = false;
+	this.file= null;
+	this.url = "";
 	
-	ImgItem.prototype.register = function(){
+	ObjectImgItem.prototype.register = function(){
 		this.obj.onclick = function(){
 			if(this.selected){
 				obj.className = "fl border ml10 mt10 ht160";
@@ -346,6 +366,14 @@ var ImgItem = function(id, obj){
 			
 			this.selected = !this.selected;
 		};
+	};
+	
+	ObjectImgItem.prototype.setFile = function(file){
+		this.file = file;
+	};
+	
+	ObjectImgItem.prototype.setUrl = function(url){
+		this.url = url;
 	};
 };
 
@@ -491,7 +519,7 @@ var ImgItem = function(id, obj){
 									<span class="hint_red">**必填项**</span>
 								</div>
 								<div class = "mt20">
-									<span class="ts15">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</span><textarea cols="50" rows="6" style="vertical-align: top; border: 1px #C4C4C4 solid;"></textarea>
+									<span class="ts15">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述：</span><textarea cols="50" rows="6" style="vertical-align: top; border: 1px #C4C4C4 solid;"></textarea>
 								</div>
 								<div class = "mt20">
 									<span class="ts15">经&nbsp;纬&nbsp;度：</span><input id="input_location" type="text" readonly="readonly" class="yw-input wid200 ts14" /><img alt="点击标记位置" onclick="showdialog();" class="icon_location" src="${pageContext.request.contextPath}/source/images/location.png">
@@ -582,28 +610,11 @@ var ImgItem = function(id, obj){
 		<div class="divider mt20"></div>
 		<div class="mt10">
 			<div class="fl"><span class="txt ts14">图片：</span></div>
-			<div class="fr"><span class="txt_function">[删除]</span></div>
+			<div class="fr"><span class="txt_function" onclick="deleteFile();">[删除]</span></div>
 			<div class="cl"></div>
 		</div>
-		<div class="imgs_style">
-			<div name="img_item" class="fl border ml10 mt10 ht160" align="center">
-				<div><img alt="" class="photo_show" src="${pageContext.request.contextPath}/source/images/userhaed1.png" /></div>
-				<div class="wid120 mt10">
-					<font class="txt ts12">这里是描述增去写出2行SaaS阿萨阿萨</font>
-				</div>
-			</div>
-			<div name="img_item" class="fl border ml10 mt10 ht160" align="center">
-				<div><img alt="" class="photo_show" src="${pageContext.request.contextPath}/source/images/userhaed1.png" /></div>
-				<div class="wid120 mt10">
-					<font class="txt ts12">这里是描述增去写出</font>
-				</div>
-			</div>
-			<div name="img_item" class="fl border ml10 mt10 ht160" align="center">
-				<div><img alt="" class="photo_show" src="${pageContext.request.contextPath}/source/images/userhaed1.png" /></div>
-				<div class="wid120 mt10">
-					<font class="txt ts12">这里是描述增去写出</font>
-				</div>
-			</div>
+		<div id="temp_img_view" class="imgs_style">
+			
 		</div>
 		
 		<div>
@@ -612,11 +623,11 @@ var ImgItem = function(id, obj){
 					<span class="txt ts14">文件：</span><input id="item_file" type="file"/>
 				</div>
 				<div class="ml10 mt10">
-					<span class="txt ts14">描述：</span><input type="text" class="yw-input ts14 wid200"/>
+					<span class="txt ts14">描述：</span><input id="item_info" type="text" class="yw-input ts14 wid200"/>
 				</div>
 			</div>
 			<div class="fr">
-				<span class="txt_function" onclick="uploadFile();">[添加]</span>
+				<span class="txt_function" onclick="addFile();">[添加]</span>
 			</div>
 			<div class="cl"></div>
 		</div>

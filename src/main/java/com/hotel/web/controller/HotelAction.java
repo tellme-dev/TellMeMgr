@@ -13,6 +13,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.hotel.common.utils.Constants;
 import com.hotel.common.utils.FileUtil;
@@ -131,14 +133,19 @@ public class HotelAction extends BaseAction {
 		if(suffix != null){
 			System.out.println(suffix);
 		}
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		CommonsMultipartFile file = (CommonsMultipartFile) multipartRequest  
+        .getFile("file");  
+		String realFileName = file.getOriginalFilename(); 
+		System.out.println(realFileName);
 		
-		try {
-			FileUtil.uploadSingleFile(request, "123.png", "/tempfiles/item", FileUtil.RELATIVELY_PATH);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "web/hotel/hotelInfo";
+//		try {
+//			FileUtil.uploadSingleFile(request, "123.png", "/tempfiles/item", FileUtil.RELATIVELY_PATH);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		return "success111";
 	}
 	
 
