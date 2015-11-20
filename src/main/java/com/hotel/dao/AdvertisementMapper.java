@@ -1,6 +1,7 @@
 package com.hotel.dao;
 
 import com.hotel.model.Advertisement;
+import com.hotel.modelVM.AdvertisementVM;
 
 @MyBatisRepository
 public interface AdvertisementMapper {
@@ -15,4 +16,6 @@ public interface AdvertisementMapper {
     int updateByPrimaryKeySelective(Advertisement record);
 
     int updateByPrimaryKey(Advertisement record);
+
+	AdvertisementVM getAdList(int id);
 }

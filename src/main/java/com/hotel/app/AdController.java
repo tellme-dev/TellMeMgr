@@ -24,11 +24,10 @@ public class AdController {
 	 */
 	@RequestMapping(value = "getAdList.do", produces = "application/json;charset=UTF-8")
 	public @ResponseBody String getAdList(
-			@RequestParam(value = "banner", required = false) String banner,
-			@RequestParam(value = "adNum", required = false) String adNum,
+			@RequestParam(value = "banner", required = false) int banner,
+			@RequestParam(value = "adNum", required = false) int adNum,
 			HttpServletRequest request)
 	{
-		
 		return "";
 	}
 
