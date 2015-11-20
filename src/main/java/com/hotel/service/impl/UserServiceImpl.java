@@ -106,16 +106,20 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public void SaveorUpdateUser(User user) {
+	public void saveorUpdateUser(User user) {
 		// TODO Auto-generated method stub
-		
+		if(user.getId()>0){
+			userMapper.updateByPrimaryKey(user);
+		}else{
+			userMapper.insert(user);
+		}
 	}
 
 
 	@Override
 	public User getUserByPrimaryKey(Integer userId) {
 		// TODO Auto-generated method stub
-		return null;
+		return userMapper.selectByPrimaryKey(userId);
 	}
 
 }

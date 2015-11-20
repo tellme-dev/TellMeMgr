@@ -1,0 +1,150 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<html>
+<head>
+<meta charset="utf-8">
+<title>员工信息</title>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, minimum-scale=1  ,maximum-scale=1, user-scalable=no" /> 
+<script type="text/javascript">
+	$(document).ready(function() {
+		setShowStates();
+		initOrg();
+	});   
+	function setShowStates(){
+		$("#userName").attr("readonly","readonly");
+		$("#orgName").combobox("disable",true);
+		$("#editBtn").show();
+		$("#saveBtn").hide();
+	};
+	function editUser(){
+		$("#userName").removeAttr("readonly");
+		$("#orgName").combobox("enable",true);
+		$("#editBtn").hide();
+		$("#saveBtn").show();
+	};
+	function saveUser(obj) {
+		if ($('#userForm').form('validate')) {
+			$(obj).attr("onclick", "");
+			$('#userForm').form(
+					'submit',
+					{
+						success : function(data) {
+							data = $.parseJSON(data);
+							if (data.code == 0) {
+								$.messager.alert('保存信息', data.message, 'info',
+										function() {  
+											setShowStates();
+										});
+							} else {
+								$.messager.alert('错误信息', data.message, 'error',
+										function() {
+											$(obj).attr("onclick",
+													"saveUser(this);");
+										});
+							}
+						}
+					});
+		}
+	}; 
+	function initOrg(){
+	    $('#orgtree').combotree( {  
+          url : 'orgComboList.do',  
+          onSelect : function(node) {  
+            var tree = $(this).tree;  
+            //选中的节点是否为叶子节点,如果不是叶子节点,清除选中  
+            var isLeaf = tree('isLeaf', node.target);  
+            if (!isLeaf) {  
+                //清除选中  
+                $('#orgtree').combotree('clear');  
+            }  
+         }  
+       });  
+	}
+</script>
+</head>
+
+<body>
+	<div class="con-right" id="conRight">
+		<div class="fl yw-lump">
+			<div class="yw-lump-title">
+				<i class="yw-icon icon-back" onclick="window.location.href='userList.do'"></i><span>返回</span>
+			</div>
+		</div>
+
+		<div class="fl yw-lump mt10">
+			<div class="yw-bi-rows">
+				<div class="yw-bi-tabs mt5" id="ywTabs">
+					<span class="yw-bi-now">用户信息</span>
+				</div>
+				<div class="fr mt10">
+					<span class="yw-btn bg-green mr26" id="editBtn" onclick="editUser();">编辑</span> 
+					<span class="yw-btn bg-red mr26" id="saveBtn" onclick="saveUser(this);">保存</span>
+				</div>
+			</div>
+			<div id="tab1" class="yw-tab">
+				<form id="userForm" name="userForm"
+					action="saveOrupdateUser.do" method="post">
+					<table class="yw-cm-table font16">
+						<tr>
+							<td width="10%" align="center">姓名：</td>
+							<td>
+								<input id="userName" name="name" type="text" value="${userinfo.name}" class="easyui-validatebox" required="true" validType="Length[1,25]" style="width:254px;height:30px;" /> 
+								<input name="id" type="hidden" value="${userinfo.id}" /> 
+						</tr>
+						<tr>
+							<td width="10%" align="center">所属机构：</td>
+							<td>
+							    <input id="orgtree" />
+							</td>
+							<%-- <td>
+								<select id="org" name="org" style="width:254px;height:30px;" class="easyui-combotree">
+								 	 <c:if test="${userinfo.sex == 0 }">
+								 	    <c:forEach var="item" items="${orginfo}">
+								 	        <option selected="selected" value="${item.id}">${item.orgName}</option>
+    		                            </c:forEach>
+								 	 </c:if>    
+								 	 <c:if test="${userinfo.orgName != null }">
+								 	 	<option  value="-1">=请选择性别=</option><option value="0">男</option><option selected="selected" value="1">女</option>
+								 	 </c:if>   
+								</select>
+							</td> --%>
+						</tr>
+						<%-- <tr>
+							<td align="center">角色：</td>
+							<td>
+								 <c:if test="${userinfo.roleKey == 1 }">
+									<label><input id="roleKey1" type="radio" name="roleKey" checked="checked" value="1" onclick="$('#projectModel').attr('style','display:none');$('#systemModel').removeAttr('style');//$('#projectModel input[type=\'checkbox\']').attr('checked',false);" />服务台</label>
+									<label><input id="roleKey2" type="radio" name="roleKey" value="2" onclick="//$('#projectModel input[type=\'checkbox\']').attr('checked',false);$('#systemModel input[type=\'checkbox\']').attr('checked',false);" />专家</label>
+									<label><input id="roleKey3" type="radio" name="roleKey" value="3" onclick="$('#systemModel').attr('style','display:none');$('#projectModel').removeAttr('style');//$('#systemModel input[type=\'checkbox\']').attr('checked',false);" />维护人员</label>
+								 </c:if>
+								 <c:if test="${userinfo.roleKey == 2 }">
+									<label><input id="roleKey1" type="radio" name="roleKey" value="1" onclick="$('#projectModel').attr('style','display:none');$('#systemModel').removeAttr('style');$('#projectModel input[type=\'checkbox\']').attr('checked',false);" />服务台</label>
+									<label><input id="roleKey2" type="radio" name="roleKey" checked="checked" value="2" onclick="//$('#projectModel input[type=\'checkbox\']').attr('checked',false);$('#systemModel input[type=\'checkbox\']').attr('checked',false);" />专家</label>
+									<label><input id="roleKey3" type="radio" name="roleKey" value="3" onclick="$('#systemModel').attr('style','display:none');$('#projectModel').removeAttr('style');$('#systemModel input[type=\'checkbox\']').attr('checked',false);" />维护人员</label>
+								 </c:if>
+								 <c:if test="${userinfo.roleKey == 3 }">
+									<label><input id="roleKey1" type="radio" name="roleKey" value="1" onclick="$('#projectModel').attr('style','display:none');$('#systemModel').removeAttr('style');//$('#projectModel input[type=\'checkbox\']').attr('checked',false);" />服务台</label>
+									<label><input id="roleKey2" type="radio" name="roleKey" value="2" onclick="//$('#projectModel input[type=\'checkbox\']').attr('checked',false);$('#systemModel input[type=\'checkbox\']').attr('checked',false);" />专家</label>
+									<label><input id="roleKey3" type="radio" name="roleKey" checked="checked" value="3" onclick="$('#systemModel').attr('style','display:none');$('#projectModel').removeAttr('style');//$('#systemModel input[type=\'checkbox\']').attr('checked',false);" />维护人员</label>
+								 </c:if>
+							</td>
+						</tr>  --%>
+					</table>
+				</form>
+			</div>
+		</div>
+		<div class="cl"></div>
+	</div>
+	<div class="cl"></div>
+
+	</div>
+
+</body>
+</html>

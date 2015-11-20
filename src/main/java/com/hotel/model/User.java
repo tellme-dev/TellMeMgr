@@ -23,7 +23,7 @@ public class User extends Page {
   //自定义
     private String  searchName;
     
-    private String companyName;
+    private String orgName;
     
     private int selectedMainMemu;
     
@@ -41,12 +41,12 @@ public class User extends Page {
 		this.searchName = searchName;
 	}
 
-	public String getCompanyName() {
-		return companyName;
+	public String getOrgName() {
+		return orgName;
 	}
 
-	public void setCompanyName(String companyName) {
-		this.companyName = companyName;
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
 	}
 
 	public int getSelectedMainMemu() {
