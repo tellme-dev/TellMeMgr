@@ -15,4 +15,6 @@ public interface HotelService {
     public int getPageHotelCount(Hotel hotel);
 	
     List<ItemTagAssociation> getTagTypeItem(int tagType);
+    
+    int insert(Hotel record);
 }

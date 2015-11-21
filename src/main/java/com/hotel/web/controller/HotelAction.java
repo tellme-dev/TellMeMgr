@@ -1,6 +1,5 @@
 package com.hotel.web.controller;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,9 +12,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import com.hotel.common.JsonResult;
 import com.hotel.common.utils.Constants;
-import com.hotel.common.utils.FileUtil;
 import com.hotel.model.Function;
 import com.hotel.model.Hotel;
 import com.hotel.model.Item;
@@ -81,6 +82,38 @@ public class HotelAction extends BaseAction {
 		return "web/hotel/hotelList";
 	}
 	
+	/**
+	 * 
+	 * 
+	 * @param user
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/savaOrUpdateHotel.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	public JsonResult<Hotel> hotelSave(Hotel hotel, 
+			HttpServletRequest request,
+			HttpServletResponse response) {
+		
+		JsonResult<Hotel> js = new JsonResult<Hotel>();
+		js.setCode(new Integer(0));
+		js.setMessage("保存失败!");
+		
+		try {
+			/*新增时没有传id值*/
+			if(hotel.getId()==null){
+				hotel.setId(0);
+			}
+			hotelService.insert(hotel);
+			js.setCode(new Integer(1));
+			js.setMessage("保存成功!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return js;
+	}
+	
 	
 	/**
 	 * 
@@ -94,9 +127,24 @@ public class HotelAction extends BaseAction {
 	public String gotoHotelInfo(Hotel hotel, 
 			HttpServletRequest request,
 			HttpServletResponse response) {
-		if (hotel.getPageNo() == null)
-			hotel.setPageNo(1);
-		hotel.setPageSize(Constants.DEFAULT_PAGE_SIZE);
+		
+		List<Region> regions = baseDataService.getProvinceRegion();
+		
+		//加载菜单
+		//List<Function> lf = functionService.getFunctionByParentUrl("/web/hotel/hotelInfo.do");
+		User user = new User();
+		//user.setChildMenuList(lf);
+		request.getSession().setAttribute(Constants.USER_SESSION_NAME,user);
+		request.setAttribute("hotel", hotel);
+		request.setAttribute("regionList", regions);
+		return "web/hotel/hotelInfo";
+	}
+	
+	
+	@RequestMapping(value = "/hotelProject.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	public String gotoHotelProject(Hotel hotel, 
+			HttpServletRequest request,
+			HttpServletResponse response) {
 		
 		List<Item> items = new ArrayList<Item>();
 		String hotelId = request.getParameter("hotelId");
@@ -104,7 +152,7 @@ public class HotelAction extends BaseAction {
 			items = itemService.getItemByHotel(Integer.parseInt(hotelId));
 		}
 		
-		List<Region> regions = baseDataService.getProvinceRegion();
+//		List<Region> regions = baseDataService.getProvinceRegion();
 		List<ItemTagAssociation> tag = hotelService.getTagTypeItem(1);
 		List<ItemTag> tags = itemTagService.getTagFromMin(0);
 		
@@ -116,10 +164,10 @@ public class HotelAction extends BaseAction {
 		//user.setChildMenuList(lf);
 		request.getSession().setAttribute(Constants.USER_SESSION_NAME,user);
 		request.setAttribute("hotel", hotel);
-		request.setAttribute("regionList", regions);
+//		request.setAttribute("regionList", regions);
 		request.setAttribute("tagList", tags);
 		request.setAttribute("itemList", items);
-		return "web/hotel/hotelInfo";
+		return "web/hotel/hotelProject";
 	}
 	
 	@ResponseBody
@@ -131,14 +179,19 @@ public class HotelAction extends BaseAction {
 		if(suffix != null){
 			System.out.println(suffix);
 		}
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+		CommonsMultipartFile file = (CommonsMultipartFile) multipartRequest  
+        .getFile("file");  
+		String realFileName = file.getOriginalFilename(); 
+		System.out.println(realFileName);
 		
-		try {
-			FileUtil.uploadSingleFile(request, "123.png", "/tempfiles/item", FileUtil.RELATIVELY_PATH);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "web/hotel/hotelInfo";
+//		try {
+//			FileUtil.uploadSingleFile(request, "123.png", "/tempfiles/item", FileUtil.RELATIVELY_PATH);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		return "success111";
 	}
 	
 

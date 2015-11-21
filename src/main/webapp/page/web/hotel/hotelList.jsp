@@ -83,6 +83,12 @@ function loadHotelInfo(){
 	window.location.href = "hotelInfo.do";
 }
 
+function loadHotelProject(){
+	alert("请先选择一条酒店数据");
+	return ;
+	//window.location.href = "hotelProject.do";
+}
+
 
 </script>
 <style type="text/css">
@@ -110,6 +116,7 @@ function loadHotelInfo(){
 							<div align="left" class="mt30">
 								<span class="yw-btn bg-green cur ts15" onclick="loadHotelInfo();">添加酒店</span>
 								<span class="yw-btn bg-blue ml20 cur ts15" onclick="showdialog();">修改酒店</span>
+								<span class="yw-btn bg-gray ml20 cur ts15" onclick="loadHotelProject();">项目管理</span>
 								<span class="yw-btn bg-orange ml20 cur ts15" onclick="showdialog();">删除酒店</span>
 							</div>
 						</div>

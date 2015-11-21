@@ -42,4 +42,10 @@ public class HotelServiceImpl implements HotelService{
 		// TODO Auto-generated method stub
 		return associationMapper.getTagTypeItem(tagType);
 	}
+
+	@Override
+	public int insert(Hotel record) {
+		// TODO Auto-generated method stub
+		return hotelMapper.insert(record);
+	}
 }
