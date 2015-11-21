@@ -91,9 +91,9 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public List<User> getUserPageList(User user) {
+	public List<User> getUserPageList(Map<String, Object> map) {
 		// TODO Auto-generated method stub
-		List<User> userlist = userMapper.getUserPageList(user);
+		List<User> userlist = userMapper.getUserPageList(map);
 		/*转换时间格式*/
 		List<User> list = new ArrayList<User>();
 		for(int i=0;i<userlist.size();i++){
@@ -108,9 +108,9 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public int getUserPageListCount(User user) {
+	public int getUserPageListCount(Map<String, Object> map) {
 		// TODO Auto-generated method stub
-		return userMapper.getUserPageListCount(user);
+		return userMapper.getUserPageListCount(map);
 	}
 
 

@@ -1,8 +1,10 @@
 package com.hotel.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hotel.model.Advertisement;
+import com.hotel.viewmodel.AdvertisementVM;
 
 @MyBatisRepository
 public interface AdvertisementMapper {
@@ -18,11 +20,11 @@ public interface AdvertisementMapper {
 
     int updateByPrimaryKey(Advertisement record);
 
-	List<Advertisement> getAdPageList(Advertisement ad);
+	List<AdvertisementVM> getAdPageList(Map<String, Object> map);
 
-	int getAdPageListCount(Advertisement ad);
+	int getAdPageListCount(AdvertisementVM ad);
 
-	Advertisement selectById(Integer id);
+	AdvertisementVM selectById(Integer id);
 
-	Advertisement selectAdVMByPrimaryKey(Integer adId);
+	AdvertisementVM selectAdVMByPrimaryKey(Integer adId);
 }

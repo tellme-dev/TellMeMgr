@@ -1,6 +1,7 @@
 package com.hotel.web.controller;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +22,9 @@ import com.hotel.common.JsonResult;
 import com.hotel.common.utils.Constants;
 import com.hotel.common.utils.EndecryptUtils;
 import com.hotel.common.utils.GeneralUtil;
+import com.hotel.common.utils.Page;
 import com.hotel.model.Function;
+import com.hotel.model.Hotel;
 import com.hotel.model.Org;
 import com.hotel.model.User;
 import com.hotel.service.BaseDataService;
@@ -57,26 +60,28 @@ public class UserAction extends BaseAction {
 	 * @return
 	 */
 	@RequestMapping(value = "/userList.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-	public String logInituser(User user, 
+	public String logInituser(Page page,
+			User user, 
 			//@RequestParam(value = "companyId", required = false) Integer companyId,
 			HttpServletRequest request,
 			HttpServletResponse response) {
-		if (user.getPageNo() == null)
-			user.setPageNo(1);
-		user.setPageSize(Constants.DEFAULT_PAGE_SIZE);
-		user.setIsUsed(true);
+		/*分页参数*/
+		if (page.getPageNo() == null){
+			page.setPageNo(1);
+		}
+		page.setPageSize(Constants.DEFAULT_PAGE_SIZE);
 		//加载菜单
 		List<Function> lf = functionService.getFunctionByParentUrl("/web/user/userList.do");
 		User u = new User();
 		u.setChildMenuList(lf);
 		request.getSession().setAttribute(Constants.USER_SESSION_NAME,u);
-		//user.setCompanyId(companyId); 
-		//Company company = companyService.getCompanyById(companyId);
-		List<User> lc = userService.getUserPageList(user);
-		int totalCount = userService.getUserPageListCount(user);
-		user.setTotalCount(totalCount);
-		//request.setAttribute("company", company);
-		request.setAttribute("user", user);
+		/*加载数据，数量*/
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("pageStart",page.getPageStart());
+		map.put("pageSize",page.getPageSize());
+		List<User> lc = userService.getUserPageList(map);
+		int totalCount = userService.getUserPageListCount(map);
+		page.setTotalCount(totalCount);
 		request.setAttribute("userlist", lc);
 		return "web/user/userList";
 	}

@@ -1,8 +1,6 @@
 package com.hotel.model;
 
-import com.hotel.common.utils.Page;
-
-public class Room extends Page {
+public class Room {
     private Integer id;
 
     private Integer hotelId;

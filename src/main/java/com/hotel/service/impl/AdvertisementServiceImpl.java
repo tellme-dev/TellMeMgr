@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -15,6 +16,7 @@ import com.hotel.dao.AdvertisementMapper;
 import com.hotel.model.AdDetail;
 import com.hotel.model.Advertisement;
 import com.hotel.service.AdvertisementService;
+import com.hotel.viewmodel.AdvertisementVM;
 
 @Service("adService")
 public class AdvertisementServiceImpl implements AdvertisementService {
@@ -25,13 +27,13 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	private AdDetailMapper adDetailMapper;
 
 	@Override
-	public List<Advertisement> getAdPageList(Advertisement ad) {
+	public List<AdvertisementVM> getAdPageList(Map<String,Object> map) {
 		// TODO Auto-generated method stub
-		List<Advertisement> adlist = adMapper.getAdPageList(ad);
+		List<AdvertisementVM> adlist = adMapper.getAdPageList(map);
 		/*转换时间格式*/
-		List<Advertisement> list = new ArrayList<Advertisement>();
+		List<AdvertisementVM> list = new ArrayList<AdvertisementVM>();
 		for(int i=0;i<adlist.size();i++){
-			Advertisement a = adlist.get(i);
+			AdvertisementVM a = adlist.get(i);
 			Date createTime = a.getCreateTime();
 			String cteatetime = GeneralUtil.dateToStrLong(createTime);
 			a.setCreatetime(cteatetime);
@@ -41,13 +43,13 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	}
 
 	@Override
-	public int getAdPageListCount(Advertisement ad) {
+	public int getAdPageListCount(AdvertisementVM ad) {
 		// TODO Auto-generated method stub
 		return adMapper.getAdPageListCount(ad);
 	}
 
 	@Override
-	public void saveorUpdateAd(Advertisement ad) {
+	public void saveorUpdateAd(AdvertisementVM ad) {
 		// TODO Auto-generated method stub
 		String[] arr = ad.getImageText().split(",");
 		List imageTexts = Arrays.asList(arr);
@@ -78,9 +80,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	}
 
 	@Override
-	public Advertisement getAdById(Integer adId) {
+	public AdvertisementVM getAdById(Integer adId) {
 		// TODO Auto-generated method stub
-		Advertisement ad = adMapper.selectByPrimaryKey(adId);
+		AdvertisementVM ad = adMapper.selectAdVMByPrimaryKey(adId);
 		List<AdDetail> adDetail = adDetailMapper.selectByAdId(adId);
 		//ad.setAdDetail(adDetail);
 		ad.setAdDetailList(adDetail);

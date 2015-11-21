@@ -1,7 +1,9 @@
 package com.hotel.web.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +19,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import com.hotel.common.JsonResult;
 import com.hotel.common.utils.Constants;
+import com.hotel.common.utils.Page;
 import com.hotel.model.Function;
 import com.hotel.model.Hotel;
 import com.hotel.model.Item;
@@ -61,23 +64,28 @@ public class HotelAction extends BaseAction {
 	 * @return
 	 */
 	@RequestMapping(value = "/hotelList.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-	public String logInithotel(Hotel hotel, 
+	public String logInithotel(Page page,
+			Hotel hotel, 
 			HttpServletRequest request,
 			HttpServletResponse response) {
-		if (hotel.getPageNo() == null)
-			hotel.setPageNo(1);
-		hotel.setPageSize(Constants.DEFAULT_PAGE_SIZE);
+		/*分页参数*/
+		if (page.getPageNo() == null){
+			page.setPageNo(1);
+		}
+		page.setPageSize(Constants.DEFAULT_PAGE_SIZE);
 		
-		List<Hotel> lh = hotelService.getPageHotel(hotel);
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("pageStart",page.getPageStart());
+		map.put("pageSize",page.getPageSize());
+		List<Hotel> lh = hotelService.getPageHotel(map);
 		int count = hotelService.getPageHotelCount(hotel);
-		hotel.setTotalCount(count);
+		page.setTotalCount(count);
 
 		//加载菜单
 		List<Function> lf = functionService.getFunctionByParentUrl("/web/hotel/hotelList.do");
 		User user = new User();
 		user.setChildMenuList(lf);
 		request.getSession().setAttribute(Constants.USER_SESSION_NAME,user);
-		request.setAttribute("hotel", hotel);
 		request.setAttribute("hotelList", lh);
 		return "web/hotel/hotelList";
 	}

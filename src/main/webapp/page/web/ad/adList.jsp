@@ -20,9 +20,9 @@
 <script type="text/javascript">
 		$(document).ready(function(){
 			$("#pager").pager({
-			    pagenumber:'${ad.pageNo}',                         /* 表示初始页数 */
-			    pagecount:'${ad.pageCount}',                      /* 表示总页数 */
-			    totalCount:'${ad.totalCount}',
+			    pagenumber:'${page.pageNo}',                         /* 表示初始页数 */
+			    pagecount:'${page.pageCount}',                      /* 表示总页数 */
+			    totalCount:'${page.totalCount}',
 			    buttonClickCallback:PageClick                     /* 表示点击分页数按钮调用的方法 */                  
 			});
 			$("#adinfoList tr").each(function(i){
@@ -37,7 +37,7 @@
 PageClick = function(pageclickednumber) {
 	$("#pager").pager({
 	    pagenumber:pageclickednumber,                 /* 表示启示页 */
-	    pagecount:'${ad.pageCount}',                  /* 表示最大页数pagecount */
+	    pagecount:'${page.pageCount}',                  /* 表示最大页数pagecount */
 	    buttonClickCallback:PageClick                 /* 表示点击页数时的调用的方法就可实现javascript分页功能 */            
 	});
 	
@@ -110,13 +110,13 @@ function saveAd(obj){
 									placeholder="搜索" value="${ad.searchName}" />
 								<span class="yw-btn bg-orange ml30 cur" onclick="search();">开始查找</span> --%>
 								<span class="yw-btn bg-green ml20 cur" onclick="gotoAdd();">新建广告</span>
-								<span class="yw-btn bg-green ml20 cur" onclick="">删除广告</span>
+								<span class="yw-btn bg-orange ml20 cur" onclick="">删除广告</span>
 							</div>
 							<div class="cl"></div>
 						</div>
 			
 						<input type="hidden" id="pageNumber" name="pageNo"
-							value="${ad.pageNo}" />
+							value="${page.pageNo}" />
 					</form>
 				</div>
 				<table class="yw-cm-table" id="adinfoList">

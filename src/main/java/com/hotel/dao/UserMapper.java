@@ -1,6 +1,7 @@
 package com.hotel.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hotel.model.User;
 
@@ -21,7 +22,7 @@ public interface UserMapper {
     //新添加的方法
 	User getUserByName(String username);
 
-	List<User> getUserPageList(User user);
+	List<User> getUserPageList(Map<String, Object> map);
 
-	int getUserPageListCount(User user);
+	int getUserPageListCount(Map<String, Object> map);
 }

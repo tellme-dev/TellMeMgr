@@ -1,8 +1,6 @@
 package com.hotel.model;
 
-import com.hotel.common.utils.Page;
-
-public class Region extends Page {
+public class Region {
     private Integer id;
 
     private Integer parentId;

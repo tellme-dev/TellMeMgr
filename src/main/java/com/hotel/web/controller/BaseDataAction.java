@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hotel.common.JsonResult;
 import com.hotel.common.utils.Constants;
+import com.hotel.common.utils.Page;
 import com.hotel.model.Function;
 import com.hotel.model.ItemTag;
 import com.hotel.model.Org;
@@ -46,36 +47,35 @@ public class BaseDataAction extends BaseAction {
 		 * @return
 		 */
 		@RequestMapping(value = "/baseDataList.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-		public String logInitBaseData(BaseData baseData, 
+		public String logInitBaseData(Page page,
+				BaseData baseData, 
 				HttpServletRequest request,
 				HttpServletResponse response) {
-			if (baseData.getPageNo() == null)
-				baseData.setPageNo(1);
-			baseData.setPageSize(Constants.DEFAULT_PAGE_SIZE);
+			/*分页参数*/
+			if (page.getPageNo() == null){
+				page.setPageNo(1);
+			}
+			page.setPageSize(Constants.DEFAULT_PAGE_SIZE);
 			//加载菜单
 			List<Function> lf = functionService.getFunctionByParentUrl("/web/base/baseDataList.do");
 			User user = new User();
 			user.setChildMenuList(lf);
 			request.getSession().setAttribute(Constants.USER_SESSION_NAME,user);
-			//request.setAttribute("company", company);
 			request.setAttribute("baseData", baseData);
+			//page.setTotalCount(totalCount);
 			return "web/base/baseDataList";
 		}
 		
 		@RequestMapping(value = "/regionList.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-		public String logInitRegion(Region region, 
+		public String logInitRegion(Page page, 
 				HttpServletRequest request,
 				HttpServletResponse response) {
-			if (region.getPageNo() == null)
-				region.setPageNo(1);
-			region.setPageSize(Constants.DEFAULT_PAGE_SIZE);
-//			//加载菜单
-//			List<Function> lf = functionService.getFunctionByParentUrl("/web/base/baseDataList.do");
-//			User user = new User();
-//			user.setChildMenuList(lf);
-//			request.getSession().setAttribute(Constants.USER_SESSION_NAME,user);
-			//request.setAttribute("company", company);
-			request.setAttribute("region", region);
+			/*分页参数*/
+			if (page.getPageNo() == null){
+				page.setPageNo(1);
+			}
+			page.setPageSize(Constants.DEFAULT_PAGE_SIZE);
+			//page.setTotalCount(totalCount);
 			return "web/base/regionList";
 		}
 		

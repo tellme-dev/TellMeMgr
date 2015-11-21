@@ -3,9 +3,7 @@ package com.hotel.model;
 import java.util.Date;
 import java.util.List;
 
-import com.hotel.common.utils.Page;
-
-public class User extends Page {
+public class User {
     private Integer id;
 
     private String name;

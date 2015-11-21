@@ -1,8 +1,6 @@
 package com.hotel.model;
 
-import com.hotel.common.utils.Page;
-
-public class Rcu extends Page {
+public class Rcu {
     private Integer id;
 
     private Integer roomId;

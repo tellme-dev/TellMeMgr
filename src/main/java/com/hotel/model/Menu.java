@@ -1,8 +1,6 @@
 package com.hotel.model;
 
-import com.hotel.common.utils.Page;
-
-public class Menu extends Page {
+public class Menu {
     private Integer id;
 
     private String name;

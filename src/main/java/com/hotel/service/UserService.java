@@ -2,6 +2,7 @@ package com.hotel.service;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 import com.hotel.common.ReturnResult;
 import com.hotel.model.User;
@@ -16,9 +17,9 @@ public interface UserService {
     
     
     /////
-    List<User> getUserPageList(User example);
+    List<User> getUserPageList(Map<String, Object> map);
     
-    int getUserPageListCount(User example);
+    int getUserPageListCount(Map<String, Object> map);
 
     ReturnResult<User> getUserById(Integer id);
 

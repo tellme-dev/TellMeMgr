@@ -1,17 +1,18 @@
 package com.hotel.service;
 
 import java.util.List;
+import java.util.Map;
 
-import com.hotel.model.Advertisement;
+import com.hotel.viewmodel.AdvertisementVM;
 
 public interface AdvertisementService {
 
-	List<Advertisement> getAdPageList(Advertisement ad);
+	List<AdvertisementVM> getAdPageList(Map<String, Object> map);
 
-	int getAdPageListCount(Advertisement ad);
+	int getAdPageListCount(AdvertisementVM ad);
 
-	void saveorUpdateAd(Advertisement ad);
+	void saveorUpdateAd(AdvertisementVM ad);
 
-	Advertisement getAdById(Integer id);
+	AdvertisementVM getAdById(Integer id);
 
 }

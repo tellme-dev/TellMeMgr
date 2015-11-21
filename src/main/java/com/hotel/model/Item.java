@@ -2,9 +2,7 @@ package com.hotel.model;
 
 import java.math.BigDecimal;
 
-import com.hotel.common.utils.Page;
-
-public class Item extends Page {
+public class Item {
     private Integer id;
 
     private Integer hotelId;

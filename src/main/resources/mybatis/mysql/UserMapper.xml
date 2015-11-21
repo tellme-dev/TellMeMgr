@@ -144,7 +144,7 @@
     from t_user u
     where u.name = #{name,jdbcType=INTEGER} 
   </select>
-  <select id="getUserPageList" resultMap="BaseResultMap" parameterType="com.hotel.model.User" >
+  <select id="getUserPageList" resultMap="BaseResultMap" parameterType="java.util.Map" >
      select <include refid="Base_Column_List" />,org.name as orgName
 	  		<include refid="query_sql"/>
     <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
@@ -153,7 +153,7 @@
   </select>
   
      
-  <select id="getUserPageListCount" resultType="java.lang.Integer" parameterType="com.hotel.model.User" >
+  <select id="getUserPageListCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
     select count(*) <include refid="query_sql"/>
   </select>
 </mapper>

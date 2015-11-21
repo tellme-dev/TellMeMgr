@@ -14,13 +14,14 @@
 	content="width=device-width, initial-scale=1, minimum-scale=1  ,maximum-scale=1, user-scalable=no" /> 
 <script type="text/javascript">
     $(document).ready(function(){
-    	setShowStates();
     	initHotel();
     	initItemTagTree();
+    	setShowStates();
     });
     function tagChange(type){
     	if(type == 1){//#ffa8a8
     		//选择“酒店” 操作 hotelSelect
+    		/*改变颜色*/
     		var doc = document.getElementById("hotel");
     	    doc.style.backgroundColor="#ffa8a8";
     	    
@@ -30,13 +31,19 @@
     	    var doc = document.getElementById("tagContent");
     	    doc.style.backgroundColor="white";
     	    
+    	    /*内容清空*/
+    	    $("#itemTagSelect").combotree("setValue","");
+    	    $("#txtTagContent").val("");
+    	    
+    	    /*只读、可编辑转换*/
     	    $("#hotelSelect").combobox("enable",true);
     	    
     	    $("#txtTagContent").attr("readonly","readonly");
-    		$("#tab1 input[id='itemTagRadio']").attr("disabled","disabled");
+    	    $("#itemTagSelect").combotree("disable",true);
     	}
     	else if(type == 2){
     		//选择“项目” 操作 itemTag
+    		/*改变颜色*/
     		var doc = document.getElementById("itemTag");
     	    doc.style.backgroundColor="#ffa8a8";
     	    
@@ -46,13 +53,19 @@
     	    var doc = document.getElementById("tagContent");
     	    doc.style.backgroundColor="white";
     	    
-    	    $("#tab1 input[id='itemTagRadio']").removeAttr("disabled");
+    	    /*内容清空*/
+    	    $("#hotelSelect").combobox("setValue","");
+    	    $("#txtTagContent").val("");
+    	    
+    	    /*只读、可编辑转换*/
+    	    $("#itemTagSelect").combotree("enable",true);
     	    
     		$("#txtTagContent").attr("readonly","readonly");
-    		$("#hotelSelect").combobox("disabled",true);
+    		$("#hotelSelect").combobox("disable",true);
     	}
     	else{
     		//选择“html”、“url” 操作 tagContent文本框
+    		/*改变颜色*/
     		var doc = document.getElementById("tagContent");
     	    doc.style.backgroundColor="#ffa8a8";
     	    
@@ -61,10 +74,16 @@
     	    
     	    var doc = document.getElementById("itemTag");
     	    doc.style.backgroundColor="white";
+    	    
+    	    /*内容清空*/
+    	    $("#hotelSelect").combobox("setValue","");
+    	    $("#itemTagSelect").combotree("setValue","");
+    	    
+    	    /*只读、可编辑转换*/
     		$("#txtTagContent").removeAttr("readonly");
     		
-    		$("#tab1 input[id='itemTagRadio']").attr("disabled","disabled");
-    		$("#hotelSelect").combobox("disabled",true);
+    		$("#itemTagSelect").combotree("disable",true);
+    		$("#hotelSelect").combobox("disable",true);
     	}
     }
 	function setShowStates(){
@@ -74,8 +93,8 @@
 		//$("#imageTextEdit").hide();
 		//$("#imageUrlAdd").hide();
 		$("#txtTagContent").attr("readonly","readonly");
-		$("#tab1 input[id='itemTagRadio']").attr("disabled","disabled");
-		$("#hotelSelect").attr("readonly","readonly");
+		$("#itemTagSelect").combotree("disable",true);
+		$("#hotelSelect").combobox("disable",true);
 	};
 	function edit(){
 		$("#hotelSelect").combobox("enable",true);
@@ -280,32 +299,22 @@
 							</td>
 						</tr>
 						</c:if> --%>
-						<tr>
+						<tr id="hotel">
 							<td width="10%" align="center">酒店：</td>
-							<td id="hotel">
+							<td>
 							   <input id="hotelSelect" name="targetId" class="easyui-combobox" data-options="editable:false" style="width:254px;height:30px;"/>
 							</td>
-							<%-- <td>
-							    <c:forEach var="item" items="${hotellist}">
-        	                       <input type="radio" name="targetId"  value="${item.id}"/>${item.name}　　
-			                    </c:forEach>
-							</td> --%>
-							
-							<td id="tagContent">
-							    <span width="10%">URL或HTML：</span>
-							    <input id="txtTagContent" name="targetContent" type="text" value="${adinfo.targetContent}" class="easyui-validatebox"  validType="Length[1,25]" style="width:254px;height:30px;"/>
-							</td>
-							<%-- <td>
-							    <span width="10%" style="color:red" >项目：</span>
-							    <c:forEach var="item" items="${taglist}" >
-        	                        <input type="radio" name="targetId"  value="${item.id}"/>${item.name}
-			                    </c:forEach>
-							</td> --%>
 						</tr>
 						<tr id="itemTag">
-							<td width="10%" align="center">项目：</td>
+							<td width="10%" align="center">标签：</td>
 							<td>
 							   <input id="itemTagSelect" name="targetId" class="easyui-combotree" data-options="editable:false" style="width:254px;height:30px;"/>
+							</td>
+						</tr>
+						<tr id="tagContent">
+							<td width="10%" align="center">其他：</td>
+							<td>
+							    <input id="txtTagContent" name="targetContent" type="text" value="${adinfo.targetContent}" class="easyui-validatebox"  validType="Length[1,25]" style="width:254px;height:30px;"/>
 							</td>
 						</tr>
 					</table>
@@ -361,11 +370,11 @@
         </p> -->
 		<p class="yw-window-p">
 		    <span class="fl">文件：</span>
-        	<input name="imageUrl" type="file" id="file" value="" class="easyui-validatebox" />
+        	<input id="imageUrl" name="imageUrl" type="file" value="" class="easyui-validatebox" />
         </p> 
         <p class="yw-window-p">
             <span class="fl">描述：</span>
-        	<input value="" placeholder="图片描述" class="easyui-validatebox" />
+        	<input id="imageText" value="" placeholder="图片描述" class="easyui-validatebox" />
         </p>
         <div class="yw-window-footer txt-right">
         	<span class="yw-window-btn bg-lightgray mt12"  onclick="$('#userInfoWindow').window('close');">退出</span>

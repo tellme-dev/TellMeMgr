@@ -1,6 +1,7 @@
 package com.hotel.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -28,9 +29,9 @@ public class HotelServiceImpl implements HotelService{
 	}
 
 	@Override
-	public List<Hotel> getPageHotel(Hotel hotel) {
+	public List<Hotel> getPageHotel(Map<String, Object> map) {
 		// TODO Auto-generated method stub
-		return hotelMapper.getPageHotel(hotel);
+		return hotelMapper.getPageHotel(map);
 	}
 	@Override
 	public int getPageHotelCount(Hotel hotel) {

@@ -19,11 +19,10 @@
 	rel="stylesheet" />
 <script type="text/javascript">
 		$(document).ready(function(){
-		    initOrg();
 			$("#pager").pager({
-			    pagenumber:'${user.pageNo}',                         /* 表示初始页数 */
-			    pagecount:'${user.pageCount}',                      /* 表示总页数 */
-			    totalCount:'${user.totalCount}',
+			    pagenumber:'${page.pageNo}',                         /* 表示初始页数 */
+			    pagecount:'${page.pageCount}',                      /* 表示总页数 */
+			    totalCount:'${page.totalCount}',
 			    buttonClickCallback:PageClick                     /* 表示点击分页数按钮调用的方法 */                  
 			});
 			$("#userinfoList tr").each(function(i){
@@ -39,7 +38,7 @@
 PageClick = function(pageclickednumber) {
 	$("#pager").pager({
 	    pagenumber:pageclickednumber,                 /* 表示启示页 */
-	    pagecount:'${user.pageCount}',                  /* 表示最大页数pagecount */
+	    pagecount:'${page.pageCount}',                  /* 表示最大页数pagecount */
 	    buttonClickCallback:PageClick                 /* 表示点击页数时的调用的方法就可实现javascript分页功能 */            
 	});
 	
@@ -58,6 +57,7 @@ function gotoAdd(){
 	window.location.href="userinfo.do?userId=0";
 }
 function showdialog(){
+	$("#orgtree").combotree("disable",true);
 	var wz = getDialogPosition($('#userInfoWindow').get(0),100);
 	$('#userInfoWindow').window({
 		  	top: 100,
@@ -135,13 +135,13 @@ function initOrg(){
 									placeholder="搜索" value="${user.searchName}" />
 								<span class="yw-btn bg-orange ml30 cur" onclick="search();">开始查找</span> --%>
 								<span class="yw-btn bg-green ml20 cur" onclick="gotoAdd();">新建用户</span>
-								<span class="yw-btn bg-green ml20 cur" onclick="">删除用户</span>
+								<span class="yw-btn bg-orange ml20 cur" onclick="showdialog()">删除用户</span>
 							</div>
 							<div class="cl"></div>
 						</div>
 			
 						<input type="hidden" id="pageNumber" name="pageNo"
-							value="${user.pageNo}" />
+							value="${page.pageNo}" />
 					</form>
 				</div>
 				<table class="yw-cm-table" id="userinfoList">
@@ -181,7 +181,7 @@ function initOrg(){
         	<span class="fl">性别：</span><select name="sex" class="easyui-combobox"><option value="-1">=请选择性别=</option><option value="0">男</option><option value="1">女</option></select>
         </p> -->
         <p class="yw-window-p">
-        	<span class="fl">所属机构：</span><input id="orgtree" name="org" type="text" value="" class="easyui-combobox" required="true"  validType="Length[1,25]" style="width:254px;height:30px;"/>
+        	<span class="fl">所属机构：</span><input id="orgtree" name="org" type="text" value="" class="easyui-combotree" required="true"  validType="Length[1,25]" style="width:254px;height:30px;"/>
         </p>
         <div class="yw-window-footer txt-right">
         	<span class="yw-window-btn bg-lightgray mt12"  onclick="$('#userInfoWindow').window('close');">退出</span>
