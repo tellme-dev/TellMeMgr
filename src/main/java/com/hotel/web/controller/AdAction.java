@@ -21,12 +21,12 @@ import com.hotel.model.Advertisement;
 import com.hotel.model.Function;
 import com.hotel.model.Hotel;
 import com.hotel.model.ItemTag;
-import com.hotel.model.Org;
 import com.hotel.model.User;
 import com.hotel.service.AdvertisementService;
 import com.hotel.service.BaseDataService;
 import com.hotel.service.FunctionService;
 import com.hotel.service.HotelService;
+import com.hotel.viewmodel.ItemTagVM;
 
 @Scope("prototype")
 @Controller
@@ -134,6 +134,28 @@ public class AdAction extends BaseAction {
 					HttpServletResponse response) {
 				try{
 					List<Hotel> list = hotelService.selectHotelList();
+					//request.setAttribute("region", itemTag);
+					JSONArray  json = JSONArray.fromObject(list);
+					return json.toString();
+				}catch(Exception e){
+					return "";
+				}
+			}
+			/**
+			 * 加载ItemTag列表，以下拉树形式呈现
+			 * @param pid
+			 * @param request
+			 * @param response
+			 * @return
+			 */
+			@ResponseBody
+			@RequestMapping(value = "/jsonLoadItemTagTree.do", produces = "text/html;charset=UTF-8")
+			public String loadItemTagTree(
+					@RequestParam(value = "pid", required = false) Integer pid,
+					HttpServletRequest request,
+					HttpServletResponse response) {
+				try{
+					List<ItemTagVM> list = baseDataService.getItemTagTree(pid);
 					//request.setAttribute("region", itemTag);
 					JSONArray  json = JSONArray.fromObject(list);
 					return json.toString();

@@ -42,8 +42,8 @@ public class Advertisement extends Page {
     private AdDetail adDetail;
     
     private List<AdDetail> adDetailList;
-
-	public String getCreatetime() {
+    
+    public String getCreatetime() {
 		return createtime;
 	}
 
@@ -115,6 +115,7 @@ public class Advertisement extends Page {
 		this.imageText = imageText;
 	}
 
+    
 	public Integer getId() {
         return id;
     }

@@ -79,22 +79,22 @@ public class BaseDataAction extends BaseAction {
 			return "web/base/regionList";
 		}
 		
-		@RequestMapping(value = "/itemTagList.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-		public String logInitItemTag(ItemTag itemTag, 
-				HttpServletRequest request,
-				HttpServletResponse response) {
-			if (itemTag.getPageNo() == null)
-				itemTag.setPageNo(1);
-			itemTag.setPageSize(Constants.DEFAULT_PAGE_SIZE);
-			//加载菜单
-//			List<Function> lf = functionService.getFunctionByParentUrl("/web/base/baseDataList.do");
-//			User user = new User();
-//			user.setChildMenuList(lf);
-//			request.getSession().setAttribute(Constants.USER_SESSION_NAME,user);
-			//request.setAttribute("company", company);
-			request.setAttribute("region", itemTag);
-			return "web/base/itemTagList";
-		}
+//		@RequestMapping(value = "/itemTagList.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+//		public String logInitItemTag(ItemTag itemTag, 
+//				HttpServletRequest request,
+//				HttpServletResponse response) {
+//			if (itemTag.getPageNo() == null)
+//				itemTag.setPageNo(1);
+//			itemTag.setPageSize(Constants.DEFAULT_PAGE_SIZE);
+//			//加载菜单
+////			List<Function> lf = functionService.getFunctionByParentUrl("/web/base/baseDataList.do");
+////			User user = new User();
+////			user.setChildMenuList(lf);
+////			request.getSession().setAttribute(Constants.USER_SESSION_NAME,user);
+//			//request.setAttribute("company", company);
+//			request.setAttribute("region", itemTag);
+//			return "web/base/itemTagList";
+//		}
 		
 		@RequestMapping(value = "/orgComboList.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 		public String logInitOrg(

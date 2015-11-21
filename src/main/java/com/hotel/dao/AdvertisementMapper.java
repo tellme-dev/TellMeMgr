@@ -23,4 +23,6 @@ public interface AdvertisementMapper {
 	int getAdPageListCount(Advertisement ad);
 
 	Advertisement selectById(Integer id);
+
+	Advertisement selectAdVMByPrimaryKey(Integer adId);
 }

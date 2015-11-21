@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.hotel.common.utils.Constants;
 import com.hotel.model.Bbs;
 import com.hotel.model.Function;
-import com.hotel.model.Hotel;
 import com.hotel.model.User;
-import com.hotel.service.AdvertisementService;
 import com.hotel.service.FunctionService;
 
 @Scope("prototype")

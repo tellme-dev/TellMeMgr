@@ -191,4 +191,11 @@
     (SELECT GROUP_CONCAT(ad.image_url) FROM t_ad_detail ad where ad.ad_id = a.id) as imageUrl
     <include refid="query_sql"/>
   </select>
+  <select id="selectAdVMByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />,t.name as targetName
+    from t_ad a 
+  	left join t_Item_tag t on a.target_id = t.id
+  	where a.id = #{id,jdbcType=INTEGER}
+  </select>
 </mapper>

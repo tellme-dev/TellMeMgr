@@ -28,6 +28,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	public List<Advertisement> getAdPageList(Advertisement ad) {
 		// TODO Auto-generated method stub
 		List<Advertisement> adlist = adMapper.getAdPageList(ad);
+		/*转换时间格式*/
 		List<Advertisement> list = new ArrayList<Advertisement>();
 		for(int i=0;i<adlist.size();i++){
 			Advertisement a = adlist.get(i);
