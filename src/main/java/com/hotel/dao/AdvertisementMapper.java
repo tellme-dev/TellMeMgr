@@ -16,7 +16,7 @@ public interface AdvertisementMapper {
 
     Advertisement selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(Advertisement record);
+    int updateByPrimaryKeySelective(AdvertisementVM record);
 
     int updateByPrimaryKey(Advertisement record);
 
@@ -27,4 +27,6 @@ public interface AdvertisementMapper {
 	AdvertisementVM selectById(Integer id);
 
 	AdvertisementVM selectAdVMByPrimaryKey(Integer adId);
+
+	void deleteByIds(Map<String, Object> map);
 }

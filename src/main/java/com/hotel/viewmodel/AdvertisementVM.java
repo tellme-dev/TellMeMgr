@@ -9,6 +9,8 @@ public class AdvertisementVM extends Advertisement {
 	
     private String  createtime;
     
+    private String hotelName;
+    
     private String targetName;
     
     private List<AdvertisementVM> targetIds;
@@ -24,6 +26,14 @@ public class AdvertisementVM extends Advertisement {
     private AdDetail adDetail;
     
     private List<AdDetail> adDetailList;
+
+	public String getHotelName() {
+		return hotelName;
+	}
+
+	public void setHotelName(String hotelName) {
+		this.hotelName = hotelName;
+	}
 
 	public String getCreatetime() {
 		return createtime;

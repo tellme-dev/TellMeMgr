@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hotel.common.JsonResult;
+import com.hotel.common.Result;
 import com.hotel.common.utils.Constants;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Advertisement;
@@ -100,13 +101,16 @@ public class AdAction extends BaseAction {
 					/*根据Id查询所选择的广告详情*/
 					ad = adService.getAdById(id);
 					request.setAttribute("adinfo", ad);
+					request.setAttribute("type", Constants.EDIT_TYPE);
+				}else{
+					request.setAttribute("type", Constants.ADD_TYPE);
 				}
-				/*查询项目tag*/
-				List<ItemTag> taglist = baseDataService.selectTagList();
-				request.setAttribute("taglist", taglist);
-				/*查询酒店*/
-				List<Hotel> hotellist = hotelService.selectHotelList();
-				request.setAttribute("hotellist", hotellist);
+//				/*查询项目tag*/
+//				List<ItemTag> taglist = baseDataService.selectTagList();
+//				request.setAttribute("taglist", taglist);
+//				/*查询酒店*/
+//				List<Hotel> hotellist = hotelService.selectHotelList();
+//				request.setAttribute("hotellist", hotellist);
 				return "web/ad/adInfo";
 			}
 			
@@ -120,6 +124,10 @@ public class AdAction extends BaseAction {
 				json.setCode(new Integer(0));
 				json.setMessage("保存失败!");
 				try { 
+					/*新增时没有传id值*/
+					if(ad.getId()==null){
+						ad.setId(0);
+					}
 					adService.saveorUpdateAd(ad);
 					json.setCode(new Integer(1));
 					json.setMessage("保存成功!");
@@ -169,6 +177,23 @@ public class AdAction extends BaseAction {
 					return json.toString();
 				}catch(Exception e){
 					return "";
+				}
+			}
+			
+			@ResponseBody
+			@RequestMapping(value = "/jsonDeleteAd.do",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+			public String deleteAd(
+					@RequestParam(value = "adIds", required = false) String adIds,
+					HttpServletRequest request,
+					HttpServletResponse response) {
+				Result<Advertisement> result = null;
+				try{
+					adService.deleteUserByIds(adIds);
+					result = new Result<Advertisement>(null, true, "删除成功!");
+					return result.toJson();
+				}catch(Exception e){
+					result = new Result<Advertisement>(null, false, "删除失败!");
+					return result.toJson();
 				}
 			}
 

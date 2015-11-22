@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hotel.common.JsonResult;
+import com.hotel.common.Result;
 import com.hotel.common.utils.Constants;
 import com.hotel.common.utils.EndecryptUtils;
 import com.hotel.common.utils.GeneralUtil;
@@ -30,6 +31,7 @@ import com.hotel.model.User;
 import com.hotel.service.BaseDataService;
 import com.hotel.service.FunctionService;
 import com.hotel.service.UserService;
+import com.hotel.viewmodel.UserVM;
 
 @Scope("prototype")
 @Controller
@@ -88,7 +90,7 @@ public class UserAction extends BaseAction {
 	
 	@RequestMapping(value = "/userinfo.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public String gotoUserInfo(
-			User user,
+			UserVM user,
 			@RequestParam(value = "userId", required = false) Integer userId,
 			HttpServletRequest request, HttpServletResponse response) {
 		/**/
@@ -96,8 +98,11 @@ public class UserAction extends BaseAction {
 //			userId = user.getId();
 //		}
 		if(userId != 0){//编辑时加载编辑的用户详情
-			user = userService.getUserByPrimaryKey(userId);
+			user = userService.getUserByID(userId);
 			request.setAttribute("userinfo", user);
+			request.setAttribute("type", Constants.EDIT_TYPE);
+		}else{
+			request.setAttribute("type", Constants.ADD_TYPE);
 		}
 		return "web/user/userInfo";
 	}
@@ -112,6 +117,11 @@ public class UserAction extends BaseAction {
 		js.setCode(new Integer(0));
 		js.setMessage("保存失败!");
 		try {
+			User u = userService.getUserByName(user.getName());
+			if(u!=null){
+				js.setMessage("用户名已存在!");
+				return js;
+			}
 			/*新增时没有传id值*/
 			if(user.getId()==null){
 				user.setId(0);
@@ -140,21 +150,20 @@ public class UserAction extends BaseAction {
 		}
 	}
 	
-	@RequestMapping(value = "/deleteUser.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-	public JsonResult deleteUser(
-			@RequestParam(value = "userId", required = false) Integer id,
+	@ResponseBody
+	@RequestMapping(value = "/jsonDeleteUser.do",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	public String deleteUser(
+			@RequestParam(value = "userIds", required = false) String userIds,
 			HttpServletRequest request,
 			HttpServletResponse response) {
-		JsonResult json = new JsonResult();
-		json.setCode(new Integer(0));
-		json.setMessage("删除失败!");
+		Result<User> result = null;
 		try{
-			userService.deleteUser(id);
-			json.setCode(new Integer(1));
-			json.setMessage("删除成功!");
-			return json;
+			userService.deleteUserByIds(userIds);
+			result = new Result<User>(null, true, "删除成功!");
+			return result.toJson();
 		}catch(Exception e){
-			return json;
+			result = new Result<User>(null, false, "删除失败!");
+			return result.toJson();
 		}
 	}
 

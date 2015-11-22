@@ -6,6 +6,7 @@ import java.util.Map;
 
 import com.hotel.common.ReturnResult;
 import com.hotel.model.User;
+import com.hotel.viewmodel.UserVM;
 
 public interface UserService {
 
@@ -29,7 +30,11 @@ public interface UserService {
 
 	void saveorUpdateUser(User user) throws ParseException;
 
-	User getUserByPrimaryKey(Integer userId);
+	UserVM getUserByPrimaryKey(Integer userId);
+
+	UserVM getUserByID(Integer userId);
+
+	void deleteUserByIds(String userIds);
 
 //	List<UserFunction> getUserFunListByUserId(Integer userId);
 //

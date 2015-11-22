@@ -2,7 +2,9 @@ package com.hotel.service.impl;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +23,7 @@ import com.hotel.common.utils.GeneralUtil;
 import com.hotel.dao.UserMapper;
 import com.hotel.model.User;
 import com.hotel.service.UserService;
+import com.hotel.viewmodel.UserVM;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
@@ -142,9 +145,32 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public User getUserByPrimaryKey(Integer userId) {
+	public UserVM getUserByPrimaryKey(Integer userId) {
 		// TODO Auto-generated method stub
 		return userMapper.selectByPrimaryKey(userId);
+	}
+
+
+	@Override
+	public UserVM getUserByID(Integer userId) {
+		// TODO Auto-generated method stub
+		return userMapper.selectByID(userId);
+	}
+
+
+	@Override
+	public void deleteUserByIds(String userIds) {
+		// TODO Auto-generated method stub
+		/*将"1,2,3"格式的字符串转换为List<Integer>*/
+		String[] str = userIds.split(",");
+		Integer array[] = new Integer[str.length];  
+		for(int i=0;i<str.length;i++){  
+		    array[i]=Integer.parseInt(str[i]);
+		}
+		List<Integer> ids = Arrays.asList(array);
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("ids", ids);
+		userMapper.deleteByIds(map);
 	}
 
 }

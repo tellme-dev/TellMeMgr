@@ -3,6 +3,7 @@ package com.hotel.service.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -51,31 +52,30 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	@Override
 	public void saveorUpdateAd(AdvertisementVM ad) {
 		// TODO Auto-generated method stub
-		String[] arr = ad.getImageText().split(",");
-		List imageTexts = Arrays.asList(arr);
+//		String[] arr = ad.getImageText().split(",");
+//		List imageTexts = Arrays.asList(arr);
 		//List imageUrls = Arrays.asList(arr);
 		AdDetail adDetail = new AdDetail();
 		if(ad.getId()>0){
 			adMapper.updateByPrimaryKeySelective(ad);
-			for(int i=0;i<imageTexts.size();i++){
-			}
+//			for(int i=0;i<imageTexts.size();i++){
+//			}
 			//adDetailMapper.updateByPrimaryKeySelective(ad);
 			
 		}else{
 			ad.setCreateTime(new Date());
-			ad.setTimeStamp(new Date());
 			ad.setIsUsed(true);
 			adMapper.insert(ad);
-			for(int i=0;i<imageTexts.size();i++){
-				String text = (String) imageTexts.get(i);
-				//String imageUrl = (String) imageUrls.get(i);
-				
-				adDetail.setAdId(ad.getId());
-				adDetail.setId(0);
-				//adDetail.setImageUrl(imageTexts);
-				adDetail.setText(text);
-				adDetailMapper.insert(adDetail);
-			}
+//			for(int i=0;i<imageTexts.size();i++){
+//				String text = (String) imageTexts.get(i);
+//				//String imageUrl = (String) imageUrls.get(i);
+//				
+//				adDetail.setAdId(ad.getId());
+//				adDetail.setId(0);
+//				//adDetail.setImageUrl(imageTexts);
+//				adDetail.setText(text);
+//				adDetailMapper.insert(adDetail);
+//			}
 		}
 	}
 
@@ -87,6 +87,20 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		//ad.setAdDetail(adDetail);
 		ad.setAdDetailList(adDetail);
 		return ad;
+	}
+
+	@Override
+	public void deleteUserByIds(String adIds) {
+		// TODO Auto-generated method stub
+		String[] str = adIds.split(",");
+		Integer array[] = new Integer[str.length];  
+		for(int i=0;i<str.length;i++){  
+		    array[i]=Integer.parseInt(str[i]);
+		}
+		List<Integer> ids = Arrays.asList(array);
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("ids", ids);
+		adMapper.deleteByIds(map);
 	}
 
 }

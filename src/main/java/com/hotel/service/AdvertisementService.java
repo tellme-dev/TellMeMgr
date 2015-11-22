@@ -15,4 +15,6 @@ public interface AdvertisementService {
 
 	AdvertisementVM getAdById(Integer id);
 
+	void deleteUserByIds(String adIds);
+
 }

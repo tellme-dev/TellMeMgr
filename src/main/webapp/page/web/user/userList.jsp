@@ -25,11 +25,12 @@
 			    totalCount:'${page.totalCount}',
 			    buttonClickCallback:PageClick                     /* 表示点击分页数按钮调用的方法 */                  
 			});
+			
 			$("#userinfoList tr").each(function(i){
 				if(i>0){
 					$(this).bind("click",function(){
 						var userId = $(this).find("td").first().text();
-						 window.location.href="userinfo.do?userId="+userId;
+						 //window.location.href="userinfo.do?userId="+userId;
 					});
 				}
 			}); 
@@ -50,22 +51,33 @@ function search(){
 	$("#pageNumber").val("1");
 	pagesearch(); 
 } 
+function checkAll(){
+	if($("#checkAll").prop("checked")){
+		$("#userinfoList input[name='checkbox']").attr("checked",true);
+	}else{
+		$("#userinfoList input[name='checkbox']").attr("checked",false);
+	}
+}
 function pagesearch(){
 	userForm.submit();
 }
 function gotoAdd(){
 	window.location.href="userinfo.do?userId=0";
 }
-function showdialog(){
-	$("#orgtree").combotree("disable",true);
-	var wz = getDialogPosition($('#userInfoWindow').get(0),100);
-	$('#userInfoWindow').window({
-		  	top: 100,
-		    left: wz[1],
-		    onBeforeClose: function () {
-		    }
-	});
-	$('#userInfoWindow').window('open');
+function gotoEdit(){
+	var doc=$(":checkbox:checked");
+	if(doc.length == 0){
+		$.messager.alert('提示信息', "请选择操作项！", "warning");
+		return;
+	}
+	if(doc.length > 1){
+		$.messager.alert('提示信息', "只能编辑一项！", "warning");
+		return;
+	}
+	$(":checkbox:checked").each(function(i){
+		var userId = $(this).parents("tr").find("td").first().text();
+		window.location.href="userinfo.do?userId="+userId;
+	}); 
 }
 function saveUser(obj){
 	if ($('#saveUserForm').form('validate')) {
@@ -86,6 +98,47 @@ function saveUser(obj){
 		  		}
 		  	 });  
 	}
+}
+function deleteUser(){
+	var doc=$(":checkbox:checked");
+	if(doc.length == 0){
+		$.messager.alert('提示信息', "请选择操作项！", "warning");
+		return;
+	}
+	/*将选中的项的id放入userIds中*/
+	var userIds="";
+	var userNames="";
+	$(":checkbox:checked").each(function(i){
+		var userId = $(this).parents("tr").find("td").first().text();
+		var userName = $(this).parents("tr").find("td")[2].innerText;
+		if(i==0){
+			userIds += userId;
+			userNames += userName;
+		}else{
+			userIds += ","+userId; 
+			userNames += "，"+userName;
+		}
+	}); 
+	$.messager.confirm('提示信息',"确认删除用户["+userNames+"]？",function(r){
+			if(r){
+				deleteAction(userIds);
+			}
+	});
+}
+function deleteAction(userIds){
+	$.ajax({
+		url :  "jsonDeleteUser.do?userIds="+userIds,
+		type : "POST",
+		dataType : "json",
+		async : false,
+		success : function(req) {
+			if (req.isSuccess) {
+				window.location.href="userList.do";
+			} else {
+				$.messager.alert('删除失败ʾ', req.msg, "warning");
+			}
+		}
+	});
 }
 function initOrg(){
 	    $('#orgtree').combobox( {  
@@ -135,7 +188,8 @@ function initOrg(){
 									placeholder="搜索" value="${user.searchName}" />
 								<span class="yw-btn bg-orange ml30 cur" onclick="search();">开始查找</span> --%>
 								<span class="yw-btn bg-green ml20 cur" onclick="gotoAdd();">新建用户</span>
-								<span class="yw-btn bg-orange ml20 cur" onclick="showdialog()">删除用户</span>
+								<span class="yw-btn bg-blue ml20 cur" onclick="gotoEdit();">编辑用户</span>
+								<span class="yw-btn bg-orange ml20 cur" onclick="deleteUser()">删除用户</span>
 							</div>
 							<div class="cl"></div>
 						</div>
@@ -146,15 +200,17 @@ function initOrg(){
 				</div>
 				<table class="yw-cm-table" id="userinfoList">
 					<tr>
-						<th>序号</th>
+						<th style="display:none">序号</th>
+						<th width="5%"></th>
 						<th>用户名</th> 
 						<th>所属机构</th>
 						<th>创建时间</th>
 					</tr>
 					<c:forEach var="item" items="${userlist}">
 						<tr>
-							<td align="left">${item.id}</td>
-							<td>${item.name}</td> 
+						    <td align="left" style="display:none">${item.id}</td>
+							<td width="5%"><input name="checkbox" type="checkbox"/></td>
+							<td name="userName">${item.name}</td> 
 							<td>${item.orgName}</td> 
 							<td>${item.createtime}</td> 
 						</tr>

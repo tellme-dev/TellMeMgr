@@ -22,6 +22,9 @@ public class Constants {
 	public static final int IMAGE_RESIZE_HEIGHT = 150;
 
 	public static final int DEFAULT_PAGE_SIZE = 10;
+	
+	public static final int ADD_TYPE = 0;
+	public static final int EDIT_TYPE = 1;
 	/**
 	 * api接口返回状�?公共码表 start
 	 */

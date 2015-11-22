@@ -13,10 +13,38 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, minimum-scale=1  ,maximum-scale=1, user-scalable=no" /> 
 <script type="text/javascript">
+    var type;//0为新增；1为编辑
     $(document).ready(function(){
+    	type = ${type};
     	initHotel();
     	initItemTagTree();
     	setShowStates();
+    	if(type==1){//编辑
+    		var targetType = '${adinfo.targetType}';
+    		var doc = document.getElementsByName("targetType");
+    	    switch(targetType){
+    	    case '1':
+    	    	doc[0].checked = true; 
+    	    	$("#hotelSelect").combobox("setValue",'${adinfo.targetId}');
+    	    	$("#hotelSelect").combobox("enable",true); 
+    	    	break;
+    	    case '2':
+    	    	doc[1].checked = true;
+    	    	$("#itemTagSelect").combotree("setValue",'${adinfo.targetId}');
+    	    	$("#itemTagSelect").combotree("enable",true);
+    	    	break;
+    	    case '3':
+    	    	doc[2].checked = true;
+    	    	$("#txtTagContent").removeAttr("readonly");break;
+    	    case '4':
+    	    	doc[3].checked = true;
+    	    	$("#txtTagContent").removeAttr("readonly");break;
+    	    case '5':
+    	    	doc[4].checked = true;
+    	    	$("#txtTagContent").removeAttr("readonly");break;
+    	    };
+    	    
+    	}
     });
     function tagChange(type){
     	if(type == 1){//#ffa8a8
@@ -111,14 +139,18 @@
 		$("#saveBtn").show();
 	};
 	function save(obj) {
-		var data = "";
+		/* var data = "";
 		var imageText = document.getElementsByName("imagetext");
 		for(var i=0;i<imageText.length;i++){
 			data += imageText[i].value+",";
 		}
 		var imageTexts = document.getElementById("imageText");
-		imageTexts.value = data;
-		
+		imageTexts.value = data; */
+		var doc=$(":radio:checked");
+    	if(doc.length == 0){
+    		$.messager.alert('提示信息', "请选择类型！", "warning");
+    		return;
+    	}
 		if ($('#adForm').form('validate')) {
 			$(obj).attr("onclick", "");
 			$('#adForm').form(
@@ -126,17 +158,13 @@
 					{
 						success : function(data) {
 							data = $.parseJSON(data);
-							if (data.code == 0) {
+							if (data.code == 1) {
 								$.messager.alert('保存信息', data.message, 'info',
 										function() {  
-											setShowStates();
+									     window.location.href='adList.do';
 										});
 							} else {
-								$.messager.alert('错误信息', data.message, 'error',
-										function() {
-											$(obj).attr("onclick",
-													"save(this);");
-										});
+								$.messager.alert('错误信息', data.message, 'error');
 							}
 						}
 					});
@@ -201,7 +229,7 @@
 				</div>
 				<div class="fr mt10">
 					<!-- <span class="yw-btn bg-green mr26" id="editBtn" onclick="edit();">编辑</span>  -->
-					<span class="yw-btn bg-red mr26" id="saveBtn" onclick="save(this);">保存</span>
+					<span class="yw-btn bg-red mr26" id="saveBtn" onclick="save(this);" style="cursor: pointer;">保存</span>
 				</div>
 			</div>
 			<div id="tab1" class="yw-tab">
@@ -209,22 +237,6 @@
 					action="saveOrupdateAd.do" method="post">
 					<table class="yw-cm-table font16">
 					    <%-- <tr>
-					        <td width="10%" align="center">图片：</td>
-							<td id="imageUrlShow">
-							    <c:forEach var="item" items="${adinfo.adDetailList}">
-								<img id="imageUrl" name="imageUrlList" src="${item.imageUrl}" style="width:100px;height:50px;" /> 
-							    </c:forEach>
-							</td>
-						</tr> --%>
-						<%-- <tr id="imageUrlAdd">
-						     <td width="10%" align="center">选择文件</td>
-						     <td>
-							    <c:forEach var="item" items="${adinfo.adDetailList}">
-								<input name="imageUrl" type="file" id="file" value="" class="easyui-validatebox"  validType="Length[1,25]" style="width:140px;height:30px;"/>
-							    </c:forEach>
-							</td>
-						</tr>
-						<tr>
 					        <td width="10%" align="center">描述：</td>
 							<td id="imageTextShow">
 							    <c:forEach var="item" items="${adinfo.adDetailList}">
@@ -248,7 +260,7 @@
 						<tr>
 							<td width="10%" align="center">关键字：</td>
 							<td>
-							    <input id="txtkey" name="key" type="text" value="${adinfo.key}" placeholder="关键字之间用逗号隔开" class="easyui-validatebox" validType="Length[1,25]" style="width:254px;height:30px;" />
+							    <input id="txtkey" name="keyWord" type="text" value="${adinfo.keyWord}" placeholder="关键字之间用逗号隔开" class="easyui-validatebox" validType="Length[1,25]" style="width:254px;height:30px;" />
 							</td>
 						</tr>
 						<%-- <tr id="createtime">
@@ -377,8 +389,8 @@
         	<input id="imageText" value="" placeholder="图片描述" class="easyui-validatebox" />
         </p>
         <div class="yw-window-footer txt-right">
-        	<span class="yw-window-btn bg-lightgray mt12"  onclick="$('#userInfoWindow').window('close');">退出</span>
-        	<span class="yw-window-btn bg-blue mt12" onclick="saveUser(this);">保存</span>
+        	<span class="yw-window-btn bg-lightgray mt12" style="cursor: pointer;" onclick="$('#userInfoWindow').window('close');">退出</span>
+        	<span class="yw-window-btn bg-blue mt12" onclick="saveUser(this);" style="cursor: pointer;">保存</span>
         </div>
         </form>
 	  </div>

@@ -10,13 +10,23 @@
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="salt" property="salt" jdbcType="VARCHAR" />
   </resultMap>
+  <resultMap id="BaseVMResultMap" type="com.hotel.viewmodel.UserVM" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="INTEGER" />
+    <result column="psd" property="psd" jdbcType="VARCHAR" />
+    <result column="is_used" property="isUsed" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="salt" property="salt" jdbcType="VARCHAR" />
+  </resultMap>
   <sql id="Base_Column_List" >
     u.id, u.name, u.org_id, u.psd, u.is_used, u.create_time, u.salt
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseVMResultMap" parameterType="java.lang.Integer" >
     select 
-    <include refid="Base_Column_List" />
+    <include refid="Base_Column_List" />,o.name as orgName
     from t_user u
+    left join t_org o on u.org_id = o.id
     where u.id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
@@ -142,7 +152,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_user u
-    where u.name = #{name,jdbcType=INTEGER} 
+    where u.name = #{name,jdbcType=VARCHAR} 
   </select>
   <select id="getUserPageList" resultMap="BaseResultMap" parameterType="java.util.Map" >
      select <include refid="Base_Column_List" />,org.name as orgName
@@ -151,9 +161,24 @@
         limit #{pageStart}, #{pageSize}
     </if>
   </select>
-  
-     
   <select id="getUserPageListCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
     select count(*) <include refid="query_sql"/>
   </select>
+  <select id="selectByID" resultMap="BaseVMResultMap" parameterType="java.lang.Integer" >
+    SELECT o1.id,o1.name,o1.orgId,o1.parentId as orgId2,o2.parent_id as orgId3
+    FROM (
+       SELECT u.id,u.name,o.id as orgId,o.name as orgName,o.parent_id as parentId
+       FROM t_user u
+       LEFT JOIN t_org o on o.id = u.org_id
+       WHERE u.id = #{userId,jdbcType=INTEGER}
+    ) as o1
+    LEFT JOIN t_org o2 on o2.id = o1.parentId
+  </select>
+  <delete id="deleteByIds" parameterType="java.util.Map" >
+    delete from t_user 
+    where id in
+  		<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+				#{item}
+		</foreach>
+  </delete>
 </mapper>

@@ -7,7 +7,7 @@ public class Advertisement {
 
     private String name;
 
-    private String key;
+    private String keyWord;
 
     private Byte targetType;
 
@@ -37,15 +37,15 @@ public class Advertisement {
         this.name = name;
     }
 
-    public String getKey() {
-        return key;
-    }
+    public String getKeyWord() {
+		return keyWord;
+	}
 
-    public void setKey(String key) {
-        this.key = key;
-    }
+	public void setKeyWord(String keyWord) {
+		this.keyWord = keyWord;
+	}
 
-    public Byte getTargetType() {
+	public Byte getTargetType() {
         return targetType;
     }
 

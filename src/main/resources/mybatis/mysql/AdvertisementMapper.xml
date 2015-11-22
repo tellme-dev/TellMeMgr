@@ -4,7 +4,7 @@
   <resultMap id="BaseResultMap" type="com.hotel.model.Advertisement" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="key" property="key" jdbcType="VARCHAR" />
+    <result column="key_word" property="keyWord" jdbcType="VARCHAR" />
     <result column="target_type" property="targetType" jdbcType="TINYINT" />
     <result column="target_id" property="targetId" jdbcType="INTEGER" />
     <result column="target_content" property="targetContent" jdbcType="VARCHAR" />
@@ -15,7 +15,7 @@
   <resultMap id="BaseVMResultMap" type="com.hotel.viewmodel.AdvertisementVM" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="key" property="key" jdbcType="VARCHAR" />
+    <result column="key_word" property="keyWord" jdbcType="VARCHAR" />
     <result column="target_type" property="targetType" jdbcType="TINYINT" />
     <result column="target_id" property="targetId" jdbcType="INTEGER" />
     <result column="target_content" property="targetContent" jdbcType="VARCHAR" />
@@ -24,7 +24,7 @@
     <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    a.id, a.name, a.key, a.target_type, a.target_id, a.target_content, a.is_used, a.create_time, a.time_stamp
+    a.id, a.name, a.key_word, a.target_type, a.target_id, a.target_content, a.is_used, a.create_time, a.time_stamp
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -38,11 +38,11 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.hotel.model.Advertisement" >
-    insert into t_ad (id, name, key, 
+    insert into t_ad (id, name, key_word, 
       target_type, target_id, target_content, 
       is_used, create_time, time_stamp
       )
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{key,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{keyWord,jdbcType=VARCHAR}, 
       #{targetType,jdbcType=TINYINT}, #{targetId,jdbcType=INTEGER}, #{targetContent,jdbcType=VARCHAR}, 
       #{isUsed,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{timeStamp,jdbcType=TIMESTAMP}
       )
@@ -56,8 +56,8 @@
       <if test="name != null" >
         name,
       </if>
-      <if test="key != null" >
-        key,
+      <if test="keyWord != null" >
+        key_word,
       </if>
       <if test="targetType != null" >
         target_type,
@@ -85,8 +85,8 @@
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="key != null" >
-        #{key,jdbcType=VARCHAR},
+      <if test="keyWord != null" >
+        #{key_word,jdbcType=VARCHAR},
       </if>
       <if test="targetType != null" >
         #{targetType,jdbcType=TINYINT},
@@ -108,14 +108,14 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hotel.model.Advertisement" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.hotel.viewmodel.AdvertisementVM" >
     update t_ad
     <set >
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="key != null" >
-        key = #{key,jdbcType=VARCHAR},
+      <if test="keyWord != null" >
+        key_word = #{keyWord,jdbcType=VARCHAR},
       </if>
       <if test="targetType != null" >
         target_type = #{targetType,jdbcType=TINYINT},
@@ -141,7 +141,7 @@
   <update id="updateByPrimaryKey" parameterType="com.hotel.model.Advertisement" >
     update t_ad
     set name = #{name,jdbcType=VARCHAR},
-      key = #{key,jdbcType=VARCHAR},
+      key_word = #{keyWord,jdbcType=VARCHAR},
       target_type = #{targetType,jdbcType=TINYINT},
       target_id = #{targetId,jdbcType=INTEGER},
       target_content = #{targetContent,jdbcType=VARCHAR},
@@ -159,8 +159,8 @@
   	  <if test="name != null" >
         and a.name = #{name,jdbcType=VARCHAR}
       </if>
-      <if test="key != null" >
-        and a.key = #{key,jdbcType=VARCHAR}
+      <if test="keyWord != null" >
+        and a.key_word = #{keyWord,jdbcType=VARCHAR}
       </if>
       <if test="targetType != null" >
         and a.target_type = #{targetType,jdbcType=TINYINT}
@@ -184,8 +184,12 @@
   </sql>
   
   <select id="getAdPageList" resultMap="BaseVMResultMap" parameterType="java.util.Map" >
-     select <include refid="Base_Column_List" />,t.name as targetName
-	  		<include refid="query_sql"/>
+     select <include refid="Base_Column_List" />,h.name as hotelName,t.name as targetName
+	 from t_ad a 
+  	 left join t_ad_detail ad on a.id = ad.ad_id
+  	 left join t_Item_tag t on a.target_id = t.id
+  	 left join t_hotle h on a.target_id = h.id
+  	 group by a.id order by a.create_time
     <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
         limit #{pageStart}, #{pageSize}
     </if>
@@ -204,9 +208,17 @@
   </select>
   <select id="selectAdVMByPrimaryKey" resultMap="BaseVMResultMap" parameterType="java.lang.Integer" >
     select 
-    <include refid="Base_Column_List" />,t.name as targetName
+    <include refid="Base_Column_List" />,h.name as hotelName,t.name as targetName
     from t_ad a 
+    left join t_hotle h on h.id = target_id
   	left join t_Item_tag t on a.target_id = t.id
   	where a.id = #{id,jdbcType=INTEGER}
   </select>
+  <delete id="deleteByIds" parameterType="java.util.Map" >
+    delete from t_ad 
+    where id in
+  		<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+				#{item}
+		</foreach>
+  </delete>
 </mapper>
