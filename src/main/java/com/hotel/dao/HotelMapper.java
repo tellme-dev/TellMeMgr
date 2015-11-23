@@ -1,6 +1,7 @@
 package com.hotel.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hotel.model.Hotel;
 
@@ -23,4 +24,6 @@ public interface HotelMapper {
     List<Hotel> getPageHotel(Hotel hotel);
     
     int getPageHotelCount(Hotel hotel);
+    
+    int deleteByHotelId(Map<String, Object> idMap);
 }

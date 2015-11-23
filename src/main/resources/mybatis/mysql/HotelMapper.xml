@@ -121,4 +121,12 @@
   <select id="getPageHotelCount" resultType="java.lang.Integer" parameterType="com.hotel.model.Hotel" >
     select count(id) from t_hotle
   </select>
+  <delete id="deleteByHotelId" parameterType="java.util.HashMap" >
+    delete from t_hotle
+    where id in 
+    <foreach item="item" collection="idList" open="(" separator="," close=")">  
+    	#{item.id}  
+    </foreach>
+  </delete>
+  
 </mapper>
