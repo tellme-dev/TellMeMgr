@@ -25,7 +25,6 @@
 var map_show = null;
 var map_edit = null;
 
-
 $(document).ready(function(){
 	
 	$("#province").combobox({
@@ -61,6 +60,19 @@ $(document).ready(function(){
       // 设置缩放级别
       zoom: 12
     });
+    
+    var id = ${ht.id};
+	if(id != 0){
+		var lng = ${ht.longitude};
+		var lat = ${ht.latitude};
+		document.getElementById("input_location").value = "["+lng+","+lat+"]";
+		var location = new AMap.LngLat(lng, lat);
+		if(map_show != null){
+			map_show.clearMap();
+			new AMap.Marker({map:map_show,position:location});
+			map_show.panTo(location);
+		}
+	}
 });
 
 
@@ -83,6 +95,9 @@ function showdialog(){
 	if(map_edit != null){
 		map_edit.clearMap();
 		var city = $("#city").combobox("getText");
+		if(city.indexOf("=") != -1){
+			city = city.substring(1, city.length - 1);
+		}
 		map_edit.setCity(city);
 		
 		var center = map_edit.getCenter();
@@ -234,7 +249,7 @@ function returnBack(){
 	window.history.back();
 }
 
-function submitHotel(){
+function submitHotel(obj){
 	var name = document.getElementById("hotel_name");
 	if(name.value.trim() == ""){
 		alert("请输入酒店名称");
@@ -259,19 +274,30 @@ function submitHotel(){
 	document.getElementById("hotel_lng").value = new Number(arr[0]);
 	document.getElementById("hotel_lat").value = new Number(arr[1]);
 	
-	saveHotel();
+	saveHotel(obj);
 }
 
-function saveHotel(){
-	$('#hotelForm').form(
+function saveHotel(obj){
+		$(obj).attr("onclick", "");
+		$('#hotelForm').form(
 					'submit',
 					{
 						success : function(data) {
 							data = $.parseJSON(data);
-							if (data.code == 0) {
-								alert(data.message);
+							
+							if (data.code == 1) {
+								$.messager.alert('保存信息', data.message, 'info',
+										function() {
+											returnBack();
+											//setShowStates();
+										});
+								$(obj).attr("onclick", "submitHotel(this);");
 							} else {
-								alert("保存成功");
+								$.messager.alert('错误信息', data.message, 'error',
+										function() {
+											$(obj).attr("onclick",
+													"submitHotel(this);");
+										});
 							}
 						}
 					});
@@ -351,37 +377,58 @@ function saveHotel(){
 			<div id="tab2" class="yw-tab">
 				<div class="fl yw-lump mt10">
 					<form id="hotelForm" name="hotelForm"
-						action="savaOrUpdateHotel.do" method="post">
+						action="saveOrupdateHotel.do" method="post">
 						<div class="pd10-28">
 							<div class="fl">
 								<div>
-									<span class="ts15">酒店名称：</span><input id="hotel_name" name="name" type="text" class="yw-input wid200 ts14" />
+									<input name="id" type="hidden" id="hotel_id" value="${ht.id}" />
+									<span class="ts15">酒店名称：</span><input id="hotel_name" value="${ht.name}" name="name" type="text" class="yw-input wid200 ts14" />
 									<span class="hint_red">**必填项**</span>
 								</div>
 								<div class = "mt20">
-									<input name = "regionId" id="hotel_region" type="hidden" />
+									<input name = "regionId" id="hotel_region" type="hidden" value="${ht.regionId}" />
 									<span class="ts15">酒店区域：</span>
 									<select id="province" name="province" style="width:120px;height:30px;" class="easyui-combobox">
-								 	 	<option selected="selected" value="0">=请选择省份=</option>
+										<c:if test="${ht.id==0}">
+											<option selected="selected" value="0">=请选择省份=</option>
+										</c:if>
+										
+										<c:if test="${ht.id!=0}">
+											<option selected="selected" value="0">=${provinceRegion.name}=</option>
+										</c:if>
+								 	 	
 								 	 	<c:forEach var="item" items="${regionList}">
 								 	 		<option value="${item.id}">${item.name}</option>
 										</c:forEach>
 								 	 	
 									</select>
 									<select id="city" name="city" style="width:120px;height:30px;" class="easyui-combobox">
-								 	 	<option  value="0" selected="selected">=请选择城市=</option>
+								 	 	<c:if test="${ht.id==0}">
+											<option  value="0" selected="selected">=请选择城市=</option>
+										</c:if>
+										
+										<c:if test="${ht.id!=0}">
+											<option selected="selected" value="0">=${cityRegion.name}=</option>
+										</c:if>
 									</select>
 									<select id="area" name="area" style="width:120px;height:30px;" class="easyui-combobox">
-								 	 	<option  value="0" selected="selected">=请选择区域=</option>
+								 	 	
+								 	 	<c:if test="${ht.id==0}">
+											<option  value="0" selected="selected">=请选择区域=</option>
+										</c:if>
+										
+										<c:if test="${ht.id!=0}">
+											<option selected="selected" value="${arearRegion.id}">=${arearRegion.name}=</option>
+										</c:if>
 									</select>
 									<span class="hint_red">**必填项**</span>
 								</div>
 								<div class = "mt20">
-									<span class="ts15">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述：</span><textarea name="text" id="hotel_text" cols="50" rows="6" style="vertical-align: top; border: 1px #C4C4C4 solid;"></textarea>
+									<span class="ts15">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述：</span><textarea name="text" id="hotel_text" cols="50" rows="6" style="vertical-align: top; border: 1px #C4C4C4 solid;">${ht.text}</textarea>
 								</div>
 								<div class = "mt20">
-									<input name = "longitude" id="hotel_lng" type="hidden" />
-									<input name = "latitude" id="hotel_lat" type="hidden" />
+									<input name = "longitude" id="hotel_lng" type="hidden" value="${ht.longitude}" />
+									<input name = "latitude" id="hotel_lat" type="hidden" value="${ht.latitude}" />
 									<span class="ts15">经&nbsp;纬&nbsp;度：</span><input id="input_location" name="hotel_location" type="text" readonly="readonly" class="yw-input wid200 ts14" /><img alt="点击标记位置" onclick="showdialog();" class="icon_location" src="${pageContext.request.contextPath}/source/images/location.png">
 									<span class="hint_red">**必填项&nbsp;&nbsp;&nbsp;&nbsp;点击标记图标可设置指定位置的经纬度**</span>
 								</div>
@@ -396,7 +443,14 @@ function saveHotel(){
 				</div>
 				<div class="fl yw-lump">
 					<div class="yw-lump-title">
-						<span class="yw-btn bg-blue ml20 cur ts15" onclick="submitHotel();">保存</span>
+						
+						<c:if test="${ht.id==0}">
+							<span class="yw-btn bg-blue ml20 cur ts15" onclick="submitHotel(this);">添加</span>
+						</c:if>
+						
+						<c:if test="${ht.id!=0}">
+							<span class="yw-btn bg-blue ml20 cur ts15" onclick="submitHotel(this);">修改</span>
+						</c:if>
 					</div>
 				</div>
 			</div>

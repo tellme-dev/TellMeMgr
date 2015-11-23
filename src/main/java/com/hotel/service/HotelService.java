@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.hotel.model.Hotel;
-
 import com.hotel.model.ItemTagAssociation;
 
 public interface HotelService {
@@ -18,4 +17,10 @@ public interface HotelService {
     List<ItemTagAssociation> getTagTypeItem(int tagType);
     
     int insert(Hotel record);
+    
+    int updateByPrimaryKeySelective(Hotel record);
+    
+    int deleteByHotelId(Map<String, Object> idMap);
+    
+    Hotel selectByPrimaryKey(Integer id);
 }

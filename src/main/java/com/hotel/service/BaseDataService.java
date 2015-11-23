@@ -24,7 +24,8 @@ public interface BaseDataService {
 	List<Region> getCityRegion(Integer provinceId);
 	
 	List<Region> getAreaRegion(Integer cityId);
+	
+	Region getRegionById(int id);
 
 	List<ItemTagVM> getItemTagTree(Integer pid);
-
 }

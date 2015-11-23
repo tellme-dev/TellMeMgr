@@ -24,4 +24,6 @@ public interface HotelMapper {
     List<Hotel> getPageHotel(Map<String, Object> map);
     
     int getPageHotelCount(Hotel hotel);
+    
+    int deleteByHotelId(Map<String, Object> idMap);
 }

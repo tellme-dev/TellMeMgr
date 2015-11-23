@@ -49,4 +49,22 @@ public class HotelServiceImpl implements HotelService{
 		// TODO Auto-generated method stub
 		return hotelMapper.insert(record);
 	}
+
+	@Override
+	public int updateByPrimaryKeySelective(Hotel record) {
+		// TODO Auto-generated method stub
+		return hotelMapper.updateByPrimaryKey(record);
+	}
+
+	@Override
+	public int deleteByHotelId(Map<String, Object> idMap) {
+		// TODO Auto-generated method stub
+		return hotelMapper.deleteByHotelId(idMap);
+	}
+
+	@Override
+	public Hotel selectByPrimaryKey(Integer id) {
+		// TODO Auto-generated method stub
+		return hotelMapper.selectByPrimaryKey(id);
+	}
 }
