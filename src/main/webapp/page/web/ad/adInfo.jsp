@@ -50,7 +50,7 @@
     	var i = 1;
     	$("#btn_add").click(function(){  
             document.getElementById("div_1").innerHTML+='<div id="div_'+i+'"><input id="file_'+i+'" type="file" style="width:200px;height:30px"/><input id="imageText" value="" placeholder="图片描述" style="width:200px;height:30px"/><span class="yw-btn bg-blue mr26" style="cursor: pointer;" onclick="del_f('+i+')">删除</span></div>'; 
-            document.getElementById("img_1").innerHTML+='<div id="img_'+i+'" style="display:none"><input name="file_'+i+'" type="file" style="width:200px;height:30px"/></div>'; 
+            document.getElementById("img_1").innerHTML+='<div id="img_'+i+'" style="display:none"><input id="image_'+i+'" name="file_'+i+'" type="file" style="width:200px;height:30px"/></div>'; 
               i++;  
         });   
     });
@@ -61,7 +61,7 @@
     } 
     function fileChange (i){
          //将弹窗中的file value赋值到隐藏标签中
-         document.getElementByName("file_"+i).value = $("#file_"+i).val();
+         $().value = $("#file_"+i).val();
          var a = document.getElementByName("file_"+i).value;
 	}
 	
@@ -320,7 +320,7 @@
 						</tr>
 						<tr>
 						    <td>
-						    <div id="img_0" style="display:none"><input name="file0" type="file"/></div>
+						    <div id="img_0" style="display:none"><input id="image_0" name="file_0" type="file"/></div>
 						    </td>
 						</tr>
 					</table>
