@@ -21,6 +21,8 @@ public class User extends Page {
     private String salt;
     
   //自定义
+    private String  createtime;
+    
     private String  searchName;
     
     private String orgName;
@@ -33,7 +35,15 @@ public class User extends Page {
     
     private boolean rememberMe;
 
-    public String getSearchName() {
+    public String getCreatetime() {
+		return createtime;
+	}
+
+	public void setCreatetime(String createtime) {
+		this.createtime = createtime;
+	}
+
+	public String getSearchName() {
 		return searchName;
 	}
 

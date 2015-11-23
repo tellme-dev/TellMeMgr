@@ -4,7 +4,7 @@ import java.util.Date;
 
 import com.hotel.common.utils.Page;
 
-public class Bbs extends Page {
+public class Bbs{
     private Integer id;
 
     private Integer customerId;

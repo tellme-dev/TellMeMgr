@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <META http-equiv="X-UA-Compatible" content="IE=edge" />
-<title>易维-<sitemesh:write property='title'/></title>
+<title>挑米-<sitemesh:write property='title'/></title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link type="text/css" href="${pageContext.request.contextPath}/source/css/base.css" rel="stylesheet"/>
 <link type="text/css" href="${pageContext.request.contextPath}/source/css/global.css" rel="stylesheet"/>

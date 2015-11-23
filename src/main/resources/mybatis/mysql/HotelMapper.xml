@@ -103,4 +103,22 @@
       latitude = #{latitude,jdbcType=DECIMAL}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectHotelList" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_hotle 
+  </select>
+  
+  <select id="getPageHotel" resultMap="BaseResultMap" parameterType="com.hotel.model.Hotel">
+     select 
+     <include refid="Base_Column_List" />
+     from t_hotle
+     <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+        limit #{pageStart}, #{pageSize}
+     </if>
+  </select>
+  <select id="getPageHotelCount" resultType="java.lang.Integer" parameterType="com.hotel.model.Hotel" >
+    select count(id) from t_hotle
+  </select>
 </mapper>

@@ -46,13 +46,16 @@ PageClick = function(pageclickednumber) {
 	$("#pageNumber").val(pageclickednumber);          /* 给pageNumber从新赋值 */
 	/* 执行Action */
 	pagesearch();
-}
+};
 function search(){
 	$("#pageNumber").val("1");
 	pagesearch(); 
 } 
 function pagesearch(){
 	userForm.submit();
+}
+function gotoAdd(){
+	window.location.href="userinfo.do?userId=0";
 }
 function showdialog(){
 	var wz = getDialogPosition($('#userInfoWindow').get(0),100);
@@ -84,14 +87,12 @@ function saveUser(obj){
 		  	 });  
 	}
 }
-function a (){
-	$("orgtree").combotree('setValue', "");
-}
 function initOrg(){
-	    $('#orgtree').combotree( {  
-          url : 'orgComboList.do',
-          onLoadSuccess:a,  
-          onSelect : function(node) {  
+	    $('#orgtree').combobox( {  
+          url : 'jsonLoadOrgList.do',
+          valueField:'id',
+          textField:'name'
+          /* onSelect : function(node) {  
             var tree = $(this).tree;  
             //选中的节点是否为叶子节点,如果不是叶子节点,清除选中  
             var isLeaf = tree('isLeaf', node.target);  
@@ -99,7 +100,7 @@ function initOrg(){
                 //清除选中  
                 $('#orgtree').combotree('clear');  
             }  
-         }  
+         }   */
        });  
 	}  
 </script>
@@ -129,13 +130,12 @@ function initOrg(){
 								<!-- <button class="yw-btn bg-gray ml20 cur">满意度调查</button> -->
 							</div>
 							<div class="fr">
-								<input type="hidden" name="companyId"  value="${company.id}" />
+								<%-- <input type="hidden" name="companyId"  value="${company.id}" />
 								<input type="text" name="searchName" class="yw-input wid170"
 									placeholder="搜索" value="${user.searchName}" />
-								<!-- <button class="yw-btn bg-orange ml30 cur" type="submit" onclick="search();">开始查找</button> -->
-								<!-- <button class="yw-btn bg-green ml20 cur" onclick="showdialog();">新建公司</button> -->
-								<span class="yw-btn bg-orange ml30 cur" onclick="search();">开始查找</span>
-								<span class="yw-btn bg-green ml20 cur" onclick="showdialog();">新建员工</span>
+								<span class="yw-btn bg-orange ml30 cur" onclick="search();">开始查找</span> --%>
+								<span class="yw-btn bg-green ml20 cur" onclick="gotoAdd();">新建用户</span>
+								<span class="yw-btn bg-green ml20 cur" onclick="">删除用户</span>
 							</div>
 							<div class="cl"></div>
 						</div>
@@ -156,7 +156,7 @@ function initOrg(){
 							<td align="left">${item.id}</td>
 							<td>${item.name}</td> 
 							<td>${item.orgName}</td> 
-							<td>${item.createTime}</td> 
+							<td>${item.createtime}</td> 
 						</tr>
 					</c:forEach>
 				</table>
@@ -181,7 +181,7 @@ function initOrg(){
         	<span class="fl">性别：</span><select name="sex" class="easyui-combobox"><option value="-1">=请选择性别=</option><option value="0">男</option><option value="1">女</option></select>
         </p> -->
         <p class="yw-window-p">
-        	<span class="fl">所属机构：</span><input id="orgtree" name="org" type="text" value="" class="easyui-combotree" required="true"  validType="Length[1,25]" style="width:254px;height:30px;"/>
+        	<span class="fl">所属机构：</span><input id="orgtree" name="org" type="text" value="" class="easyui-combobox" required="true"  validType="Length[1,25]" style="width:254px;height:30px;"/>
         </p>
         <div class="yw-window-footer txt-right">
         	<span class="yw-window-btn bg-lightgray mt12"  onclick="$('#userInfoWindow').window('close');">退出</span>

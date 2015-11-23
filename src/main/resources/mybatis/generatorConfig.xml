@@ -40,72 +40,12 @@
             <property name="enableSubPackages" value="true"/>  
         </javaClientGenerator>  
          
-        <table tableName="t_ad" domainObjectName="Advertisement"
+        <table tableName="t_banner" domainObjectName="Banner"
            enableSelectByExample="false"
 	       enableDeleteByExample="false"
 	       enableCountByExample="false"
 	       enableUpdateByExample="false"/> 
-        <table tableName="t_ad_detail" domainObjectName="AdDetail"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_ad_target" domainObjectName="AdTarget"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_bbs" domainObjectName="Bbs"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_bbs_attach" domainObjectName="BbsAttach"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_bbs_category" domainObjectName="BbsCategory"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_customer" domainObjectName="Customer"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_customer_browse" domainObjectName="CustomerBrowse"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_customer_collection" domainObjectName="CustomerCollection"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_customer_rating" domainObjectName="CustomerRating"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_function" domainObjectName="Function"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_hotle" domainObjectName="Hotel"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_item" domainObjectName="Item"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_item_detail" domainObjectName="ItemDetail"
+        <table tableName="t_banner_detail" domainObjectName="BannerDetail"
            enableSelectByExample="false"
 	       enableDeleteByExample="false"
 	       enableCountByExample="false"
@@ -115,52 +55,7 @@
 	       enableDeleteByExample="false"
 	       enableCountByExample="false"
 	       enableUpdateByExample="false"/> 
-        <table tableName="t_item_tag_association" domainObjectName="ItemTagAssociation"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_menu" domainObjectName="Menu"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_org" domainObjectName="Org"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_region" domainObjectName="Region"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_room" domainObjectName="Room"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_room_check" domainObjectName="RoomCheck"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_user" domainObjectName="User"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_rcu" domainObjectName="Rcu"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_rcu_cfg" domainObjectName="RcuCfg"
-           enableSelectByExample="false"
-	       enableDeleteByExample="false"
-	       enableCountByExample="false"
-	       enableUpdateByExample="false"/> 
-        <table tableName="t_rcu_cfg_item" domainObjectName="RcuCfgItem"
+        <table tableName="t_search_text" domainObjectName="SearchText"
            enableSelectByExample="false"
 	       enableDeleteByExample="false"
 	       enableCountByExample="false"

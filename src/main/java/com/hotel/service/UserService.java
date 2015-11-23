@@ -1,5 +1,6 @@
 package com.hotel.service;
 
+import java.text.ParseException;
 import java.util.List;
 
 import com.hotel.common.ReturnResult;
@@ -25,7 +26,7 @@ public interface UserService {
     
 	public ReturnResult<User> login(String loginName, String passwd,boolean rememberMe) throws Exception;
 
-	void saveorUpdateUser(User user);
+	void saveorUpdateUser(User user) throws ParseException;
 
 	User getUserByPrimaryKey(Integer userId);
 

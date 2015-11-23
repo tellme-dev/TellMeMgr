@@ -7,14 +7,14 @@ import com.hotel.model.Advertisement;
 
 
 public class AdvertisementVM extends Advertisement{
-	private List<AdDetail> adDetailList;
+	private List<AdDetail> adDetails;
 
 	public List<AdDetail> getAdDetailList() {
-		return adDetailList;
+		return adDetails;
 	}
 
 	public void setAdDetailList(List<AdDetail> adDetailList) {
-		this.adDetailList = adDetailList;
+		this.adDetails = adDetailList;
 	}
 	
 }

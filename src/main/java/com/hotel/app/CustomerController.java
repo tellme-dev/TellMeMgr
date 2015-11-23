@@ -1,6 +1,5 @@
 package com.hotel.app;
 
-import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 

@@ -2,6 +2,7 @@ package com.hotel.web.controller;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hotel.common.JsonResult;
 import com.hotel.common.utils.Constants;
 import com.hotel.common.utils.EndecryptUtils;
+import com.hotel.common.utils.GeneralUtil;
 import com.hotel.model.Function;
 import com.hotel.model.Org;
 import com.hotel.model.User;
@@ -84,29 +86,31 @@ public class UserAction extends BaseAction {
 			User user,
 			@RequestParam(value = "userId", required = false) Integer userId,
 			HttpServletRequest request, HttpServletResponse response) {
-		if(user.getId()!=null){
-			userId = user.getId();
+		/**/
+//		if(user.getId()!=null){
+//			userId = user.getId();
+//		}
+		if(userId != 0){//编辑时加载编辑的用户详情
+			user = userService.getUserByPrimaryKey(userId);
+			request.setAttribute("userinfo", user);
 		}
-		user = userService.getUserByPrimaryKey(userId);
-		request.setAttribute("userinfo", user);  
 		return "web/user/userInfo";
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/saveOrupdateUser.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-	public JsonResult saveOrupdateUser(User user, HttpServletRequest request,
+	public JsonResult<User> saveOrupdateUser(
+			User user, 
+			HttpServletRequest request,
 			HttpServletResponse response) {
-		JsonResult js = new JsonResult();
+		JsonResult<User> js = new JsonResult<User>();
 		js.setCode(new Integer(0));
 		js.setMessage("保存失败!");
-		try { 
-			User u = EndecryptUtils.md5Password(user.getName(), "111111");
-			if(u!=null){
-				user.setPsd(u.getPsd());;
-				user.setSalt(u.getSalt());
+		try {
+			/*新增时没有传id值*/
+			if(user.getId()==null){
+				user.setId(0);
 			}
-			user.setIsUsed(true);
-			user.setCreateTime(new Date());
 			userService.saveorUpdateUser(user);
 			js.setCode(new Integer(1));
 			js.setMessage("保存成功!");
@@ -115,14 +119,14 @@ public class UserAction extends BaseAction {
 		}
 		return js;
 	}
-	@RequestMapping(value = "/orgComboList.do", produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	@RequestMapping(value = "/jsonLoadOrgList.do", produces = "text/html;charset=UTF-8")
 	public String loadOrgComboList(
+			@RequestParam(value = "pid", required = false) Integer pid,
 			HttpServletRequest request,
 			HttpServletResponse response) {
 		try{
-			List<Org> list = baseDataService.getOrgComboList(0);
-			if(list.size()>0){
-			}
+			List<Org> list = baseDataService.getOrgList(pid);
 			//request.setAttribute("region", itemTag);
 			JSONArray  json = JSONArray.fromObject(list);
 			return json.toString();

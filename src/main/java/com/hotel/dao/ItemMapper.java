@@ -1,5 +1,7 @@
 package com.hotel.dao;
 
+import java.util.List;
+
 import com.hotel.model.Item;
 
 @MyBatisRepository
@@ -15,4 +17,6 @@ public interface ItemMapper {
     int updateByPrimaryKeySelective(Item record);
 
     int updateByPrimaryKey(Item record);
+    
+    List<Item> getItemByHotel(int hotelId);
 }
