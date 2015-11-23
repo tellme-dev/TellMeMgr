@@ -81,7 +81,7 @@ function login(){
                 <div class="fl login-title">用户登录</div>
                 <div class="fl panel">
                 	<p class="login-rows mt30">
-                    	<input type="text" name="name" id="loginName" class="login-input login-name easyui-validatebox" placeholder="用户名"  validType="Length[4,22]" data-options="required:true" value="<shiro:principal/>"/>
+                    	<input type="text" name="name" id="loginName" class="login-input login-name easyui-validatebox" placeholder="用户名"  data-options="required:true" value="<shiro:principal/>"/>
                     </p>
                     <p class="login-rows mt30">
                     	<input type="password" name="psd" id="password" class="login-input login-pwd easyui-validatebox" placeholder="密码"  validType="Length[4,22]" data-options="required:true"/>

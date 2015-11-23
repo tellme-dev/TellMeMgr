@@ -20,9 +20,9 @@
 <script type="text/javascript">
 		$(document).ready(function(){
 			$("#pager").pager({
-			    pagenumber:'${customer.pageNo}',                         /* 表示初始页数 */
-			    pagecount:'${customer.pageCount}',                      /* 表示总页数 */
-			    totalCount:'${customer.totalCount}',
+			    pagenumber:'${page.pageNo}',                         /* 表示初始页数 */
+			    pagecount:'${page.pageCount}',                      /* 表示总页数 */
+			    totalCount:'${page.totalCount}',
 			    buttonClickCallback:PageClick                     /* 表示点击分页数按钮调用的方法 */                  
 			});
 			$("#customerinfoList tr").each(function(i){
@@ -38,7 +38,7 @@
 PageClick = function(pageclickednumber) {
 	$("#pager").pager({
 	    pagenumber:pageclickednumber,                 /* 表示启示页 */
-	    pagecount:'${customer.pageCount}',                  /* 表示最大页数pagecount */
+	    pagecount:'${page.pageCount}',                  /* 表示最大页数pagecount */
 	    buttonClickCallback:PageClick                 /* 表示点击页数时的调用的方法就可实现javascript分页功能 */            
 	});
 	

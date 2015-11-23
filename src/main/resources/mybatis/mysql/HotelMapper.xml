@@ -110,7 +110,7 @@
     from t_hotle 
   </select>
   
-  <select id="getPageHotel" resultMap="BaseResultMap" parameterType="com.hotel.model.Hotel">
+  <select id="getPageHotel" resultMap="BaseResultMap" parameterType="java.util.Map">
      select 
      <include refid="Base_Column_List" />
      from t_hotle

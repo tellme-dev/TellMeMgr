@@ -13,9 +13,17 @@
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, minimum-scale=1  ,maximum-scale=1, user-scalable=no" /> 
 <script type="text/javascript">
+    var type;//0为新增；1为编辑
 	$(document).ready(function() {
-		//setShowStates();
-		initOrg(0);
+		type = ${type};
+		initOrg();
+		/*编辑*/
+		if(type==1){
+			$("#orgtree1").combobox("setValue", '${userinfo.orgId3}');
+			$("#orgtree2").combobox("setValue", '${userinfo.orgId2}');
+			$("#orgtree3").combobox("setValue", '${userinfo.orgId}');
+		}
+		
 	});   
 	function setShowStates(){
 		$("#userName").attr("readonly","readonly");
@@ -30,6 +38,10 @@
 		$("#saveBtn").show();
 	};
 	function saveUser(obj) {
+		if($("#orgtree3").combobox("getValue")==""){
+			$.messager.alert("操作提示", "请选择组织机构！", "error");
+			return;
+		}
 		if ($('#userForm').form('validate')) {
 			$(obj).attr("onclick", "");
 			$('#userForm').form(
@@ -37,17 +49,13 @@
 					{
 						success : function(data) {
 							data = $.parseJSON(data);
-							if (data.code == 0) {
+							if (data.code == 1) {
 								$.messager.alert('保存信息', data.message, 'info',
 										function() {  
-											setShowStates();
+									     window.location.href='userList.do';
 										});
 							} else {
-								$.messager.alert('错误信息', data.message, 'error',
-										function() {
-											$(obj).attr("onclick",
-													"saveUser(this);");
-										});
+								$.messager.alert('错误信息', data.message, 'error');
 							}
 						}
 					});
@@ -61,18 +69,10 @@
           textField:'name',
           onChange:function(){
         	$('#orgtree2').combobox("setValue","");
+        	$('#orgtree3').combobox("setValue","");
         	var pid = $('#orgtree1').combobox("getValue");
 	    	initOrg2(pid);	
 	      }
-          /* onSelect : function(node) {  
-            var tree = $(this).tree;  
-            //选中的节点是否为叶子节点,如果不是叶子节点,清除选中  
-            var isLeaf = tree('isLeaf', node.target);  
-            if (!isLeaf) {  
-                //清除选中  
-                $('#orgtree').combotree('clear');  
-            }  
-         }   */
        });  
 	}
 	function initOrg2(pid){
@@ -81,6 +81,7 @@
         	  valueField:'id',
               textField:'name',
               onChange:function(){
+            	$('#orgtree3').combobox("setValue","");
               	var pid = $('#orgtree2').combobox("getValue");
       	    	initOrg3(pid);	
       	      }
@@ -105,7 +106,7 @@
 	<div class="con-right" id="conRight">
 		<div class="fl yw-lump">
 			<div class="yw-lump-title">
-				<i class="yw-icon icon-back" onclick="window.location.href='userList.do'"></i><span>返回</span>
+				<span style="cursor: pointer;" onclick="window.location.href='userList.do'"><i class="yw-icon icon-back"></i>返回</span>
 			</div>
 		</div>
 
@@ -116,7 +117,7 @@
 				</div>
 				<div class="fr mt10">
 					<!-- <span class="yw-btn bg-green mr26" id="editBtn" onclick="editUser();">编辑</span> --> 
-					<span class="yw-btn bg-red mr26" id="saveBtn" onclick="saveUser(this);">保存</span>
+					<span style="cursor: pointer;" class="yw-btn bg-red mr26" id="saveBtn" onclick="saveUser(this);">保存</span>
 				</div>
 			</div>
 			<div id="tab1" class="yw-tab">
@@ -124,17 +125,17 @@
 					action="saveOrupdateUser.do" method="post">
 					<table class="yw-cm-table font16">
 						<tr>
-							<td width="10%" align="center">姓名：</td>
+							<td width="10%" align="center">用户名称：</td>
 							<td>
-								<input id="userName" name="name" type="text" value="${userinfo.name}" class="easyui-validatebox" required="true" validType="Length[1,25]" style="width:254px;height:30px;" /> 
+								<input id="userName" name="name" type="text" value="${userinfo.name}" class="easyui-validatebox" style="width:254px;height:30px;"  required/> 
 								<input name="id" type="hidden" value="${userinfo.id}" /> 
 						</tr>
 						<tr>
 							<td width="10%" align="center">所属机构：</td>
 							<td>
-							    <input id="orgtree1" class="easyui-combobox" data-options="editable:false"/>
-							    <input id="orgtree2" class="easyui-combobox" data-options="editable:false"/>
-							    <input id="orgtree3" name="orgId" class="easyui-combobox"data-options="editable:false"/>
+							    <input id="orgtree1" class="easyui-combobox" data-options="editable:false" style="width:100px;height:30px;" required/>
+							    <input id="orgtree2" class="easyui-combobox" data-options="editable:false" style="width:100px;height:30px;" required/>
+							    <input id="orgtree3" name="orgId" class="easyui-combobox" data-options="editable:false" style="width:100px;height:30px;" required/>
 							</td>
 						</tr>
 						<%-- <tr>
