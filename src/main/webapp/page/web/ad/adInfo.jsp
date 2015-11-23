@@ -46,26 +46,8 @@
     	    
     	}
     	
-    	/******弹出窗*******/
-    	var i = 1;
-    	$("#btn_add").click(function(){  
-            document.getElementById("div_1").innerHTML+='<div id="div_'+i+'"><input id="file_'+i+'" type="file" style="width:200px;height:30px"/><input id="imageText" value="" placeholder="图片描述" style="width:200px;height:30px"/><span class="yw-btn bg-blue mr26" style="cursor: pointer;" onclick="del_f('+i+')">删除</span></div>'; 
-            document.getElementById("img_1").innerHTML+='<div id="img_'+i+'" style="display:none"><input id="image_'+i+'" name="file_'+i+'" type="file" style="width:200px;height:30px"/></div>'; 
-              i++;  
-        });   
     });
     
-    function del_f(i){  
-         document.getElementById("newUpload").removeChild(document.getElementById("file_"+i));  
-         document.getElementById("div_image").removeChild(document.getElementById("img_"+i));
-    } 
-    function fileChange (i){
-         //将弹窗中的file value赋值到隐藏标签中
-         $().value = $("#file_"+i).val();
-         var a = document.getElementByName("file_"+i).value;
-	}
-	
-	
     function tagChange(type){
     	if(type == 1){//#ffa8a8
     		//选择“酒店” 操作 hotelSelect
@@ -135,11 +117,6 @@
     	}
     }
 	function setShowStates(){
-		//$("#txtname").attr("readonly","readonly");
-		//$("#txtkey").attr("readonly","readonly");
-		//$("#imageTextShow").show();
-		//$("#imageTextEdit").hide();
-		//$("#imageUrlAdd").hide();
 		$("#txtTagContent").attr("readonly","readonly");
 		$("#itemTagSelect").combotree("disable",true);
 		$("#hotelSelect").combobox("disable",true);
@@ -159,13 +136,6 @@
 		$("#saveBtn").show();
 	};
 	function save(obj) {
-		/* var data = "";
-		var imageText = document.getElementsByName("imagetext");
-		for(var i=0;i<imageText.length;i++){
-			data += imageText[i].value+",";
-		}
-		var imageTexts = document.getElementById("imageText");
-		imageTexts.value = data; */
 		var doc=$(":radio:checked");
     	if(doc.length == 0){
     		$.messager.alert('提示信息', "请选择类型！", "warning");
@@ -190,8 +160,48 @@
 					});
 		}
 	}; 
-	function savePhoto(obj){
-	if ($('#uploadPhotoForm').form('validate')) {
+	function add_img(){
+		i = 1;
+		document.getElementById("tab2").innerHTML+='<tr id="tr_'+i+''"><td width="15%"><span class="yw-window-btn bg-blue mr26" style="cursor: pointer;" onclick="del_f('+i+')">删除</span></td><td><img src="/dddd"/></td><td><input name="imagetext" value="" placeholder="图片描述" style="width:200px;height:30px"/></td><td><input id="file_'+i+'" type="file" style="width:200px;height:30px"/></td></tr>';
+    	//document.getElementById("upload1").innerHTML+='<div id="div_'+i+'"><input id="file_'+i+'" type="file" style="width:200px;height:30px"/><input name="imagetext" value="" placeholder="图片描述" style="width:200px;height:30px"/><span class="yw-btn bg-blue mr26" style="cursor: pointer;" onclick="del_f('+i+')">删除</span></div>'; 
+        //document.getElementById("upload2").innerHTML+='<div id="img_'+i+'" style="display:none"><input id="image_'+i+'" name="file_'+i+'" type="file" class="easyui-validatebox" style="width:200px;height:30px"/></div>'; 
+          i++;
+    }
+    function del_f(i){  
+         document.getElementById("tab2").removeChild(document.getElementById("tr_"+i));  
+         //document.getElementById("upload2").removeChild(document.getElementById("img_"+i));
+    } 
+    /* function fileChange (i){
+         //将弹窗中的file value赋值到隐藏标签中
+         var url = $("#file_"+i).val();
+         $("#image_"+i).val(url);
+         document.img_url.image_i.value= url;
+	} */
+	
+	
+	function saveImageText(){
+		var text = "";
+		var imageText = document.getElementsByName("imagetext");
+		for(var i=0;i<imageText.length;i++){
+			var url = $("#file_"+i).val();
+			var imgText = imageText[i].value;
+			//将多个图片描述拼接为字符串
+			if(i=0){
+				text += imgText;
+			}else{
+				text += ","+imgText;
+			}
+			//将弹窗中的file value赋值到隐藏标签中
+	         var u = $("#file_"+i).val();
+			var a =$("#image_0").val();
+	         //$("#image_"+i).val(url);
+	         document.getElementById("image_"+i).value= $("#file_"+i).val();
+			//展示图片列表
+			document.getElementById("imageGrid").innerHTML+='<tr><td width="5%"></td><td><img src="'+url+'"/></td><td>'+imgText+'</td></tr>';
+		}
+		var imageTexts = document.getElementById("imageText");
+		imageTexts.value = text;
+	/* if ($('#uploadPhotoForm').form('validate')) {
 		$(obj).attr("onclick", ""); 
 		 $('#uploadPhotoForm').form('submit',{
 		  		success:function(data){
@@ -208,8 +218,8 @@
 		  			}
 		  		}
 		  	 });  
-	}
-} 
+	} */
+   } 
 	function showdialog(){
 		var wz = getDialogPosition($('#photoWindow').get(0),100);
 		$('#photoWindow').window({
@@ -266,17 +276,7 @@
 			<div id="tab1" class="yw-tab">
 				<form id="adForm" name="adForm"
 					action="saveOrupdateAd.do" method="post">
-					<table class="yw-cm-table font16">
-					    <%-- <tr>
-					        <td width="10%" align="center">描述：</td>
-							<td id="imageTextEdit">
-							    <c:forEach var="item" items="${adinfo.adDetailList}">
-							    <input id="imagetext" name="imagetext" value="${item.text}" style="width:100px;height:30px;"/> 
-							    </c:forEach> 
-							 <td>
-							    <input id="imageText" name="imageText" type="hidden" style="width:100px;height:30px;"/>
-							</td>
-						</tr> --%>
+					<table id="tab" class="yw-cm-table font16">
 						<tr>
 							<td width="10%" align="center">名称：</td>
 							<td>
@@ -320,20 +320,22 @@
 						</tr>
 						<tr>
 						    <td>
-						    <div id="img_0" style="display:none"><input id="image_0" name="file_0" type="file"/></div>
+						    <div id="upload2" ><input id="image_0" name="file_0" type="file" value="/ww"/></div>
+						    </td>
+						    <td><input id="imageText" name="imageText" type="hidden" style="width:100px;height:30px;"/>
 						    </td>
 						</tr>
 					</table>
 				</form>
 			</div>
 			<div class="cl">
-		       <span class="txt ts15 ml20">图片</span><span class="yw-window-btn bg-blue ml20" onclick="showdialog();">[添加]</span><span class="yw-window-btn bg-blue ml20">[修改]</span><span class="yw-window-btn bg-blue ml20">[删除]</span>
-		       <table class="yw-cm-table" id="photoList">
-		          <tr class="ts15">
-				      <td><img id="imageUrl" name="imageUrlList" src="<%=basePath%>source/images/userhaed1.png" style="width:100px;height:50px;" /></td>
-		          </tr>
-		          <tr class="ts15">
-				      <td><img id="imageUrl" name="imageUrlList" src="<%=basePath%>source/images/userhaed1.png" style="width:100px;height:50px;" /></td>
+		       <span class="txt ts15 ml20">图片</span><span class="yw-window-btn bg-blue ml20" onclick="add_img();">[添加]</span><span class="yw-window-btn bg-blue ml20">[修改]</span><span class="yw-window-btn bg-blue ml20">[删除]</span>
+		       <table id="tab2" class="yw-cm-table" id="photoList">
+		          <tr id="imageGrid" class="ts15">
+				      <th width="15%"></th>
+				      <th>图片</th>
+				      <th>描述</th>
+				      <th>选择</th>
 		          </tr>
 		       </table>
 		   </div>
@@ -343,13 +345,13 @@
 		</div>
 	</div>
     <div id="photoWindow" class="easyui-window" title="添加图片" style="width:560px;height:480px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
-        <div id="div_0">  
-            <input type="file" id="file_0" onchange="fileChange(0)" style="width:200px;height:30px"><input id="imageText" value="" placeholder="图片描述" style="width:200px;height:30px"/> 
+        <div id="upload1">  
+            <input type="file" id="file" onchange="fileChange(0)" style="width:200px;height:30px"><input id="imageText" value="" placeholder="图片描述" style="width:200px;height:30px"/> 
         </div>  
         <input type="button" id="btn_add" value="增加一行" class="yw-btn bg-blue mt12">  
         <div class="yw-window-footer txt-right">
         	<span class="yw-window-btn bg-lightgray mt12" style="cursor: pointer;" onclick="$('#photoWindow').window('close');">退出</span>
-        	<span class="yw-window-btn bg-blue mt12" onclick="savePhoto(this);" style="cursor: pointer;">保存</span>
+        	<span class="yw-window-btn bg-blue mt12" onclick="saveImageText();" style="cursor: pointer;">保存</span>
         </div>
 	 </div>
 </body>
