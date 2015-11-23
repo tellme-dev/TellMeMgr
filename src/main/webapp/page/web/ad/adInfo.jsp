@@ -45,7 +45,27 @@
     	    };
     	    
     	}
+    	
+    	/******弹出窗*******/
+    	var i = 1;
+    	$("#btn_add").click(function(){  
+            document.getElementById("div_1").innerHTML+='<div id="div_'+i+'"><input id="file_'+i+'" type="file" style="width:200px;height:30px"/><input id="imageText" value="" placeholder="图片描述" style="width:200px;height:30px"/><span class="yw-btn bg-blue mr26" style="cursor: pointer;" onclick="del_f('+i+')">删除</span></div>'; 
+            document.getElementById("img_1").innerHTML+='<div id="img_'+i+'" style="display:none"><input name="file_'+i+'" type="file" style="width:200px;height:30px"/></div>'; 
+              i++;  
+        });   
     });
+    
+    function del_f(i){  
+         document.getElementById("newUpload").removeChild(document.getElementById("file_"+i));  
+         document.getElementById("div_image").removeChild(document.getElementById("img_"+i));
+    } 
+    function fileChange (i){
+         //将弹窗中的file value赋值到隐藏标签中
+         document.getElementByName("file_"+i).value = $("#file_"+i).val();
+         var a = document.getElementByName("file_"+i).value;
+	}
+	
+	
     function tagChange(type){
     	if(type == 1){//#ffa8a8
     		//选择“酒店” 操作 hotelSelect
@@ -170,6 +190,26 @@
 					});
 		}
 	}; 
+	function savePhoto(obj){
+	if ($('#uploadPhotoForm').form('validate')) {
+		$(obj).attr("onclick", ""); 
+		 $('#uploadPhotoForm').form('submit',{
+		  		success:function(data){
+		  			data = $.parseJSON(data);
+		  			if(data.code==0){
+		  				$.messager.alert('保存信息',data.message,'info',function(){
+		  					$('#adInfoWindow').window('close');
+		  					search();
+	        			});
+		  			}else{
+						$.messager.alert('错误信息',data.message,'error',function(){
+							$(obj).attr("onclick", "saveAd(this);"); 
+	        			});
+		  			}
+		  		}
+		  	 });  
+	}
+} 
 	function showdialog(){
 		var wz = getDialogPosition($('#photoWindow').get(0),100);
 		$('#photoWindow').window({
@@ -199,15 +239,6 @@
           url : 'jsonLoadHotelComboList.do',
           valueField:'id',
           textField:'name'
-          /* onSelect : function(node) {  
-            var tree = $(this).tree;  
-            //选中的节点是否为叶子节点,如果不是叶子节点,清除选中  
-            var isLeaf = tree('isLeaf', node.target);  
-            if (!isLeaf) {  
-                //清除选中  
-                $('#orgtree').combotree('clear');  
-            }  
-         }   */
        });  
 	}
 	
@@ -238,15 +269,11 @@
 					<table class="yw-cm-table font16">
 					    <%-- <tr>
 					        <td width="10%" align="center">描述：</td>
-							<td id="imageTextShow">
-							    <c:forEach var="item" items="${adinfo.adDetailList}">
-							    <input value="${item.text}" readonly="readonly" style="width:100px;height:30px;"/> 
-							    </c:forEach>
-							</td>
 							<td id="imageTextEdit">
 							    <c:forEach var="item" items="${adinfo.adDetailList}">
 							    <input id="imagetext" name="imagetext" value="${item.text}" style="width:100px;height:30px;"/> 
-							    </c:forEach>
+							    </c:forEach> 
+							 <td>
 							    <input id="imageText" name="imageText" type="hidden" style="width:100px;height:30px;"/>
 							</td>
 						</tr> --%>
@@ -263,12 +290,6 @@
 							    <input id="txtkey" name="keyWord" type="text" value="${adinfo.keyWord}" placeholder="关键字之间用逗号隔开" class="easyui-validatebox" validType="Length[1,25]" style="width:254px;height:30px;" />
 							</td>
 						</tr>
-						<%-- <tr id="createtime">
-							<td width="10%" align="center">创建时间：</td>
-							<td>
-							    <input id="txtcreatetime" type="text" value="${adinfo.createTime}"  readonly="readonly" class="easyui-validatebox" style="width:254px;height:30px;" />
-							</td>
-						</tr> --%>
 						<tr>
 							<td align="center">类型：</td>
 							<td>
@@ -277,40 +298,8 @@
         	                        <input type="radio" name="targetType" onclick="tagChange(3)" value="3">社区　　
         	                        <input type="radio" name="targetType" onclick="tagChange(4)" value="4">URL地址　　
         	                        <input type="radio" name="targetType" onclick="tagChange(5)" value="5">HTML页面
-								 <%-- <c:if test="${adinfo.targetType == 1 }">
-									<input type="radio" name="targetType" onclick="tagChange(1)" value="1" checked>项目标签　　
-        	                        <input type="radio" name="targetType" onclick="tagChange(2)" value="2">社区　　
-        	                        <input type="radio" name="targetType" onclick="tagChange(3)" value="3">URL地址　　
-        	                        <input type="radio" name="targetType" onclick="tagChange(4)" value="4">HTML页面
-								 </c:if>
-								 <c:if test="${adinfo.targetType == 2 }">
-									<input type="radio" name="targetType" onclick="tagChange(1)" value="1">项目标签　　
-        	                        <input type="radio" name="targetType" onclick="tagChange(2)" value="2" checked>社区　　
-        	                        <input type="radio" name="targetType" onclick="tagChange(3)" value="3">URL地址　　
-        	                        <input type="radio" name="targetType" onclick="tagChange(4)" value="4">HTML页面
-        	                    </c:if>
-								 <c:if test="${adinfo.targetType == 3 }">
-									<input type="radio" name="targetType" onclick="tagChange(1)" value="1">项目标签　　
-        	                        <input type="radio" name="targetType" onclick="tagChange(2)" value="2">社区　　
-        	                        <input type="radio" name="targetType" onclick="tagChange(3)" value="3" checked>URL地址　　
-        	                        <input type="radio" name="targetType" onclick="tagChange(4)" value="4">HTML页面
-								 </c:if>
-								 <c:if test="${adinfo.targetType == 4 }">
-									<input type="radio" name="targetType" onclick="tagChange(1)" value="1">项目标签　　
-        	                        <input type="radio" name="targetType" onclick="tagChange(2)" value="2">社区　　
-        	                        <input type="radio" name="targetType" onclick="tagChange(3)" value="3">URL地址　　
-        	                        <input type="radio" name="targetType" onclick="tagChange(4)" value="4" checked>HTML页面
-								 </c:if> --%>
 							</td>
 						</tr> 
-						<%-- <c:if test="${adinfo.targetType != 1&&adinfo.targetType != 2 }">
-						<tr id="tagContent">
-							<td width="10%" align="center">内容：</td>
-							<td>
-							    <input id="txtTagContent" name="targetContent" type="text" value="${adinfo.targetContent}" class="easyui-validatebox"  validType="Length[1,25]" style="width:254px;height:30px;"/>
-							</td>
-						</tr>
-						</c:if> --%>
 						<tr id="hotel">
 							<td width="10%" align="center">酒店：</td>
 							<td>
@@ -328,6 +317,11 @@
 							<td>
 							    <input id="txtTagContent" name="targetContent" type="text" value="${adinfo.targetContent}" class="easyui-validatebox"  validType="Length[1,25]" style="width:254px;height:30px;"/>
 							</td>
+						</tr>
+						<tr>
+						    <td>
+						    <div id="img_0" style="display:none"><input name="file0" type="file"/></div>
+						    </td>
 						</tr>
 					</table>
 				</form>
@@ -349,50 +343,14 @@
 		</div>
 	</div>
     <div id="photoWindow" class="easyui-window" title="添加图片" style="width:560px;height:480px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
-		<form id="uploadPhotoForm" name ="uploadPhotoForm" action="uploadPhoto.do"  method="post">
-		<div class="mt10">
-			<div class="fl"><span class="txt ts14">图片：</span></div>
-			<div class="fr"><span class="txt_function">[删除]</span></div>
-			<div class="cl"></div>
-		</div>
-		<div class="imgs_style">
-			<div name="img_item" class="fl border ml10 mt10 ht160" align="center">
-				<div><img alt="" class="photo_show" src="${pageContext.request.contextPath}/source/images/userhaed1.png" /></div>
-				<div class="wid120 mt10">
-					<font class="txt ts12">这里是描述增去写出2行SaaS阿萨阿萨</font>
-				</div>
-			</div>
-			<div name="img_item" class="fl border ml10 mt10 ht160" align="center">
-				<div><img alt="" class="photo_show" src="${pageContext.request.contextPath}/source/images/userhaed1.png" /></div>
-				<div class="wid120 mt10">
-					<font class="txt ts12">这里是描述增去写出</font>
-				</div>
-			</div>
-			<div name="img_item" class="fl border ml10 mt10 ht160" align="center">
-				<div><img alt="" class="photo_show" src="${pageContext.request.contextPath}/source/images/userhaed1.png" /></div>
-				<div class="wid120 mt10">
-					<font class="txt ts12">这里是描述增去写出</font>
-				</div>
-			</div>
-		</div>
-		<!-- <p style="display:none">
-        	<span class="fl">图片：</span><img id="imageUrl" name="imageUrlList" src="/*" style="width:100px;height:50px;" />
-        	<img id="imageUrl" name="imageUrlList" src="/*" style="width:100px;height:50px;" />
-        	<img id="imageUrl" name="imageUrlList" src="/*" style="width:100px;height:50px;" />
-        </p> -->
-		<p class="yw-window-p">
-		    <span class="fl">文件：</span>
-        	<input id="imageUrl" name="imageUrl" type="file" value="" class="easyui-validatebox" />
-        </p> 
-        <p class="yw-window-p">
-            <span class="fl">描述：</span>
-        	<input id="imageText" value="" placeholder="图片描述" class="easyui-validatebox" />
-        </p>
+        <div id="div_0">  
+            <input type="file" id="file_0" onchange="fileChange(0)" style="width:200px;height:30px"><input id="imageText" value="" placeholder="图片描述" style="width:200px;height:30px"/> 
+        </div>  
+        <input type="button" id="btn_add" value="增加一行" class="yw-btn bg-blue mt12">  
         <div class="yw-window-footer txt-right">
-        	<span class="yw-window-btn bg-lightgray mt12" style="cursor: pointer;" onclick="$('#userInfoWindow').window('close');">退出</span>
-        	<span class="yw-window-btn bg-blue mt12" onclick="saveUser(this);" style="cursor: pointer;">保存</span>
+        	<span class="yw-window-btn bg-lightgray mt12" style="cursor: pointer;" onclick="$('#photoWindow').window('close');">退出</span>
+        	<span class="yw-window-btn bg-blue mt12" onclick="savePhoto(this);" style="cursor: pointer;">保存</span>
         </div>
-        </form>
-	  </div>
+	 </div>
 </body>
 </html>

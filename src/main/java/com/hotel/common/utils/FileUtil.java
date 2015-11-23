@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +23,8 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+
+import com.google.common.collect.Lists;
 
 
 /**
@@ -98,7 +101,7 @@ public class FileUtil {
 	}
 	
 	/**
-	 * 多文件上�?
+	 * 多文件上传
 	 * @param request
 	 * @param path
 	 * @throws IOException
@@ -126,7 +129,43 @@ public class FileUtil {
         }  
         request.setAttribute("files", loadFiles(request,path));  
 	}
-	
+	/**
+	 * 多文件上传
+	 * @param request
+	 * @param path
+	 * @throws IOException
+	 */
+	public static void uploadMultiFile2(HttpServletRequest request,String path,int pathType) throws IOException{
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;  
+        Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();  
+//        Iterator<String> iter = multipartRequest.getFileNames();
+//        List list = Lists.newArrayList(iter);
+        
+        String savePath="";
+        if(pathType==FileUtil.RELATIVELY_PATH)
+	        savePath = request.getSession().getServletContext().getRealPath(  
+	                "/")+path;
+        else
+        	savePath=path;
+  
+        File file = new File(savePath);  
+        if (!file.exists()) {  
+            file.mkdir();  
+        }  
+        String fileName = null;  
+        for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {  
+            MultipartFile mf = entity.getValue();  
+            fileName = mf.getOriginalFilename();  
+            //File uploadFile = new File(savePath + fileName);
+            File uploadFile = new File(savePath,fileName);
+          //如果路徑不存在 自動創建
+            if(!uploadFile.exists()){  
+            	uploadFile.mkdirs();  
+            } 
+            mf.transferTo(uploadFile);  
+        }  
+        request.setAttribute("files", loadFiles(request,path));  
+	}
 	public void downloadFile(){
 		
 	}
