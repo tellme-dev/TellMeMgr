@@ -138,6 +138,16 @@ public class AdAction extends BaseAction {
 					if(ad.getId()==null){
 						ad.setId(0);
 					}
+					//创建一个通用的多部分解析器  
+			        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
+			        //判断 request 是否有文件上传,即多部分请求  
+			        if(multipartResolver.isMultipart(request)){  
+			        	List<String> imageUrl = FileUtil.uploadMultiFile2(request, "image/ad", FileUtil.RELATIVELY_PATH);
+			        	ad.setImageUrlList(imageUrl);
+			        }
+			        if(ad.getHotelId()!=null&&!"".equals(ad.getHotelId())){
+			        	ad.setTargetId(ad.getHotelId());
+			        }
 					adService.saveorUpdateAd(ad);
 					json.setCode(new Integer(1));
 					json.setMessage("保存成功!");

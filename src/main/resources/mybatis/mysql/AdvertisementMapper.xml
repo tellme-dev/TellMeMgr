@@ -38,6 +38,9 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.hotel.model.Advertisement" >
+  <selectKey resultType="INTEGER" keyProperty="id">
+       SELECT LAST_INSERT_ID()
+  </selectKey>
     insert into t_ad (id, name, key_word, 
       target_type, target_id, target_content, 
       is_used, create_time, time_stamp

@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +22,6 @@ import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
-
-import com.google.common.collect.Lists;
 
 
 /**
@@ -135,12 +132,10 @@ public class FileUtil {
 	 * @param path
 	 * @throws IOException
 	 */
-	public static void uploadMultiFile2(HttpServletRequest request,String path,int pathType) throws IOException{
+	public static List<String> uploadMultiFile2(HttpServletRequest request,String path,int pathType) throws IOException{
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;  
         Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();  
-//        Iterator<String> iter = multipartRequest.getFileNames();
-//        List list = Lists.newArrayList(iter);
-        
+        List<String> imageUrl = new ArrayList<String>();//存放图片url
         String savePath="";
         if(pathType==FileUtil.RELATIVELY_PATH)
 	        savePath = request.getSession().getServletContext().getRealPath(  
@@ -162,9 +157,11 @@ public class FileUtil {
             if(!uploadFile.exists()){  
             	uploadFile.mkdirs();  
             } 
-            mf.transferTo(uploadFile);  
+            mf.transferTo(uploadFile); 
+            imageUrl.add("image/ad/"+fileName);
         }  
-        request.setAttribute("files", loadFiles(request,path));  
+        request.setAttribute("files", loadFiles(request,path)); 
+        return imageUrl;
 	}
 	public void downloadFile(){
 		

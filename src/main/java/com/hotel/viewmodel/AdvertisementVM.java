@@ -9,23 +9,43 @@ public class AdvertisementVM extends Advertisement {
 	
     private String  createtime;
     
+    private Integer hotelId;
+    
     private String hotelName;
     
     private String targetName;
     
-    private List<AdvertisementVM> targetIds;
+    private List<Integer> targetIds;
     
     private String imageUrl;
     
-    private List<AdvertisementVM> imageUrlList;
+    private List<String> imageUrlList;
     
     private String imageText;
     
-    private List<AdvertisementVM> imageTextList;
+    private List<String> imageTextList;
     
     private AdDetail adDetail;
     
+    private String adDetailIds;
+    
     private List<AdDetail> adDetailList;
+
+	public Integer getHotelId() {
+		return hotelId;
+	}
+
+	public void setHotelId(Integer hotelId) {
+		this.hotelId = hotelId;
+	}
+
+	public String getAdDetailIds() {
+		return adDetailIds;
+	}
+
+	public void setAdDetailIds(String adDetailIds) {
+		this.adDetailIds = adDetailIds;
+	}
 
 	public String getHotelName() {
 		return hotelName;
@@ -51,11 +71,11 @@ public class AdvertisementVM extends Advertisement {
 		this.targetName = targetName;
 	}
 
-	public List<AdvertisementVM> getTargetIds() {
+	public List<Integer> getTargetIds() {
 		return targetIds;
 	}
 
-	public void setTargetIds(List<AdvertisementVM> targetIds) {
+	public void setTargetIds(List<Integer> targetIds) {
 		this.targetIds = targetIds;
 	}
 
@@ -67,11 +87,11 @@ public class AdvertisementVM extends Advertisement {
 		this.imageUrl = imageUrl;
 	}
 
-	public List<AdvertisementVM> getImageUrlList() {
+	public List<String> getImageUrlList() {
 		return imageUrlList;
 	}
 
-	public void setImageUrlList(List<AdvertisementVM> imageUrlList) {
+	public void setImageUrlList(List<String> imageUrlList) {
 		this.imageUrlList = imageUrlList;
 	}
 
@@ -83,11 +103,11 @@ public class AdvertisementVM extends Advertisement {
 		this.imageText = imageText;
 	}
 
-	public List<AdvertisementVM> getImageTextList() {
+	public List<String> getImageTextList() {
 		return imageTextList;
 	}
 
-	public void setImageTextList(List<AdvertisementVM> imageTextList) {
+	public void setImageTextList(List<String> imageTextList) {
 		this.imageTextList = imageTextList;
 	}
 
