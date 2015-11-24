@@ -19,4 +19,6 @@ public interface ItemTagAssociationMapper {
     int updateByPrimaryKey(ItemTagAssociation record);
     
     List<ItemTagAssociation> getTagTypeItem(int tagType);
+
+	List<ItemTagAssociation> getItemsBytagId(int tagId);
 }

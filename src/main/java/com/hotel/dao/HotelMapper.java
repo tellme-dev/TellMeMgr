@@ -3,6 +3,7 @@ package com.hotel.dao;
 import java.util.List;
 
 import com.hotel.model.Hotel;
+import com.hotel.modelVM.HotelVM;
 
 @MyBatisRepository
 public interface HotelMapper {
@@ -23,4 +24,6 @@ public interface HotelMapper {
     List<Hotel> getPageHotel(Hotel hotel);
     
     int getPageHotelCount(Hotel hotel);
+    
+    HotelVM getHotelVMById(int id);
 }

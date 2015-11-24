@@ -9,6 +9,15 @@
     <result column="longitude" property="longitude" jdbcType="DECIMAL" />
     <result column="latitude" property="latitude" jdbcType="DECIMAL" />
   </resultMap>
+    <resultMap id="resultHotelVMMap" type="com.hotel.modelVM.HotelVM" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="text" property="text" jdbcType="VARCHAR" />
+    <result column="region_id" property="regionId" jdbcType="INTEGER" />
+    <result column="longitude" property="longitude" jdbcType="DECIMAL" />
+    <result column="latitude" property="latitude" jdbcType="DECIMAL" />
+    <collection property="itemVMs" column="id" select="com.hotel.dao.ItemMapper.selectItemVMByHotelId"></collection>
+  </resultMap>
   <sql id="Base_Column_List" >
     id, name, text, region_id, longitude, latitude
   </sql>
@@ -16,6 +25,11 @@
     select 
     <include refid="Base_Column_List" />
     from t_hotle
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="getHotelVMById" resultMap="resultHotelVMMap"  parameterType="java.lang.Integer" >
+  	select *
+  	from t_hotle
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >

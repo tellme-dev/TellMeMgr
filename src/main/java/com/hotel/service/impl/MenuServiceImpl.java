@@ -10,10 +10,9 @@ import com.hotel.service.MenuService;
 
 public class MenuServiceImpl implements MenuService {
 
-	@Autowired MenuMapper menuMapper;
 	@Override
 	public List<Menu> getMenulist() {
-		return menuMapper.getMenuList();
+		return null;
 	}
 
 }

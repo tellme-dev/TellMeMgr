@@ -10,6 +10,7 @@ import com.hotel.dao.HotelMapper;
 import com.hotel.dao.ItemTagAssociationMapper;
 import com.hotel.model.Hotel;
 import com.hotel.model.ItemTagAssociation;
+import com.hotel.modelVM.HotelVM;
 import com.hotel.service.HotelService;
 
 @Service("hotelService")
@@ -41,5 +42,11 @@ public class HotelServiceImpl implements HotelService{
 	public List<ItemTagAssociation> getTagTypeItem(int tagType) {
 		// TODO Auto-generated method stub
 		return associationMapper.getTagTypeItem(tagType);
+	}
+
+	@Override
+	public HotelVM getHotelVMById(int id) {
+		// TODO Auto-generated method stub
+		return hotelMapper.getHotelVMById(id);
 	}
 }
