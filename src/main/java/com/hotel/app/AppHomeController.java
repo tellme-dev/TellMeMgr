@@ -9,17 +9,13 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
 import com.hotel.common.ListResult;
-import com.hotel.dao.HotelMapper;
-import com.hotel.dao.ItemMapper;
 import com.hotel.model.Item;
 import com.hotel.model.ItemTag;
 import com.hotel.model.ItemTagAssociation;
-import com.hotel.model.Menu;
 import com.hotel.modelVM.HomeItemVM;
 import com.hotel.modelVM.HotelVM;
 import com.hotel.modelVM.ItemVM;
@@ -27,7 +23,6 @@ import com.hotel.service.HotelService;
 import com.hotel.service.ItemService;
 import com.hotel.service.ItemTagAssociationService;
 import com.hotel.service.ItemTagService;
-import com.hotel.service.MenuService;
 
 /**
  * 首页，启动页面APP数据接口
@@ -36,7 +31,7 @@ import com.hotel.service.MenuService;
  */
 @Controller
 @RequestMapping("/app/menu")
-public class HomeController {
+public class AppHomeController {
 	@Autowired ItemTagService itemTagService;
 	@Autowired ItemTagAssociationService itemTagAssociationService; 
 	@Autowired ItemService itemService;

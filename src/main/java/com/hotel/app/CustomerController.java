@@ -1,6 +1,10 @@
 package com.hotel.app;
 
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
@@ -11,9 +15,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.cloopen.rest.sdk.CCPRestSmsSDK;
 import com.hotel.common.Result;
+import com.hotel.common.utils.GeneralUtil;
 import com.hotel.model.Customer;
 import com.hotel.service.CustomerService;
+import com.hotel.viewmodel.SmsInfo;
 /**
  * 顾客数据访问接口
  * @author charo
@@ -46,47 +53,47 @@ public class CustomerController {
 			@RequestParam(value = "mobile", required = false) String mobile,
 			HttpServletRequest request)
 	{
-		//Result<Object> result = null;
+		Result<Object> result = null;
 		
 		if(mobile ==null ||"".equals(mobile)){
 			return new Result<Object>(null, false, "请输入电话号码").toJson();
 		}
 		
-//		HashMap hMap = null;
-//		CCPRestSmsSDK restAPI = new CCPRestSmsSDK();
-//		//restAPI.init("app.cloopen.com", "8883"); 
-//		restAPI.init("sandboxapp.cloopen.com", "8883"); 
-//
-//		// 初始化服务器地址和端口，沙盒环境配置成sandboxapp.cloopen.com，生产环境配置成app.cloopen.com，端口都是8883. 
-//		restAPI.setAccount("aaf98f894dd77eab014ddb6a41de0252","fc045501549c41bb8b44a8580865ef97"); 
-//		// 初始化主账号名称和主账号令牌，登陆云通讯网站后，可在"控制台-应用"中看到开发者主账号ACCOUNT SID和
-//		// 主账号令牌AUTH TOKEN。
-//		restAPI.setAppId("aaf98f894dd77eab014ddc85adb403e9");
-//		// 初始化应用ID，如果是在沙盒环境开发，请配置"控制台-应用-测试DEMO"中的APPID。
-//		// 如切换到生产环境，请使用自己创建应用的APPID
-//		String verifCode = GeneralUtil.createVerifCode();
-//		hMap = restAPI.sendTemplateSMS(mobile,"22423", new String[] { verifCode, "2" });
-//		
-//		if ("000000".equals(hMap.get("statusCode"))) {
-//			@SuppressWarnings("unchecked")
-//			Map<String, SmsInfo> smss = (Map<String, SmsInfo>) request.getSession()
-//					.getAttribute("verifCodes");
-//
-//			if (smss == null) {
-//				smss = new HashMap<String, SmsInfo>();
-//				request.getSession().setAttribute("verifCodes", smss);
-//			}
-//			
-//			SmsInfo smsInfo = new SmsInfo(); 
-//			smsInfo.setMobile(mobile); 
-//			smsInfo.setVerifCode(verifCode);
-//			smsInfo.setSendTime(new Date());
-//			smss.put(mobile, smsInfo);
-//			result = new Result<Object>(null, true, verifCode); 
-//		}else{
-//			String retMsg = hMap.get("statusMsg").toString();
-//			result = new Result<Object>(null, true, retMsg); 
-//		}
+		HashMap hMap = null;
+		CCPRestSmsSDK restAPI = new CCPRestSmsSDK();
+		//restAPI.init("app.cloopen.com", "8883"); 
+		restAPI.init("sandboxapp.cloopen.com", "8883"); 
+
+		// 初始化服务器地址和端口，沙盒环境配置成sandboxapp.cloopen.com，生产环境配置成app.cloopen.com，端口都是8883. 
+		restAPI.setAccount("8a48b55150f4a7260150fa741c1118ec","5e487ba9d0de4bf080cf847853b45d03"); 
+		// 初始化主账号名称和主账号令牌，登陆云通讯网站后，可在"控制台-应用"中看到开发者主账号ACCOUNT SID和
+		// 主账号令牌AUTH TOKEN。
+		restAPI.setAppId("aaf98f89512446e2015138cc2f883f66");
+		// 初始化应用ID，如果是在沙盒环境开发，请配置"控制台-应用-测试DEMO"中的APPID。
+		// 如切换到生产环境，请使用自己创建应用的APPID
+		String verifCode = GeneralUtil.createVerifCode();
+		hMap = restAPI.sendTemplateSMS(mobile,"1", new String[] { verifCode, "2" });
+		
+		if ("000000".equals(hMap.get("statusCode"))) {
+			@SuppressWarnings("unchecked")
+			Map<String, SmsInfo> smss = (Map<String, SmsInfo>) request.getSession()
+					.getAttribute("verifCodes");
+
+			if (smss == null) {
+				smss = new HashMap<String, SmsInfo>();
+				request.getSession().setAttribute("verifCodes", smss);
+			}
+			
+			SmsInfo smsInfo = new SmsInfo(); 
+			smsInfo.setMobile(mobile); 
+			smsInfo.setVerifCode(verifCode);
+			smsInfo.setSendTime(new Date());
+			smss.put(mobile, smsInfo);
+			result = new Result<Object>(null, true, verifCode); 
+		}else{
+			String retMsg = hMap.get("statusMsg").toString();
+			result = new Result<Object>(null, true, retMsg); 
+		}
 		return new Result<Object>(null,true,"获取短信验证码成功").toJson();
 	}
 	
