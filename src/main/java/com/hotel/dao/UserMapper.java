@@ -29,6 +29,6 @@ public interface UserMapper {
 
 	UserVM selectByID(Integer userId);
 
-	void deleteByIds(Map<String, Object> map);
+	void updateByIds(Map<String, Object> map);
 
 }

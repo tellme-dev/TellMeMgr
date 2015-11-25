@@ -29,7 +29,17 @@ public class AdvertisementVM extends Advertisement {
     
     private String adDetailIds;
     
+    private String delAdDetailIds;
+    
     private List<AdDetail> adDetailList;
+
+	public String getDelAdDetailIds() {
+		return delAdDetailIds;
+	}
+
+	public void setDelAdDetailIds(String delAdDetailIds) {
+		this.delAdDetailIds = delAdDetailIds;
+	}
 
 	public Integer getHotelId() {
 		return hotelId;

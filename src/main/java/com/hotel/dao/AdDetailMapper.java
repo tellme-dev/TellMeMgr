@@ -1,6 +1,7 @@
 package com.hotel.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hotel.model.AdDetail;
 
@@ -19,4 +20,6 @@ public interface AdDetailMapper {
     int updateByPrimaryKey(AdDetail record);
 
 	List<AdDetail> selectByAdId(Integer adId);
+
+	void deleteByIds(Map<String, Object> map);
 }

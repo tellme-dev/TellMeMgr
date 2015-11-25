@@ -34,7 +34,7 @@ public interface UserService {
 
 	UserVM getUserByID(Integer userId);
 
-	void deleteUserByIds(String userIds);
+	void updateUserByIds(String userIds);
 
 //	List<UserFunction> getUserFunListByUserId(Integer userId);
 //

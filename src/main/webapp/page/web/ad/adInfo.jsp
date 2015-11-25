@@ -15,6 +15,7 @@
 <script type="text/javascript">
     var type;//0为新增；1为编辑
     var j = 1;
+    var delAdDetailIds = "";//存放删除的图片id
     $(document).ready(function(){
     	type = ${type};
     	initHotel();
@@ -26,12 +27,12 @@
     	    switch(targetType){
     	    case '1':
     	    	doc[0].checked = true; 
-    	    	$("#hotelSelect").combobox("setValue",${adinfo.targetId});
+    	    	$("#hotelSelect").combobox("setValue",'${adinfo.targetId}');
     	    	$("#hotelSelect").combobox("enable",true); 
     	    	break;
     	    case '2':
     	    	doc[1].checked = true;
-    	    	$("#itemTagSelect").combotree("setValue",${adinfo.targetId});
+    	    	$("#itemTagSelect").combotree("setValue",'${adinfo.targetId}');
     	    	$("#itemTagSelect").combotree("enable",true);
     	    	break;
     	    case '3':
@@ -185,7 +186,7 @@
 		var imageTexts = document.getElementById("imageText");
 		imageTexts.value = text;
 		
-		//编辑时遍历图片表id 将其拼接为字符串再放入隐藏标签
+		//编辑时遍历原有图片id 将其拼接为字符串再放入隐藏标签（不包括新增的图片）
 		if(type == 1){
 		    var adDetailIds = "";
 		    var doc = document.getElementsByName("adDetailId");
@@ -199,6 +200,8 @@
 		    }
 		    var doc2 = document.getElementById("adDetailIds");
 		    doc2.value = adDetailIds;
+		    //将已删除的图片id放入隐藏标签中
+		    document.getElementById("delAdDetailIds").value = delAdDetailIds;
 		}
 		if ($('#adForm').form('validate')) {
 			$(obj).attr("onclick", "");
@@ -235,8 +238,9 @@
          //document.getElementById("upload2").removeChild(document.getElementById("img_"+i));
     } 
     function del_p(obj){
+         var id = $(obj).parents("tr").find("td").first()[0].childNodes[0].value;
+         delAdDetailIds += id+",";
          $(obj).parents("tr").remove();
-         //var adName = $(this).parents("tr").find("td")[2].innerText;
     }
     function fileChange (i){
          //将file中选择的图片赋值到img中
@@ -370,11 +374,11 @@
 						    <td width="10%" align="center">图片：</td>
 					        <td><span class="yw-btn bg-blue mt28" onclick="add_img();" style="cursor: pointer;">添加一行</span>
 					        </td>
-					        <td><span class="yw-btn bg-blue mt28" onclick="showdialog();" style="cursor: pointer;">测试</span>
-					        </td>
 					        <td><input id="imageText" name="imageText" type="hidden" style="width:100px;height:30px;"/>
 						    </td>
 						    <td><input id="adDetailIds" name="adDetailIds" type="hidden" style="width:100px;height:30px;"/>
+						    </td>
+						    <td><input id="delAdDetailIds" name="delAdDetailIds" type="hidden" style="width:100px;height:30px;"/>
 						    </td>
 					    </tr>
 					    <tr id="imageGrid" class="ts15">
@@ -386,7 +390,7 @@
 		               <c:if test="${type == 1}">
 		                 <c:forEach var="item" items="${adinfo.adDetailList}">
 		                   <tr>
-		                   <td style="display:none"><input name="adDetailId" value="${item.id}" /> </td>
+		                   <td style="display:none"><input name="adDetailId" value="${item.id}" /></td>
 		                   <td width="15%"><span class="yw-window-btn bg-blue mr26" style="cursor: pointer;" onclick="del_p(this)">删除</span></td>
 		                   <td><img id="image" src="<%=basePath%>${item.imageUrl}" style="width:50px;height:50px"/></td>
 		                   <td><input name="imagetext" value="${item.text}" style="width:200px;height:30px" required/></td>

@@ -84,16 +84,13 @@ public class AdAction extends BaseAction {
 				User user = new User();
 				user.setChildMenuList(lf);
 				request.getSession().setAttribute(Constants.USER_SESSION_NAME,user);
-				/*查询项目tag*/
-				int tagType = 10;
-				List<ItemTag> taglist = baseDataService.selectTagByTagType(tagType);
-				request.setAttribute("taglist", taglist);
 				/*查询广告列表*/
 				Map<String,Object> map = new HashMap<String,Object>();
 				map.put("pageStart",page.getPageStart());
 				map.put("pageSize",page.getPageSize());
+				map.put("isUsed", true);
 				List<AdvertisementVM> lc = adService.getAdPageList(map);
-				int totalCount = adService.getAdPageListCount(ad);
+				int totalCount = adService.getAdPageListCount(map);
 				page.setTotalCount(totalCount);
 				request.setAttribute("adlist", lc);
 				return "web/ad/adList";
@@ -208,7 +205,7 @@ public class AdAction extends BaseAction {
 					HttpServletResponse response) {
 				Result<Advertisement> result = null;
 				try{
-					adService.deleteUserByIds(adIds);
+					adService.updateUserByIds(adIds);
 					result = new Result<Advertisement>(null, true, "删除成功!");
 					return result.toJson();
 				}catch(Exception e){
@@ -216,97 +213,6 @@ public class AdAction extends BaseAction {
 					return result.toJson();
 				}
 			}
-			@ResponseBody
-			@RequestMapping(value = "/saveOrupdatePhoto2.do", method = RequestMethod.POST)
-			public JsonResult<AdvertisementVM> saveOrupdatePhoto2(
-					//@RequestParam MultipartFile files,
-					//@RequestParam("file") MultipartFile files,
-					//@RequestParam("file") CommonsMultipartFile[] files,
-					//MultipartHttpServletRequest request
-					HttpServletRequest request,
-					HttpServletResponse response
-					) {
-				//List<MultipartFile> files = (List<MultipartFile>) request.getFile("myfiles"); 
-				//List<MultipartFile> files = UploadHelper.getFileSet(request, 1024 * 20, null);
-				//MultipartHttpServletRequest   multipartRequest = (MultipartHttpServletRequest) request;
-				JsonResult<AdvertisementVM> json = new JsonResult<AdvertisementVM>();
-				json.setCode(new Integer(0));
-				json.setMessage("保存失败!");
-				List list = new ArrayList();
-				try{
-					//创建一个通用的多部分解析器  
-			        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
-			        //判断 request 是否有文件上传,即多部分请求  
-			        if(multipartResolver.isMultipart(request)){  
-			            //转换成多部分request    
-			            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest)request;  
-			            //取得request中的所有文件名  
-			            Iterator<String> iter = multiRequest.getFileNames();  
-			            MultiValueMap<String, MultipartFile> iter1 = multiRequest.getMultiFileMap();
-			            while(iter.hasNext()){  
-			                //记录上传过程起始时的时间，用来计算上传时间  
-			                int pre = (int) System.currentTimeMillis();  
-			                //取得上传文件  
-			                MultipartFile file = multiRequest.getFile(iter.next());  
-			                if(file != null){  
-			                    //取得当前上传文件的文件名称  
-			                    String myFileName = file.getOriginalFilename();  
-			                    //如果名称不为“”,说明该文件存在，否则说明该文件不存在  
-			                    if(myFileName.trim() !=""){  
-			                        System.out.println(myFileName);  
-			                        //重命名上传后的文件名  
-			                        //String fileName = "demoUpload" + file.getOriginalFilename();  
-			                        //定义上传路径  
-			                        String path = request.getSession().getServletContext().getRealPath(  
-			            	                "/")+"image/ad";  
-			                        File localFile = new File(path,myFileName); 
-			                        //如果路徑不存在 自動創建
-			                        if(!localFile.exists()){  
-			                        	localFile.mkdirs();  
-			                        }  
-			                        try {
-										file.transferTo(localFile);
-									} catch (IllegalStateException | IOException e) {
-										// TODO Auto-generated catch block
-										e.printStackTrace();
-									}  
-			                    }  
-			                }  
-			                //记录上传该文件后的时间  
-			                int finaltime = (int) System.currentTimeMillis();  
-			                System.out.println(finaltime - pre);  
-			            }  
-			              
-			        }  
-				}catch(Exception e){
-					return json;
-				}
-				
-		        return json;  
-			}
-			@ResponseBody
-			@RequestMapping(value = "/saveOrupdatePhoto.do", method = RequestMethod.POST)
-			public JsonResult<AdvertisementVM> saveOrupdatePhoto(
-					HttpServletRequest request,
-					HttpServletResponse response
-					) {
-				JsonResult<AdvertisementVM> json = new JsonResult<AdvertisementVM>();
-				json.setCode(new Integer(0));
-				json.setMessage("保存失败!");
-				try{
-					//创建一个通用的多部分解析器  
-			        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
-			        //判断 request 是否有文件上传,即多部分请求  
-			        if(multipartResolver.isMultipart(request)){  
-			        	FileUtil.uploadMultiFile2(request, "image/ad", FileUtil.RELATIVELY_PATH);
-			        }  
-				}catch(Exception e){
-					return json;
-				}
-				
-		        return json;  
-			}
-
 			// [end]
 
 }

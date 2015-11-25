@@ -9,12 +9,12 @@ public interface AdvertisementService {
 
 	List<AdvertisementVM> getAdPageList(Map<String, Object> map);
 
-	int getAdPageListCount(AdvertisementVM ad);
+	int getAdPageListCount(Map<String, Object> map);
 
 	void saveorUpdateAd(AdvertisementVM ad);
 
 	AdvertisementVM getAdById(Integer id);
 
-	void deleteUserByIds(String adIds);
+	void updateUserByIds(String adIds);
 
 }

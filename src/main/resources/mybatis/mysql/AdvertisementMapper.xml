@@ -155,10 +155,6 @@
   </update>
   
   <sql id="query_sql">
-  		from t_ad a 
-  		left join t_ad_detail ad on a.id = ad.ad_id
-  		left join t_Item_tag t on a.target_id = t.id
-  		where 1=1
   	  <if test="name != null" >
         and a.name = #{name,jdbcType=VARCHAR}
       </if>
@@ -192,22 +188,34 @@
   	 left join t_ad_detail ad on a.id = ad.ad_id
   	 left join t_Item_tag t on a.target_id = t.id
   	 left join t_hotle h on a.target_id = h.id
-  	 group by a.id order by a.create_time
+  	 
+  	 where 1=1
+  	 <if test="isUsed != null" >
+        and a.is_used = #{isUsed,jdbcType=BIT}
+      </if>
+      group by a.id order by a.create_time
     <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
         limit #{pageStart}, #{pageSize}
     </if>
   </select>
      
-  <select id="getAdPageListCount" resultType="java.lang.Integer" parameterType="com.hotel.viewmodel.AdvertisementVM" >
+  <select id="getAdPageListCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
     select count(*) 
     from t_ad a
+    where 1=1 
+    <if test="isUsed != null" >
+        and a.is_used = #{isUsed,jdbcType=BIT}
+      </if>
   </select>
   <select id="selectById" resultMap="BaseVMResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />,t.name as targetName,
     (SELECT GROUP_CONCAT(ad.text) FROM t_ad_detail ad where ad.ad_id = a.id) as imageText,
     (SELECT GROUP_CONCAT(ad.image_url) FROM t_ad_detail ad where ad.ad_id = a.id) as imageUrl
-    <include refid="query_sql"/>
+    from t_ad a
+    left join t_ad_detail ad on a.id = ad.ad_id
+  	left join t_Item_tag t on a.target_id = t.id
+  	where 1=1 <include refid="query_sql"/>
   </select>
   <select id="selectAdVMByPrimaryKey" resultMap="BaseVMResultMap" parameterType="java.lang.Integer" >
     select 
@@ -217,11 +225,13 @@
   	left join t_Item_tag t on a.target_id = t.id
   	where a.id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByIds" parameterType="java.util.Map" >
-    delete from t_ad 
+  <update id="updateByIds" parameterType="java.util.Map" >
+    update t_ad
+    set
+      is_used = #{isUsed,jdbcType=BIT}
     where id in
   		<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
 				#{item}
 		</foreach>
-  </delete>
+  </update>
 </mapper>

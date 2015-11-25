@@ -22,11 +22,11 @@ public interface AdvertisementMapper {
 
 	List<AdvertisementVM> getAdPageList(Map<String, Object> map);
 
-	int getAdPageListCount(AdvertisementVM ad);
+	int getAdPageListCount(Map<String, Object> map);
 
 	AdvertisementVM selectById(Integer id);
 
 	AdvertisementVM selectAdVMByPrimaryKey(Integer adId);
 
-	void deleteByIds(Map<String, Object> map);
+	void updateByIds(Map<String, Object> map);
 }

@@ -174,11 +174,13 @@
     ) as o1
     LEFT JOIN t_org o2 on o2.id = o1.parentId
   </select>
-  <delete id="deleteByIds" parameterType="java.util.Map" >
-    delete from t_user 
+  <update id="updateByIds" parameterType="java.util.Map" >
+    update t_user
+    set
+      is_used = #{isUsed,jdbcType=BIT}
     where id in
   		<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
 				#{item}
 		</foreach>
-  </delete>
+  </update>
 </mapper>

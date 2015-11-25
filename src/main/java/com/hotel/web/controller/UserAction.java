@@ -81,6 +81,7 @@ public class UserAction extends BaseAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("pageStart",page.getPageStart());
 		map.put("pageSize",page.getPageSize());
+		map.put("isUsed", true);
 		List<User> lc = userService.getUserPageList(map);
 		int totalCount = userService.getUserPageListCount(map);
 		page.setTotalCount(totalCount);
@@ -158,7 +159,7 @@ public class UserAction extends BaseAction {
 			HttpServletResponse response) {
 		Result<User> result = null;
 		try{
-			userService.deleteUserByIds(userIds);
+			userService.updateUserByIds(userIds);
 			result = new Result<User>(null, true, "删除成功!");
 			return result.toJson();
 		}catch(Exception e){

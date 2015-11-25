@@ -44,9 +44,9 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	}
 
 	@Override
-	public int getAdPageListCount(AdvertisementVM ad) {
+	public int getAdPageListCount(Map<String, Object> map) {
 		// TODO Auto-generated method stub
-		return adMapper.getAdPageListCount(ad);
+		return adMapper.getAdPageListCount(map);
 	}
 
 	@Override
@@ -55,6 +55,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		List<String> imageTexts = new ArrayList<String>();
 		List<String> imageUrls = ad.getImageUrlList();
 		List<Integer> adDetailIds = new ArrayList<Integer>();
+		List<Integer> delAdDetailIds = new ArrayList<Integer>();
 		//取出imageTexts
 		if(ad.getImageText() != null&&!"".equals(ad.getImageText())){
 			String[] arr = ad.getImageText().split(",");
@@ -74,6 +75,16 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 			}
 			adDetailIds = Arrays.asList(array);
 		}
+		//取出删除的照片id delAdDetailIds编辑时用
+		if(ad.getDelAdDetailIds() != null&&!"".equals(ad.getDelAdDetailIds())){
+			String[] str = ad.getDelAdDetailIds().split(",");
+			Integer array[] = new Integer[str.length];  
+			for(int i=0;i<str.length;i++){  
+			    array[i]=Integer.parseInt(str[i]);
+			}
+			delAdDetailIds = Arrays.asList(array);
+		}
+		
 		AdDetail adDetail = new AdDetail();
 		if(ad.getId()>0){
 			adMapper.updateByPrimaryKeySelective(ad);
@@ -101,6 +112,13 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 				adDetail.setText(text);
 				adDetailMapper.insert(adDetail);
 			}
+			//删除的图片
+			if(delAdDetailIds.size() != 0){
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("ids", delAdDetailIds);
+				adDetailMapper.deleteByIds(map);
+			}
+				
 		}else{
 			ad.setCreateTime(new Date());
 			ad.setIsUsed(true);
@@ -130,7 +148,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	}
 
 	@Override
-	public void deleteUserByIds(String adIds) {
+	public void updateUserByIds(String adIds) {
 		// TODO Auto-generated method stub
 		//adIds格式"1,2,3"
 		String[] str = adIds.split(",");
@@ -141,7 +159,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		List<Integer> ids = Arrays.asList(array);
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("ids", ids);
-		adMapper.deleteByIds(map);
+		map.put("isUsed", false);
+		adMapper.updateByIds(map);
 	}
 
 }

@@ -96,4 +96,11 @@
     from t_ad_detail
     where ad_id = #{adId,jdbcType=INTEGER}
   </select>
+  <delete id="deleteByIds" parameterType="java.util.Map" >
+    delete from t_ad_detail 
+    where id in
+  		<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+				#{item}
+		</foreach>
+  </delete>
 </mapper>

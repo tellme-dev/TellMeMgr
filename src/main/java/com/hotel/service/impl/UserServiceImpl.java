@@ -159,7 +159,7 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public void deleteUserByIds(String userIds) {
+	public void updateUserByIds(String userIds) {
 		// TODO Auto-generated method stub
 		/*将"1,2,3"格式的字符串转换为List<Integer>*/
 		String[] str = userIds.split(",");
@@ -170,7 +170,8 @@ public class UserServiceImpl implements UserService {
 		List<Integer> ids = Arrays.asList(array);
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("ids", ids);
-		userMapper.deleteByIds(map);
+		map.put("isUsed", false);
+		userMapper.updateByIds(map);
 	}
 
 }
