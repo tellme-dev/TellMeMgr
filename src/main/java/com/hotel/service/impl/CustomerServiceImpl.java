@@ -40,5 +40,15 @@ public class CustomerServiceImpl implements CustomerService{
 			return 3;
 		}
 	}
+	@Override
+	public Customer getCustomerByMobile(String mobile) {
+		// TODO Auto-generated method stub
+		return customerMapper.getCustomerByMobile(mobile);
+	}
+	@Override
+	public int insert(Customer c) {
+		// TODO Auto-generated method stub
+		return customerMapper.insert(c);
+	}
 
 }

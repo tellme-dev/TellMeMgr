@@ -1,6 +1,9 @@
 package com.hotel.app;
 
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.cloopen.rest.sdk.CCPRestSmsSDK;
 import com.hotel.common.Result;
 import com.hotel.common.utils.GeneralUtil;
+import com.hotel.common.utils.StringUtil;
 import com.hotel.model.Customer;
+import com.hotel.modelVM.RegisterData;
 import com.hotel.service.CustomerService;
 import com.hotel.viewmodel.SmsInfo;
 /**
@@ -32,15 +38,20 @@ public class CustomerController {
 	@Autowired CustomerService customerService;
 	
 	/**
-	 * 注册用户
+	 * 判断用户是否注册
 	 * @param autoInfo
 	 * @return
 	 */
-	public @ResponseBody  String regsister(
-			@RequestParam(value = "customerInfo", required = false) String customerInfo)
+	@RequestMapping(value = "isExistByMobile.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody  String isExistByMobile(
+			@RequestParam(value = "mobile", required = false) String mobile,
+			HttpServletRequest request)
 	{
-		
-		return null;
+		Customer c = customerService.getCustomerByMobile(mobile);
+		if(c !=null){
+			return new Result<Customer>(null,false,"该号码已注册").toJson();
+		}
+		return new Result<Customer>(null,true,"该号码未注册").toJson();
 	}
 	
 	/**
@@ -89,12 +100,12 @@ public class CustomerController {
 			smsInfo.setVerifCode(verifCode);
 			smsInfo.setSendTime(new Date());
 			smss.put(mobile, smsInfo);
-			result = new Result<Object>(null, true, verifCode); 
+			result = new Result<Object>(null, true, "获取短信验证码成功");
 		}else{
 			String retMsg = hMap.get("statusMsg").toString();
 			result = new Result<Object>(null, true, retMsg); 
 		}
-		return new Result<Object>(null,true,"获取短信验证码成功").toJson();
+		return result.toJson();
 	}
 	
 	/**
@@ -113,6 +124,75 @@ public class CustomerController {
 		Result<Integer> result = new Result<Integer>(temp,true,"");
 		return result.toJson();
 	} 
+	/**
+	 * 用户注册
+	 * @param registerData
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "register.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody String register(
+			@RequestParam(value = "registerData", required = false) String registerData,
+			HttpServletRequest request){
+		JSONObject jObj = JSONObject.fromObject(registerData);
+		RegisterData registerInfo = (RegisterData) JSONObject.toBean(jObj,RegisterData.class);
+		//判断注册信息是否符合格式		
+		String checkMsg =this.checkRegisterData(registerInfo);
+		
+		if(!StringUtil.isEmpty(checkMsg)){
+			return new Result<Object>(null, false, checkMsg).toJson();
+		}
+		
+		@SuppressWarnings("unchecked")
+		Map<String, SmsInfo> smss = (Map<String, SmsInfo>) request.getSession()
+				.getAttribute("verifCodes");
+		if(smss ==null){
+			return new Result<Object>(null, false, "验证码已过期").toJson();
+		}
+		if(!registerInfo.getVerifyCode().equals(smss.get(registerInfo.getMobile()).getVerifCode())){
+			return new Result<Object>(null, false, "验证码不正确").toJson();
+		}
+
+		//判断该电话号码是否已经注册
+		Customer c = customerService.getCustomerByMobile(registerInfo.getMobile());
+		if(c !=null){
+			return new Result<Customer>(null,false,"该号码已注册").toJson();
+		}
+		
+		//插入数据
+		Customer customer = new Customer();
+		customer.setMobile(registerInfo.getMobile());
+		customer.setPsd(registerInfo.getPsd());
+		customer.setRegTime(new Date());
+		
+		int temp = customerService.insert(customer);
+		if(temp ==-1){
+			return new Result<Object>(null, false, "注册失败").toJson();
+		}else{
+			return new Result<Object>(null, true, "注册成功").toJson();
+		}
+	}
+	
+	/**
+	 * 插件传入的注册信息是否符合规范
+	 * @param data
+	 * @return 表示注册信息OK;表示电话号码无效;电话号码为空;密码为空;验证码为空
+	 */
+	private String checkRegisterData(RegisterData data){
+		if(!StringUtil.isMobileNumber(data.getMobile())){
+			return "电话号码无效";
+		}
+		if(StringUtil.isEmpty(data.getMobile())){
+			return "电话号码为空";
+		}
+		if(StringUtil.isEmpty(data.getPsd())){
+			return "密码为空";
+		}
+		if(StringUtil.isEmpty(data.getVerifyCode())){
+			return "验证码为空";
+		}
+		return "";
+	}
 	/**
 	 * 保存用户信息
 	 * 保存用户修改后的个人资料
