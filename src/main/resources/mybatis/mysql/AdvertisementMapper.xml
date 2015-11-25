@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hotel.dao.AdvertisementMapper" >
+  <resultMap id="BaseResultMap" type="com.hotel.model.Advertisement" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="key_word" property="keyWord" jdbcType="VARCHAR" />
+    <result column="target_type" property="targetType" jdbcType="TINYINT" />
+    <result column="target_id" property="targetId" jdbcType="INTEGER" />
+    <result column="target_content" property="targetContent" jdbcType="VARCHAR" />
+    <result column="is_used" property="isUsed" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="resultAdvertisementMap" type="com.hotel.modelVM.AdvertisementVM" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="key" property="key" jdbcType="VARCHAR" />
+    <result column="target_type" property="targetType" jdbcType="TINYINT" />
+    <result column="target_id" property="targetId" jdbcType="INTEGER" />
+    <result column="target_content" property="targetContent" jdbcType="VARCHAR" />
+    <result column="is_used" property="isUsed" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
+    <collection property="adDetails" column="id" select="com.hotel.dao.AdDetailMapper.selectAdVMByAdId"></collection>
+  </resultMap>
+  <resultMap id="WebVMResultMap" type="com.hotel.viewmodel.AdvertisementWebVM" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="key_word" property="keyWord" jdbcType="VARCHAR" />
+    <result column="target_type" property="targetType" jdbcType="TINYINT" />
+    <result column="target_id" property="targetId" jdbcType="INTEGER" />
+    <result column="target_content" property="targetContent" jdbcType="VARCHAR" />
+    <result column="is_used" property="isUsed" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+     a.id, a.name, a.key_word, a.target_type, a.target_id, a.target_content, a.is_used, a.create_time, a.time_stamp
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />,t.name as targetName
+    from t_ad a 
+  	left join t_Item_tag t on a.target_id = t.id
+  	where a.id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="getAdList" resultMap="resultAdvertisementMap" parameterType="java.lang.Integer" >
+  	select *
+  	from t_ad a
+  	where a.id= #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_ad
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hotel.model.Advertisement" >
+  <selectKey resultType="INTEGER" keyProperty="id">
+       SELECT LAST_INSERT_ID()
+  </selectKey>
+    insert into t_ad (id, name, key_word, 
+      target_type, target_id, target_content, 
+      is_used, create_time, time_stamp
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{keyWord,jdbcType=VARCHAR}, 
+      #{targetType,jdbcType=TINYINT}, #{targetId,jdbcType=INTEGER}, #{targetContent,jdbcType=VARCHAR}, 
+      #{isUsed,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, #{timeStamp,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hotel.model.Advertisement" >
+    insert into t_ad
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="keyWord != null" >
+        key_word,
+      </if>
+      <if test="targetType != null" >
+        target_type,
+      </if>
+      <if test="targetId != null" >
+        target_id,
+      </if>
+      <if test="targetContent != null" >
+        target_content,
+      </if>
+      <if test="isUsed != null" >
+        is_used,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="timeStamp != null" >
+        time_stamp,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="keyWord != null" >
+        #{key_word,jdbcType=VARCHAR},
+      </if>
+      <if test="targetType != null" >
+        #{targetType,jdbcType=TINYINT},
+      </if>
+      <if test="targetId != null" >
+        #{targetId,jdbcType=INTEGER},
+      </if>
+      <if test="targetContent != null" >
+        #{targetContent,jdbcType=VARCHAR},
+      </if>
+      <if test="isUsed != null" >
+        #{isUsed,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeStamp != null" >
+        #{timeStamp,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hotel.viewmodel.AdvertisementWebVM" >
+    update t_ad
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="keyWord != null" >
+        key_word = #{keyWord,jdbcType=VARCHAR},
+      </if>
+      <if test="targetType != null" >
+        target_type = #{targetType,jdbcType=TINYINT},
+      </if>
+      <if test="targetId != null" >
+        target_id = #{targetId,jdbcType=INTEGER},
+      </if>
+      <if test="targetContent != null" >
+        target_content = #{targetContent,jdbcType=VARCHAR},
+      </if>
+      <if test="isUsed != null" >
+        is_used = #{isUsed,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="timeStamp != null" >
+        time_stamp = #{timeStamp,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hotel.model.Advertisement" >
+    update t_ad
+    set name = #{name,jdbcType=VARCHAR},
+      key_word = #{keyWord,jdbcType=VARCHAR},
+      target_type = #{targetType,jdbcType=TINYINT},
+      target_id = #{targetId,jdbcType=INTEGER},
+      target_content = #{targetContent,jdbcType=VARCHAR},
+      is_used = #{isUsed,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      time_stamp = #{timeStamp,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <sql id="query_sql">
+  	  <if test="name != null" >
+        and a.name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="keyWord != null" >
+        and a.key_word = #{keyWord,jdbcType=VARCHAR}
+      </if>
+      <if test="targetType != null" >
+        and a.target_type = #{targetType,jdbcType=TINYINT}
+      </if>
+      <if test="targetId != null" >
+        and a.target_id = #{targetId,jdbcType=INTEGER}
+      </if>
+      <if test="targetContent != null" >
+        and a.target_content = #{targetContent,jdbcType=VARCHAR}
+      </if>
+      <if test="isUsed != null" >
+        and a.is_used = #{isUsed,jdbcType=BIT}
+      </if>
+      <if test="createTime != null" >
+        and a.create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="timeStamp != null" >
+        and a.time_stamp = #{timeStamp,jdbcType=TIMESTAMP}
+      </if>
+  		group by a.id order by a.create_time  
+  </sql>
+  
+  <select id="getAdPageList" resultMap="WebVMResultMap" parameterType="java.util.Map" >
+     select <include refid="Base_Column_List" />,h.name as hotelName,t.name as targetName
+	 from t_ad a 
+  	 left join t_ad_detail ad on a.id = ad.ad_id
+  	 left join t_Item_tag t on a.target_id = t.id
+  	 left join t_hotle h on a.target_id = h.id
+  	 
+  	 where 1=1
+  	 <if test="isUsed != null" >
+        and a.is_used = #{isUsed,jdbcType=BIT}
+      </if>
+      group by a.id order by a.create_time
+    <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+        limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+     
+  <select id="getAdPageListCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(*) 
+    from t_ad a
+    where 1=1 
+    <if test="isUsed != null" >
+        and a.is_used = #{isUsed,jdbcType=BIT}
+      </if>
+  </select>
+  <select id="selectById" resultMap="WebVMResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />,t.name as targetName,
+    (SELECT GROUP_CONCAT(ad.text) FROM t_ad_detail ad where ad.ad_id = a.id) as imageText,
+    (SELECT GROUP_CONCAT(ad.image_url) FROM t_ad_detail ad where ad.ad_id = a.id) as imageUrl
+    from t_ad a
+    left join t_ad_detail ad on a.id = ad.ad_id
+  	left join t_Item_tag t on a.target_id = t.id
+  	where 1=1 <include refid="query_sql"/>
+  </select>
+  <select id="selectAdVMByPrimaryKey" resultMap="WebVMResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />,h.name as hotelName,t.name as targetName
+    from t_ad a 
+    left join t_hotle h on h.id = target_id
+  	left join t_Item_tag t on a.target_id = t.id
+  	where a.id = #{id,jdbcType=INTEGER}
+  </select>
+  <update id="updateByIds" parameterType="java.util.Map" >
+    update t_ad
+    set
+      is_used = #{isUsed,jdbcType=BIT}
+    where id in
+  		<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+				#{item}
+		</foreach>
+  </update>
+</mapper>

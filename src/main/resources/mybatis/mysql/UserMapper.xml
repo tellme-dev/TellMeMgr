@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hotel.dao.UserMapper" >
+  <resultMap id="BaseResultMap" type="com.hotel.model.User" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="INTEGER" />
+    <result column="psd" property="psd" jdbcType="VARCHAR" />
+    <result column="is_used" property="isUsed" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="salt" property="salt" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="BaseVMResultMap" type="com.hotel.viewmodel.UserWebVM" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="org_id" property="orgId" jdbcType="INTEGER" />
+    <result column="psd" property="psd" jdbcType="VARCHAR" />
+    <result column="is_used" property="isUsed" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="salt" property="salt" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    u.id, u.name, u.org_id, u.psd, u.is_used, u.create_time, u.salt
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseVMResultMap" parameterType="java.lang.Integer">
+    select 
+    <include refid="Base_Column_List" />,o.name as orgName
+    from t_user u
+    left join t_org o on u.org_id = o.id
+    where u.id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hotel.model.User" >
+    insert into t_user (id, name, org_id, 
+      psd, is_used, create_time, 
+      salt)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{orgId,jdbcType=INTEGER}, 
+      #{psd,jdbcType=VARCHAR}, #{isUsed,jdbcType=BIT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{salt,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.hotel.model.User" >
+    insert into t_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="orgId != null" >
+        org_id,
+      </if>
+      <if test="psd != null" >
+        psd,
+      </if>
+      <if test="isUsed != null" >
+        is_used,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="salt != null" >
+        salt,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        #{orgId,jdbcType=INTEGER},
+      </if>
+      <if test="psd != null" >
+        #{psd,jdbcType=VARCHAR},
+      </if>
+      <if test="isUsed != null" >
+        #{isUsed,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="salt != null" >
+        #{salt,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hotel.model.User" >
+    update t_user
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="orgId != null" >
+        org_id = #{orgId,jdbcType=INTEGER},
+      </if>
+      <if test="psd != null" >
+        psd = #{psd,jdbcType=VARCHAR},
+      </if>
+      <if test="isUsed != null" >
+        is_used = #{isUsed,jdbcType=BIT},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="salt != null" >
+        salt = #{salt,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hotel.model.User" >
+    update t_user
+    set name = #{name,jdbcType=VARCHAR},
+      org_id = #{orgId,jdbcType=INTEGER},
+      psd = #{psd,jdbcType=VARCHAR},
+      is_used = #{isUsed,jdbcType=BIT},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      salt = #{salt,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="query_sql">
+  		from t_user u left join t_org org on u.org_id = org.id
+  		where 1=1
+  	  <if test="name != null" >
+        and u.name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="orgId != null" >
+        and u.org_id = #{orgId,jdbcType=INTEGER}
+      </if>
+      <if test="psd != null" >
+        and u.psd = #{psd,jdbcType=VARCHAR}
+      </if>
+      <if test="isUsed != null" >
+        and u.is_used = #{isUsed,jdbcType=BIT}
+      </if>
+      <if test="createTime != null" >
+        and u.create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="salt != null" >
+        and u.salt = #{salt,jdbcType=VARCHAR}
+      </if>
+  		order by u.create_time
+  </sql>
+  
+  <select id="getUserByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_user u
+    where u.name = #{name,jdbcType=VARCHAR} 
+  </select>
+  <select id="getUserPageList" resultMap="BaseResultMap" parameterType="java.util.Map" >
+     select <include refid="Base_Column_List" />,org.name as orgName
+	  		<include refid="query_sql"/>
+    <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+        limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+  <select id="getUserPageListCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(*) <include refid="query_sql"/>
+  </select>
+  <select id="selectByID" resultMap="BaseVMResultMap" parameterType="java.lang.Integer" >
+    SELECT o1.id,o1.name,o1.orgId,o1.parentId as orgId2,o2.parent_id as orgId3
+    FROM (
+       SELECT u.id,u.name,o.id as orgId,o.name as orgName,o.parent_id as parentId
+       FROM t_user u
+       LEFT JOIN t_org o on o.id = u.org_id
+       WHERE u.id = #{userId,jdbcType=INTEGER}
+    ) as o1
+    LEFT JOIN t_org o2 on o2.id = o1.parentId
+  </select>
+  <update id="updateByIds" parameterType="java.util.Map" >
+    update t_user
+    set
+      is_used = #{isUsed,jdbcType=BIT}
+    where id in
+  		<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+				#{item}
+		</foreach>
+  </update>
+</mapper>
