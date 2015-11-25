@@ -1,9 +1,9 @@
 package com.hotel.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hotel.model.Hotel;
-
 import com.hotel.model.ItemTagAssociation;
 import com.hotel.modelVM.HotelVM;
 
@@ -11,11 +11,19 @@ public interface HotelService {
 	
 	List<Hotel> selectHotelList();
 	
-    public List<Hotel> getPageHotel(Hotel hotel);
+    public List<Hotel> getPageHotel(Map<String, Object> map);
     
     public int getPageHotelCount(Hotel hotel);
 	
     List<ItemTagAssociation> getTagTypeItem(int tagType);
-
-	HotelVM getHotelVMById(int id);
+    
+    int insert(Hotel record);
+    
+    int updateByPrimaryKeySelective(Hotel record);
+    
+    int deleteByHotelId(Map<String, Object> idMap);
+    
+    Hotel selectByPrimaryKey(Integer id);
+    
+    HotelVM getHotelVMById(int id);
 }

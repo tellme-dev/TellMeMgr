@@ -2,9 +2,7 @@ package com.hotel.model;
 
 import java.util.List;
 
-import com.hotel.common.utils.Page;
-
-public class Org extends Page {
+public class Org {
     private Integer id;
 
     private String name;

@@ -8,7 +8,7 @@
     <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
     <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
   </resultMap>
-    <resultMap id="ResulAdtailtMap" type="com.hotel.modelVM.AdDetailVM" >
+  <resultMap id="ResulAdtailtMap" type="com.hotel.modelVM.AdDetailVM" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="ad_id" property="adId" jdbcType="INTEGER" />
     <result column="text" property="text" jdbcType="VARCHAR" />
@@ -18,7 +18,7 @@
     </association>
   </resultMap>
   <sql id="Base_Column_List" >
-    id, ad_id, text, image_url, time_stamp
+     id, ad_id, text, image_url, time_stamp
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -105,9 +105,16 @@
     from t_ad_detail
     where ad_id = #{adId,jdbcType=INTEGER}
   </select>
-    <select id="selectAdVMByAdId" resultMap="ResulAdtailtMap" parameterType="java.lang.Integer" >
+  <select id="selectAdVMByAdId" resultMap="ResulAdtailtMap" parameterType="java.lang.Integer" >
     select *
     from t_ad_detail
     where ad_id = #{adId,jdbcType=INTEGER}
   </select>
+  <delete id="deleteByIds" parameterType="java.util.Map" >
+    delete from t_ad_detail 
+    where id in
+  		<foreach item="item" index="index" collection="ids" open="(" separator="," close=")">  
+				#{item}
+		</foreach>
+  </delete>
 </mapper>

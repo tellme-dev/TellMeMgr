@@ -2,9 +2,11 @@ package com.hotel.service;
 
 import java.text.ParseException;
 import java.util.List;
+import java.util.Map;
 
 import com.hotel.common.ReturnResult;
 import com.hotel.model.User;
+import com.hotel.viewmodel.UserWebVM;
 
 public interface UserService {
 
@@ -16,9 +18,9 @@ public interface UserService {
     
     
     /////
-    List<User> getUserPageList(User example);
+    List<User> getUserPageList(Map<String, Object> map);
     
-    int getUserPageListCount(User example);
+    int getUserPageListCount(Map<String, Object> map);
 
     ReturnResult<User> getUserById(Integer id);
 
@@ -28,7 +30,11 @@ public interface UserService {
 
 	void saveorUpdateUser(User user) throws ParseException;
 
-	User getUserByPrimaryKey(Integer userId);
+	UserWebVM getUserByPrimaryKey(Integer userId);
+
+	UserWebVM getUserByID(Integer userId);
+
+	void updateUserByIds(String userIds);
 
 //	List<UserFunction> getUserFunListByUserId(Integer userId);
 //

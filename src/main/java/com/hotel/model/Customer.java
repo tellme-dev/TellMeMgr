@@ -2,8 +2,6 @@ package com.hotel.model;
 
 import java.util.Date;
 
-import com.hotel.common.utils.Page;
-
 public class Customer {
     private Integer id;
 

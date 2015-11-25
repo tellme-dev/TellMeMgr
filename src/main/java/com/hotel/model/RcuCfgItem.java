@@ -1,8 +1,6 @@
 package com.hotel.model;
 
-import com.hotel.common.utils.Page;
-
-public class RcuCfgItem extends Page {
+public class RcuCfgItem {
     private Integer id;
 
     private Integer cfgId;

@@ -1,8 +1,6 @@
 package com.hotel.model;
 
-import com.hotel.common.utils.Page;
-
-public class ItemTag extends Page{
+public class ItemTag {
     private Integer id;
 
     private Integer parentId;

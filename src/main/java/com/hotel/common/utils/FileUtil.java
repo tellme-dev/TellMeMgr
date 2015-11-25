@@ -98,7 +98,7 @@ public class FileUtil {
 	}
 	
 	/**
-	 * 多文件上�?
+	 * 多文件上传
 	 * @param request
 	 * @param path
 	 * @throws IOException
@@ -126,7 +126,43 @@ public class FileUtil {
         }  
         request.setAttribute("files", loadFiles(request,path));  
 	}
-	
+	/**
+	 * 多文件上传
+	 * @param request
+	 * @param path
+	 * @throws IOException
+	 */
+	public static List<String> uploadMultiFile2(HttpServletRequest request,String path,int pathType) throws IOException{
+		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;  
+        Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();  
+        List<String> imageUrl = new ArrayList<String>();//存放图片url
+        String savePath="";
+        if(pathType==FileUtil.RELATIVELY_PATH)
+	        savePath = request.getSession().getServletContext().getRealPath(  
+	                "/")+path;
+        else
+        	savePath=path;
+  
+        File file = new File(savePath);  
+        if (!file.exists()) {  
+            file.mkdir();  
+        }  
+        String fileName = null;  
+        for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {  
+            MultipartFile mf = entity.getValue();  
+            fileName = mf.getOriginalFilename();  
+            //File uploadFile = new File(savePath + fileName);
+            File uploadFile = new File(savePath,fileName);
+          //如果路徑不存在 自動創建
+            if(!uploadFile.exists()){  
+            	uploadFile.mkdirs();  
+            } 
+            mf.transferTo(uploadFile); 
+            imageUrl.add("image/ad/"+fileName);
+        }  
+        request.setAttribute("files", loadFiles(request,path)); 
+        return imageUrl;
+	}
 	public void downloadFile(){
 		
 	}

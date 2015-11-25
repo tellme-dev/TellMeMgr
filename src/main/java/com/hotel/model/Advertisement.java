@@ -1,16 +1,13 @@
 package com.hotel.model;
 
 import java.util.Date;
-import java.util.List;
 
-import com.hotel.common.utils.Page;
-
-public class Advertisement extends Page {
+public class Advertisement {
     private Integer id;
 
     private String name;
 
-    private String key;
+    private String keyWord;
 
     private Byte targetType;
 
@@ -24,97 +21,6 @@ public class Advertisement extends Page {
 
     private Date timeStamp;
     
-    //自定义
-    private String  createtime;
-    
-    private String targetName;
-    
-    private List<Advertisement> targetIds;
-    
-    private String imageUrl;
-    
-    private List<Advertisement> imageUrlList;
-    
-    private String imageText;
-    
-    private List<Advertisement> imageTextList;
-    
-    private AdDetail adDetail;
-    
-    private List<AdDetail> adDetailList;
-
-	public String getCreatetime() {
-		return createtime;
-	}
-
-	public void setCreatetime(String createtime) {
-		this.createtime = createtime;
-	}
-
-	public List<AdDetail> getAdDetailList() {
-		return adDetailList;
-	}
-
-	public void setAdDetailList(List<AdDetail> adDetailList) {
-		this.adDetailList = adDetailList;
-	}
-
-	public List<Advertisement> getImageUrlList() {
-		return imageUrlList;
-	}
-
-	public void setImageUrlList(List<Advertisement> imageUrlList) {
-		this.imageUrlList = imageUrlList;
-	}
-
-	public List<Advertisement> getImageTextList() {
-		return imageTextList;
-	}
-
-	public void setImageTextList(List<Advertisement> imageTextList) {
-		this.imageTextList = imageTextList;
-	}
-
-	public AdDetail getAdDetail() {
-		return adDetail;
-	}
-
-	public void setAdDetail(AdDetail adDetail) {
-		this.adDetail = adDetail;
-	}
-
-	public List<Advertisement> getTargetIds() {
-		return targetIds;
-	}
-
-	public void setTargetIds(List<Advertisement> targetIds) {
-		this.targetIds = targetIds;
-	}
-
-	public String getTargetName() {
-		return targetName;
-	}
-
-	public void setTargetName(String targetName) {
-		this.targetName = targetName;
-	}
-
-	public String getImageUrl() {
-		return imageUrl;
-	}
-
-	public void setImageUrl(String imageUrl) {
-		this.imageUrl = imageUrl;
-	}
-
-	public String getImageText() {
-		return imageText;
-	}
-
-	public void setImageText(String imageText) {
-		this.imageText = imageText;
-	}
-
 	public Integer getId() {
         return id;
     }
@@ -131,15 +37,15 @@ public class Advertisement extends Page {
         this.name = name;
     }
 
-    public String getKey() {
-        return key;
-    }
+    public String getKeyWord() {
+		return keyWord;
+	}
 
-    public void setKey(String key) {
-        this.key = key;
-    }
+	public void setKeyWord(String keyWord) {
+		this.keyWord = keyWord;
+	}
 
-    public Byte getTargetType() {
+	public Byte getTargetType() {
         return targetType;
     }
 

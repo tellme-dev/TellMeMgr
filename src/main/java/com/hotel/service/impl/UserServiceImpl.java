@@ -2,7 +2,9 @@ package com.hotel.service.impl;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +23,7 @@ import com.hotel.common.utils.GeneralUtil;
 import com.hotel.dao.UserMapper;
 import com.hotel.model.User;
 import com.hotel.service.UserService;
+import com.hotel.viewmodel.UserWebVM;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {
@@ -91,9 +94,9 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public List<User> getUserPageList(User user) {
+	public List<User> getUserPageList(Map<String, Object> map) {
 		// TODO Auto-generated method stub
-		List<User> userlist = userMapper.getUserPageList(user);
+		List<User> userlist = userMapper.getUserPageList(map);
 		/*转换时间格式*/
 		List<User> list = new ArrayList<User>();
 		for(int i=0;i<userlist.size();i++){
@@ -108,9 +111,9 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public int getUserPageListCount(User user) {
+	public int getUserPageListCount(Map<String, Object> map) {
 		// TODO Auto-generated method stub
-		return userMapper.getUserPageListCount(user);
+		return userMapper.getUserPageListCount(map);
 	}
 
 
@@ -142,9 +145,33 @@ public class UserServiceImpl implements UserService {
 
 
 	@Override
-	public User getUserByPrimaryKey(Integer userId) {
+	public UserWebVM getUserByPrimaryKey(Integer userId) {
 		// TODO Auto-generated method stub
 		return userMapper.selectByPrimaryKey(userId);
+	}
+
+
+	@Override
+	public UserWebVM getUserByID(Integer userId) {
+		// TODO Auto-generated method stub
+		return userMapper.selectByID(userId);
+	}
+
+
+	@Override
+	public void updateUserByIds(String userIds) {
+		// TODO Auto-generated method stub
+		/*将"1,2,3"格式的字符串转换为List<Integer>*/
+		String[] str = userIds.split(",");
+		Integer array[] = new Integer[str.length];  
+		for(int i=0;i<str.length;i++){  
+		    array[i]=Integer.parseInt(str[i]);
+		}
+		List<Integer> ids = Arrays.asList(array);
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("ids", ids);
+		map.put("isUsed", false);
+		userMapper.updateByIds(map);
 	}
 
 }

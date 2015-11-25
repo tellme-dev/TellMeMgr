@@ -1,6 +1,7 @@
 package com.hotel.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -29,9 +30,9 @@ public class HotelServiceImpl implements HotelService{
 	}
 
 	@Override
-	public List<Hotel> getPageHotel(Hotel hotel) {
+	public List<Hotel> getPageHotel(Map<String, Object> map) {
 		// TODO Auto-generated method stub
-		return hotelMapper.getPageHotel(hotel);
+		return hotelMapper.getPageHotel(map);
 	}
 	@Override
 	public int getPageHotelCount(Hotel hotel) {
@@ -42,6 +43,30 @@ public class HotelServiceImpl implements HotelService{
 	public List<ItemTagAssociation> getTagTypeItem(int tagType) {
 		// TODO Auto-generated method stub
 		return associationMapper.getTagTypeItem(tagType);
+	}
+
+	@Override
+	public int insert(Hotel record) {
+		// TODO Auto-generated method stub
+		return hotelMapper.insert(record);
+	}
+
+	@Override
+	public int updateByPrimaryKeySelective(Hotel record) {
+		// TODO Auto-generated method stub
+		return hotelMapper.updateByPrimaryKey(record);
+	}
+
+	@Override
+	public int deleteByHotelId(Map<String, Object> idMap) {
+		// TODO Auto-generated method stub
+		return hotelMapper.deleteByHotelId(idMap);
+	}
+
+	@Override
+	public Hotel selectByPrimaryKey(Integer id) {
+		// TODO Auto-generated method stub
+		return hotelMapper.selectByPrimaryKey(id);
 	}
 
 	@Override

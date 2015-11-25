@@ -1,6 +1,7 @@
 package com.hotel.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hotel.model.AdDetail;
 import com.hotel.modelVM.AdDetailVM;
@@ -22,4 +23,6 @@ public interface AdDetailMapper {
 	List<AdDetail> selectByAdId(Integer adId);
 	
 	List<AdDetailVM> selectAdVMByAdId(Integer adId);
+
+	void deleteByIds(Map<String, Object> map);
 }

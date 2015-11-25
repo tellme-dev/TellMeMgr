@@ -14,6 +14,7 @@ import com.hotel.dao.RegionMapper;
 import com.hotel.model.Org;
 import com.hotel.model.Region;
 import com.hotel.service.BaseDataService;
+import com.hotel.viewmodel.ItemTagWebVM;
 
 @Service("baseDataService")
 public class BaseDataServiceImpl implements BaseDataService {
@@ -109,6 +110,36 @@ public class BaseDataServiceImpl implements BaseDataService {
 	public List<ItemTag> selectTagList() {
 		// TODO Auto-generated method stub
 		return tagMapper.selectTagList();
+	}
+    /**
+     * 加载ItemTag树形结构
+     */
+	@Override
+	public List<ItemTagWebVM> getItemTagTree(Integer pid) {
+		// TODO Auto-generated method stub
+		List<ItemTagWebVM> ls = new ArrayList<ItemTagWebVM>();
+		List<ItemTagWebVM> list = new ArrayList<ItemTagWebVM>();
+		ls = tagMapper.selectByPid(pid); 
+		list = getItemTagNodes(ls);
+		return list;
+	}
+	private List<ItemTagWebVM> getItemTagNodes(List<ItemTagWebVM> ls) {
+		// TODO Auto-generated method stub
+		List<ItemTagWebVM> list = new ArrayList<ItemTagWebVM>();
+		for(ItemTagWebVM t:ls){
+			List<ItemTagWebVM> clist = tagMapper.selectByPid(t.getId());
+			if(clist.size()>0){
+				t.setChildren(getItemTagNodes(clist));
+			}
+			list.add(t);
+		}
+		return list;
+	}
+
+	@Override
+	public Region getRegionById(int id) {
+		// TODO Auto-generated method stub
+		return regionMapper.selectByPrimaryKey(id);
 	}
 
 }

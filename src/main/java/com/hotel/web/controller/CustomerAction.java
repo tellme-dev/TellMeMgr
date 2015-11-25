@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.hotel.common.ReturnResult;
 import com.hotel.common.utils.Constants;
+import com.hotel.common.utils.Page;
 import com.hotel.model.Customer;
 import com.hotel.model.Function;
 import com.hotel.model.Hotel;
@@ -42,18 +43,20 @@ public class CustomerAction extends BaseAction {
 	 * @return
 	 */
 	@RequestMapping(value = "/customerList.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-	public String logInitcustomer(Customer customer, 
+	public String logInitcustomer(Page page,
 			HttpServletRequest request,
 			HttpServletResponse response) {
-		if (customer.getPageNo() == null)
-			customer.setPageNo(1);
-		customer.setPageSize(Constants.DEFAULT_PAGE_SIZE);
+		/*分页参数*/
+		if (page.getPageNo() == null){
+			page.setPageNo(1);
+		}
+		page.setPageSize(Constants.DEFAULT_PAGE_SIZE);
 		//加载菜单
 		List<Function> lf = functionService.getFunctionByParentUrl("/web/customer/customerList.do");
 		User user = new User();
 		user.setChildMenuList(lf);
 		request.getSession().setAttribute(Constants.USER_SESSION_NAME,user);
-		request.setAttribute("customer", customer);
+		//page.setTotalCount(totalCount);
 		return "web/customer/customerList";
 	}
 	

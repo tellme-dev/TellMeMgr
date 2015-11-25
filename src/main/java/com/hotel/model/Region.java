@@ -1,8 +1,6 @@
 package com.hotel.model;
 
-import com.hotel.common.utils.Page;
-
-public class Region extends Page {
+public class Region {
     private Integer id;
 
     private Integer parentId;
@@ -12,6 +10,17 @@ public class Region extends Page {
     private String path;
 
     private String name;
+    
+    public Region() {
+		// TODO Auto-generated constructor stub
+	}
+    
+    public Region(boolean empty) {
+		if(empty){
+			this.id = 0;
+			this.name = "";
+		}
+	}
 
     public Integer getId() {
         return id;

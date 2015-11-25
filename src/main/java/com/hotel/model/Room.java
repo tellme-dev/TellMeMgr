@@ -1,7 +1,6 @@
 package com.hotel.model;
 
-
-public class Room{
+public class Room {
     private Integer id;
 
     private Integer hotelId;

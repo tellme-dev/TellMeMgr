@@ -11,8 +11,18 @@
     <result column="note" jdbcType="VARCHAR" property="note" />
     <result column="tag_type" jdbcType="INTEGER" property="tagType" />
   </resultMap>
+  <resultMap id="BaseVMResultMap" type="com.hotel.viewmodel.ItemTagWebVM">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="level" jdbcType="TINYINT" property="level" />
+    <result column="is_leaf" jdbcType="BIT" property="isLeaf" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="tag_type" jdbcType="INTEGER" property="tagType" />
+  </resultMap>
   <sql id="Base_Column_List">
-    t.id, t.parent_id, t.level, t.is_leaf, t.path, t.name, t.note, t.tag_type
+     t.id, t.parent_id, t.level, t.is_leaf, t.path, t.name, t.note, t.tag_type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
@@ -131,13 +141,6 @@
     from t_Item_tag t
     where t.tag_type = #{tagType,jdbcType=INTEGER}
   </select>
-  <select id="selectByItemId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-  	select
-  	<include refid="Base_Column_List" />
-  	from t_item_tag_association a
-  	left join t_Item_tag t on  a.item_tag_id=t.id 
-  	where a.item_id = #{0}
-  </select>
   <select id="selectTagList" resultMap="BaseResultMap" >
     select 
     <include refid="Base_Column_List" />
@@ -150,10 +153,10 @@
     from t_Item_tag t
     where t.tag_type >= #{tagType,jdbcType=INTEGER}
   </select>
-  <select id="getchildItemTagsByParentId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-  select
-  <include refid="Base_Column_List" />
-    from t_Item_tag
-    where parent_id = #{parentId,jdbcType=INTEGER}
+  <select id="selectByPid" resultMap="BaseVMResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />,t.name as text
+    from t_Item_tag t
+    where t.parent_id = #{pid,jdbcType=INTEGER}
   </select>
 </mapper>

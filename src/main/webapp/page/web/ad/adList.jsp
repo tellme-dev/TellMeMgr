@@ -20,16 +20,16 @@
 <script type="text/javascript">
 		$(document).ready(function(){
 			$("#pager").pager({
-			    pagenumber:'${ad.pageNo}',                         /* 表示初始页数 */
-			    pagecount:'${ad.pageCount}',                      /* 表示总页数 */
-			    totalCount:'${ad.totalCount}',
+			    pagenumber:'${page.pageNo}',                         /* 表示初始页数 */
+			    pagecount:'${page.pageCount}',                      /* 表示总页数 */
+			    totalCount:'${page.totalCount}',
 			    buttonClickCallback:PageClick                     /* 表示点击分页数按钮调用的方法 */                  
 			});
 			$("#adinfoList tr").each(function(i){
 				if(i>0){
 					$(this).bind("click",function(){
 						var adId = $(this).find("td").first().text();
-						 window.location.href="adinfo.do?adId="+adId;
+						 //window.location.href="adinfo.do?adId="+adId;
 					});
 				}
 			}); 
@@ -37,7 +37,7 @@
 PageClick = function(pageclickednumber) {
 	$("#pager").pager({
 	    pagenumber:pageclickednumber,                 /* 表示启示页 */
-	    pagecount:'${ad.pageCount}',                  /* 表示最大页数pagecount */
+	    pagecount:'${page.pageCount}',                  /* 表示最大页数pagecount */
 	    buttonClickCallback:PageClick                 /* 表示点击页数时的调用的方法就可实现javascript分页功能 */            
 	});
 	
@@ -63,6 +63,21 @@ function pagesearch(){
 }
 function gotoAdd(){
 	window.location.href="adinfo.do?adId=0";
+}
+function gotoEdit(){
+	var doc=$(":checkbox:checked");
+	if(doc.length == 0){
+		$.messager.alert('提示信息', "请选择操作项！", "warning");
+		return;
+	}
+	if(doc.length > 1){
+		$.messager.alert('提示信息', "只能编辑一项！", "warning");
+		return;
+	}
+	$(":checkbox:checked").each(function(i){
+		var adId = $(this).parents("tr").find("td").first().text();
+		window.location.href="adinfo.do?adId="+adId;
+	}); 
 }
 function showdialog(){
 	var wz = getDialogPosition($('#adInfoWindow').get(0),100);
@@ -93,7 +108,48 @@ function saveAd(obj){
 		  		}
 		  	 });  
 	}
-}  
+} 
+function deleteAd(){
+	var doc=$(":checkbox:checked");
+	if(doc.length == 0){
+		$.messager.alert('提示信息', "请选择操作项！", "warning");
+		return;
+	}
+	/*将选中的项的id放入adIds中*/
+	var adIds="";
+	var adNames="";
+	$(":checkbox:checked").each(function(i){
+		var adId = $(this).parents("tr").find("td").first().text();
+		var adName = $(this).parents("tr").find("td")[2].innerText;
+		if(i==0){
+			adIds += adId;
+			adNames += adName;
+		}else{
+			adIds += ","+adId; 
+			adNames += "，"+adName;
+		}
+	}); 
+	$.messager.confirm('提示信息',"确认删除广告["+adNames+"]？",function(r){
+			if(r){
+				deleteAction(adIds);
+			}
+	});
+}
+function deleteAction(adIds){
+	$.ajax({
+		url :  "jsonDeleteAd.do?adIds="+adIds,
+		type : "POST",
+		dataType : "json",
+		async : false,
+		success : function(req) {
+			if (req.isSuccess) {
+				window.location.href="adList.do";
+			} else {
+				$.messager.alert('删除失败ʾ', req.msg, "warning");
+			}
+		}
+	});
+}
 </script>
 </head>
 
@@ -110,43 +166,57 @@ function saveAd(obj){
 									placeholder="搜索" value="${ad.searchName}" />
 								<span class="yw-btn bg-orange ml30 cur" onclick="search();">开始查找</span> --%>
 								<span class="yw-btn bg-green ml20 cur" onclick="gotoAdd();">新建广告</span>
-								<span class="yw-btn bg-green ml20 cur" onclick="">删除广告</span>
+								<span class="yw-btn bg-blue ml20 cur" onclick="gotoEdit();">编辑广告</span>
+								<span class="yw-btn bg-orange ml20 cur" onclick="deleteAd()">删除广告</span>
 							</div>
 							<div class="cl"></div>
 						</div>
 			
 						<input type="hidden" id="pageNumber" name="pageNo"
-							value="${ad.pageNo}" />
+							value="${page.pageNo}" />
 					</form>
 				</div>
 				<table class="yw-cm-table" id="adinfoList">
 					<tr>
 						<th style="display:none">序号</th>
+						<th width="5%"></th>
 						<th>名称</th>
 						<th>关键字</th> 
 						<th>类型</th>
-						<th>项目</th>
+						<th>酒店或标签</th>
 						<th>内容</th>
 						<th>创建时间</th>
 					</tr>
 					<c:forEach var="item" items="${adlist}">
 						<tr>
 							<td style="display:none" align="left">${item.id}</td>
+							<td width="5%"><input name="checkbox" type="checkbox"/></td>
 							<td>${item.name}</td> 
-							<td>${item.key}</td> 
+							<td>${item.keyWord}</td> 
 							<c:if test="${item.targetType == 1}">
-							  <td>项目标签</td>
+							  <td>酒店</td>
                             </c:if>
 							<c:if test="${item.targetType == 2}">
-							  <td>社区</td>
+							  <td>标签</td>
                             </c:if>
 							<c:if test="${item.targetType == 3}">
-							  <td>URL地址</td>
+							  <td>社区</td>
                             </c:if>
 							<c:if test="${item.targetType == 4}">
+							  <td>URL地址</td>
+                            </c:if>
+							<c:if test="${item.targetType == 5}">
 							  <td>HTML页面</td>
                             </c:if>
-							<td>${item.targetName}</td> 
+                            <c:if test="${item.targetType == 1}">
+							  <td>${item.hotelName}</td>
+                            </c:if>
+                            <c:if test="${item.targetType == 2}">
+							  <td>${item.targetName}</td>
+                            </c:if>
+                            <c:if test="${item.targetType == 3||item.targetType == 4||item.targetType == 5}">
+							  <td></td>
+                            </c:if>
 							<td>${item.targetContent}</td> 
 							<td>${item.createtime}</td>
 						</tr>
@@ -158,50 +228,5 @@ function saveAd(obj){
 		<div class="cl"></div>
 	</div>
 	<div class="cl"></div>
-
-	</div>
-	
- 	  <div id="adInfoWindow" class="easyui-window" title="新添广告" style="width:560px;height:480px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
-		<form id="saveAdForm" name ="saveAdForm" action="saveOrupdateAd.do"  method="post">
-		<p style="display:none">
-        	<span class="fl">id：</span><input name="id" type="text" value="0" class="easyui-validatebox"/>
-        </p>
-		<p class="yw-window-p">
-        	<span class="fl">选择图片：</span><input name="imageUrl" type="file" id="file" value="" class="easyui-validatebox"  validType="Length[1,25]" style="width:254px;height:30px;"/>
-        </p> 
-		<p class="yw-window-p">
-        	<span class="fl">图片描述：</span><input name="imageText" type="text" value="" class="easyui-validatebox"  validType="Length[1,25]" style="width:254px;height:30px;"/>
-        </p> 
-		<p class="yw-window-p">
-        	<span class="fl">名称：</span><input name="name" type="text" value="" class="easyui-validatebox" required="true"  validType="Length[1,25]" style="width:254px;height:30px;"/>
-        </p> 
-		<p class="yw-window-p">
-        	<span class="fl">关键字：</span><input name="key" type="text" value="" placeholder="关键字之间用逗号隔开" class="easyui-validatebox"  validType="Length[1,25]" style="width:254px;height:30px;"/>
-        </p>
-        <p class="yw-window-p">
-        	<span class="fl">类型：</span>
-        	  <input type="radio" name="targetType" onclick="tagChange(1)" value="1" checked>项目标签　　
-        	  <input type="radio" name="targetType" onclick="tagChange(2)" value="2">社区　　
-        	  <input type="radio" name="targetType" onclick="tagChange(3)" value="3">URL地址　　
-        	  <input type="radio" name="targetType" onclick="tagChange(4)" value="4">HTML页面　　
-        </p> 
-		<!-- <p class="yw-window-p">
-        	<span class="fl">类型：</span><select name="targetType" onchange="tagChange()" class="easyui-combobox"><option value="" selected>=请选择类型=</option><option value="1">项目标签</option><option value="2">社区</option><option value="3">URL地址</option><option value="4">HTML页面</option></select>
-        </p> -->
-        <p id="tagContent" style="display:none" class="yw-window-p">
-        	<span class="fl">内容：</span><input name="targetContent" type="text" value="" class="easyui-validatebox" required="true"  validType="Length[1,25]" style="width:254px;height:30px;"/>
-        </p>
-        <p id="itemTag" class="yw-window-p">
-        	<span class="fl">项目：</span>
-        	<c:forEach var="item" items="${taglist}">
-        	  <input type="radio" name="targetIds"  value="${item.id}" checked>${item.name}　　
-			</c:forEach>
-        </p>
-        <div class="yw-window-footer txt-right">
-        	<span class="yw-window-btn bg-lightgray mt12"  onclick="$('#adInfoWindow').window('close');">退出</span>
-        	<span class="yw-window-btn bg-blue mt12" onclick="saveAd(this);">保存</span>
-        </div>
-        </form>
-	</div>
 </body>
 </html>

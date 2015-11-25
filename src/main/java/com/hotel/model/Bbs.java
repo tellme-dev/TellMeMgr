@@ -2,9 +2,7 @@ package com.hotel.model;
 
 import java.util.Date;
 
-import com.hotel.common.utils.Page;
-
-public class Bbs{
+public class Bbs {
     private Integer id;
 
     private Integer customerId;

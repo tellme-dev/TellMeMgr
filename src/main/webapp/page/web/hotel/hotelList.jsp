@@ -22,9 +22,9 @@
 
 		$(document).ready(function(){
 			$("#pager").pager({
-			    pagenumber:'${hotel.pageNo}',                         /* 表示初始页数 */
-			    pagecount:'${hotel.pageCount}',                      /* 表示总页数 */
-			    totalCount:'${hotel.totalCount}',
+			    pagenumber:'${page.pageNo}',                         /* 表示初始页数 */
+			    pagecount:'${page.pageCount}',                      /* 表示总页数 */
+			    totalCount:'${page.totalCount}',
 			    buttonClickCallback:PageClick                     /* 表示点击分页数按钮调用的方法 */                  
 			});
 			$("#hotelinfoList tr").each(function(i){
@@ -40,20 +40,24 @@
 PageClick = function(pageclickednumber) {
 	$("#pager").pager({
 	    pagenumber:pageclickednumber,                 /* 表示启示页 */
-	    pagecount:'${hotel.pageCount}',                  /* 表示最大页数pagecount */
+	    pagecount:'${page.pageCount}',                  /* 表示最大页数pagecount */
 	    buttonClickCallback:PageClick                 /* 表示点击页数时的调用的方法就可实现javascript分页功能 */            
 	});
 	
 	$("#pageNumber").val(pageclickednumber);          /* 给pageNumber从新赋值 */
 	/* 执行Action */
 	pagesearch();
-}
+};
 function search(){
 	$("#pageNumber").val("1");
 	pagesearch(); 
 } 
 function pagesearch(){
 	hotelForm.submit();
+}
+
+function refresh(){
+	window.location.reload();
 }
 
 
@@ -79,10 +83,101 @@ function saveHotel(obj){
 	}
 }
 
-function loadHotelInfo(){
-	window.location.href = "hotelInfo.do";
+//删除酒店信息
+function deleteHotel(obj){
+	var cbs = document.getElementsByName("cb_hotelId");
+	if(cbs.length == 0){
+		myAlert("当前还没有数据");
+		return;
+	}
+	var ids = "";
+	for(var i = 0, len = cbs.length; i < len; i ++){
+		if(cbs[i].checked){
+			ids += cbs[i].value+",";
+		}
+	}
+	
+	if(ids == ""){
+		myAlert("请选择需要删除的酒店信息");
+		return;
+	}
+	
+	$.messager.confirm("删除确认","确认要删除所选数据吗？", function(b){
+		if(b){
+			ids = ids.substring(0, ids.length - 1);
+	
+			$(obj).attr("onclick", "javascript:void(0);");
+			var url = "${pageContext.request.contextPath}/web/hotel/jsonLoadDeleteHotel.do?hotelId="+ids;
+			requestGet(url, {}, function(data){
+				if(data.code == 1){
+					myAlert("删除数据成功");
+					$(obj).attr("onclick", "deleteHotel(this);");
+					refresh();
+				}else{
+					myAlert(data.message);
+					$(obj).attr("onclick", "deleteHotel(this);");
+				}
+			});
+		}
+	});
 }
 
+function requestGet(url, data, success){
+	$.ajax({
+	    type: 'GET',
+	    url: url,
+	    data: data,
+	    success: success,
+	    error:function(){   
+        	alert('error');   
+        },
+	    dataType: 'json'
+	});
+	
+}
+
+function loadHotelInfo(isAdd){
+	if(isAdd){
+		window.location.href = "hotelInfo.do?hotelId=0";
+	}else{
+		var cbs = document.getElementsByName("cb_hotelId");
+		if(cbs.length == 0){
+			myAlert("当前还没有数据");
+			return;
+		}
+		var id = "";
+		var ids = "";
+		for(var i = 0, len = cbs.length; i < len; i ++){
+			if(cbs[i].checked){
+				if(id == ""){
+					id = cbs[i].value;
+				}
+				ids += cbs[i].value+",";
+			}
+		}
+		
+		if(id == ""){
+			myAlert("请选择需要删除的酒店信息");
+			return;
+		}
+		if(id.length + 1 < ids.length){
+			myAlert("当前功能仅支持单选");
+			return;
+		}
+		
+		window.location.href = "hotelInfo.do?hotelId="+id;
+	}
+}
+
+function loadHotelProject(){
+	myAlert("请先选择一条酒店数据");
+	return ;
+	//window.location.href = "hotelProject.do";
+}
+
+function myAlert(msg){
+	$.messager.alert('提示', msg,'info',function(){});
+}
 
 </script>
 <style type="text/css">
@@ -108,19 +203,20 @@ function loadHotelInfo(){
 						action="hotelList.do" method="get">
 						<div class="pd10-28">
 							<div align="left" class="mt30">
-								<span class="yw-btn bg-green cur ts15" onclick="loadHotelInfo();">添加酒店</span>
-								<span class="yw-btn bg-blue ml20 cur ts15" onclick="showdialog();">修改酒店</span>
-								<span class="yw-btn bg-orange ml20 cur ts15" onclick="showdialog();">删除酒店</span>
+								<span class="yw-btn bg-green cur ts15" onclick="loadHotelInfo(true);">添加酒店</span>
+								<span class="yw-btn bg-blue ml20 cur ts15" onclick="loadHotelInfo(false);">修改酒店</span>
+								<span class="yw-btn bg-gray ml20 cur ts15" onclick="loadHotelProject();">项目管理</span>
+								<span class="yw-btn bg-orange ml20 cur ts15" onclick="deleteHotel(this);">删除酒店</span>
 							</div>
 						</div>
 			
 						<input type="hidden" id="pageNumber" name="pageNo"
-							value="${hotel.pageNo}" />
+							value="${page.pageNo}" />
 					</form>
 				</div>
 				<table class="yw-cm-table" id="userinfoList">
 					<tr class="ts15">
-						<th>序号</th>
+						<th>选择</th>
 						<th>酒店名称</th> 
 						<th>描述</th>
 						<th>所属区域编号</th>
@@ -129,7 +225,7 @@ function loadHotelInfo(){
 					</tr>
 					<c:forEach var="item" items="${hotelList}">
 						<tr class="ts14">
-							<td align="left">${item.id}</td>
+							<td align="left"><input type="checkbox" name="cb_hotelId" value="${item.id}" /></td>
 							<td>${item.name}</td> 
 							<td>${item.text}</td> 
 							<td>${item.regionId}</td> 
