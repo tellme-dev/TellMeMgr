@@ -9,7 +9,7 @@
     <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, ad_id, text, image_url, time_stamp
+     id, ad_id, text, image_url, time_stamp
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 

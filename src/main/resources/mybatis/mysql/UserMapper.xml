@@ -22,7 +22,7 @@
   <sql id="Base_Column_List" >
     u.id, u.name, u.org_id, u.psd, u.is_used, u.create_time, u.salt
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseVMResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" resultMap="BaseVMResultMap" parameterType="java.lang.Integer">
     select 
     <include refid="Base_Column_List" />,o.name as orgName
     from t_user u

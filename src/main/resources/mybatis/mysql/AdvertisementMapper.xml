@@ -24,7 +24,7 @@
     <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    a.id, a.name, a.key_word, a.target_type, a.target_id, a.target_content, a.is_used, a.create_time, a.time_stamp
+     a.id, a.name, a.key_word, a.target_type, a.target_id, a.target_content, a.is_used, a.create_time, a.time_stamp
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 

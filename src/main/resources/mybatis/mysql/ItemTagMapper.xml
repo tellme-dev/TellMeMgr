@@ -22,7 +22,7 @@
     <result column="tag_type" jdbcType="INTEGER" property="tagType" />
   </resultMap>
   <sql id="Base_Column_List">
-    t.id, t.parent_id, t.level, t.is_leaf, t.path, t.name, t.note, t.tag_type
+     t.id, t.parent_id, t.level, t.is_leaf, t.path, t.name, t.note, t.tag_type
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
