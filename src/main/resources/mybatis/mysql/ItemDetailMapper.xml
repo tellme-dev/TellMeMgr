@@ -7,6 +7,13 @@
     <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
     <result column="note" property="note" jdbcType="VARCHAR" />
   </resultMap>
+  <resultMap id="resulItemDetailVMtMap" type="com.hotel.modelVM.ItemDetailVM" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="item_id" property="itemId" jdbcType="INTEGER" />
+    <result column="image_url" property="imageUrl" jdbcType="VARCHAR" />
+    <result column="note" property="note" jdbcType="VARCHAR" />
+    <association property="item" javaType="Item" column="item_id" select="com.hotel.dao.ItemMapper.selectByPrimaryKey"></association>
+  </resultMap>
   <sql id="Base_Column_List" >
     id, item_id, image_url, note
   </sql>
@@ -79,4 +86,11 @@
       note = #{note,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectItemVMByItemId" resultMap="resulItemDetailVMtMap" parameterType="java.lang.Integer">
+  	select 
+    <include refid="Base_Column_List" />
+    from t_item_detail
+    where item_id = #{itemId,jdbcType=INTEGER}
+  </select>
+
 </mapper>

@@ -3,6 +3,7 @@ package com.hotel.dao;
 import java.util.List;
 
 import com.hotel.model.Item;
+import com.hotel.modelVM.ItemVM;
 
 @MyBatisRepository
 public interface ItemMapper {
@@ -19,4 +20,7 @@ public interface ItemMapper {
     int updateByPrimaryKey(Item record);
     
     List<Item> getItemByHotel(int hotelId);
+    ItemVM selectItemVMById(int id);
+    
+    List<ItemVM> selectItemVMByHotelId(int hotelId);
 }

@@ -5,7 +5,7 @@ public class BannerDetail {
 
     private Integer adId;
 
-    private Integer index;
+    private Integer sort;
 
     private Integer bannerId;
 
@@ -25,12 +25,12 @@ public class BannerDetail {
         this.adId = adId;
     }
 
-    public Integer getIndex() {
-        return index;
+    public Integer getSort() {
+        return sort;
     }
 
-    public void setIndex(Integer index) {
-        this.index = index;
+    public void setSort(Integer index) {
+        this.sort = index;
     }
 
     public Integer getBannerId() {
