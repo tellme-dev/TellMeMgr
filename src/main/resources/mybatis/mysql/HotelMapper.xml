@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hotel.dao.HotelMapper" >
+  <resultMap id="BaseResultMap" type="com.hotel.model.Hotel" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="text" property="text" jdbcType="VARCHAR" />
+    <result column="region_id" property="regionId" jdbcType="INTEGER" />
+    <result column="longitude" property="longitude" jdbcType="DECIMAL" />
+    <result column="latitude" property="latitude" jdbcType="DECIMAL" />
+  </resultMap>
+    <resultMap id="resultHotelVMMap" type="com.hotel.modelVM.HotelVM" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="text" property="text" jdbcType="VARCHAR" />
+    <result column="region_id" property="regionId" jdbcType="INTEGER" />
+    <result column="longitude" property="longitude" jdbcType="DECIMAL" />
+    <result column="latitude" property="latitude" jdbcType="DECIMAL" />
+    <collection property="itemVMs" column="id" select="com.hotel.dao.ItemMapper.selectItemVMByHotelId"></collection>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, name, text, region_id, longitude, latitude
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_hotle
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="getHotelVMById" resultMap="resultHotelVMMap"  parameterType="java.lang.Integer" >
+  	select *
+  	from t_hotle
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_hotle
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.hotel.model.Hotel" >
+    insert into t_hotle (id, name, text, 
+      region_id, longitude, latitude
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR}, 
+      #{regionId,jdbcType=INTEGER}, #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.hotel.model.Hotel" >
+    insert into t_hotle
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="text != null" >
+        text,
+      </if>
+      <if test="regionId != null" >
+        region_id,
+      </if>
+      <if test="longitude != null" >
+        longitude,
+      </if>
+      <if test="latitude != null" >
+        latitude,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="text != null" >
+        #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="regionId != null" >
+        #{regionId,jdbcType=INTEGER},
+      </if>
+      <if test="longitude != null" >
+        #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null" >
+        #{latitude,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.hotel.model.Hotel" >
+    update t_hotle
+    <set >
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="text != null" >
+        text = #{text,jdbcType=VARCHAR},
+      </if>
+      <if test="regionId != null" >
+        region_id = #{regionId,jdbcType=INTEGER},
+      </if>
+      <if test="longitude != null" >
+        longitude = #{longitude,jdbcType=DECIMAL},
+      </if>
+      <if test="latitude != null" >
+        latitude = #{latitude,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.hotel.model.Hotel" >
+    update t_hotle
+    set name = #{name,jdbcType=VARCHAR},
+      text = #{text,jdbcType=VARCHAR},
+      region_id = #{regionId,jdbcType=INTEGER},
+      longitude = #{longitude,jdbcType=DECIMAL},
+      latitude = #{latitude,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="query_sql">
+      <if test="id != null" >
+        and h.id #{id,jdbcType=INTEGER}
+      </if>
+      <if test="name != null" >
+        and h.name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="text != null" >
+        and h.text = #{text,jdbcType=VARCHAR}
+      </if>
+      <if test="regionId != null" >
+        and h.region_id = #{regionId,jdbcType=INTEGER}
+      </if>
+      <if test="longitude != null" >
+        and h.longitude = #{longitude,jdbcType=DECIMAL}
+      </if>
+      <if test="latitude != null" >
+        and h.latitude = #{latitude,jdbcType=DECIMAL}
+      </if>
+      
+      <if test="adId != null" >
+        and a.id = #{adId,jdbcType=INTEGER}
+      </if>
+  </sql>
+  
+  <select id="selectHotelList" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_hotle 
+  </select>
+  
+  <select id="getPageHotel" resultMap="BaseResultMap" parameterType="com.hotel.model.Hotel">
+     select 
+     <include refid="Base_Column_List" />
+     from t_hotle
+     <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+        limit #{pageStart}, #{pageSize}
+     </if>
+  </select>
+  <select id="getPageHotelCount" resultType="java.lang.Integer">
+    select count(id) from t_hotle
+  </select>
+  <select id="getHotelVMByMap" resultMap="resultHotelVMMap"  parameterType="java.util.Map" >
+  	select *
+  	from t_hotle h
+  	left join t_ad a on a.target_id = h.id
+  	where 1=1 <include refid="query_sql" />
+  </select>
+  <delete id="deleteByHotelId" parameterType="java.util.HashMap" >
+    delete from t_hotle
+    where id in 
+    <foreach item="item" collection="idList" open="(" separator="," close=")">  
+    	#{item.id}  
+    </foreach>
+  </delete>
+</mapper>
