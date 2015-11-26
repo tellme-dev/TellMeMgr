@@ -81,7 +81,7 @@ $(document).ready(function(){
 function showdialog(){
 	var val = $("#city").combobox("getValue");
 	if(val == 0){
-		alert("请先选中一个城市");
+		myAlert("请先选中一个城市");
 		return ;
 	}
 
@@ -123,7 +123,7 @@ function showdialog(){
 	                	setLocationText(marker);
 	                }
 	            }else{
-	            	alert("城市解析失败");
+	            	myAlert("城市解析失败");
 	            }
 	        });
 			
@@ -252,12 +252,12 @@ function returnBack(){
 function submitHotel(obj){
 	var name = document.getElementById("hotel_name");
 	if(name.value.trim() == ""){
-		alert("请输入酒店名称");
+		myAlert("请输入酒店名称");
 		return ;
 	}
 	var region = $("#area").combobox("getValue");
 	if(region == 0){
-		alert("请选择酒店所属区域");
+		myAlert("请选择酒店所属区域");
 		return ;
 	}
 	//隐藏控件赋值
@@ -265,7 +265,7 @@ function submitHotel(obj){
 	
 	var location = document.getElementById("input_location");
 	if(location.value.trim() == ""){
-		alert("请标记酒店所在位置");
+		myAlert("请标记酒店所在位置");
 		return ;
 	}
 	var temp = location.value.substring(1, location.value.length - 1);
@@ -301,6 +301,10 @@ function saveHotel(obj){
 							}
 						}
 					});
+}
+
+function myAlert(msg){
+	$.messager.alert('提示', msg,'info',function(){});
 }
 
 </script>

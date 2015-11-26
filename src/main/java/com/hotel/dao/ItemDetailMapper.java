@@ -1,5 +1,8 @@
 package com.hotel.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.hotel.model.ItemDetail;
 
 @MyBatisRepository
@@ -15,4 +18,10 @@ public interface ItemDetailMapper {
     int updateByPrimaryKeySelective(ItemDetail record);
 
     int updateByPrimaryKey(ItemDetail record);
+    
+    int batchInsert(List<ItemDetail> list);
+    
+    int deleteByItemId(Map<String, Object> idMap);
+    
+    List<ItemDetail> selectByItemId(Integer id);
 }

@@ -157,7 +157,7 @@ function loadHotelInfo(isAdd){
 		}
 		
 		if(id == ""){
-			myAlert("请选择需要删除的酒店信息");
+			myAlert("请选择需要修改的酒店信息");
 			return;
 		}
 		if(id.length + 1 < ids.length){
@@ -170,9 +170,31 @@ function loadHotelInfo(isAdd){
 }
 
 function loadHotelProject(){
-	myAlert("请先选择一条酒店数据");
-	return ;
-	//window.location.href = "hotelProject.do";
+	var cbs = document.getElementsByName("cb_hotelId");
+	if(cbs.length == 0){
+		myAlert("当前还没有数据");
+		return;
+	}
+	var id = "";
+	var ids = "";
+	for(var i = 0, len = cbs.length; i < len; i ++){
+		if(cbs[i].checked){
+			if(id == ""){
+				id = cbs[i].value;
+			}
+			ids += cbs[i].value+",";
+		}
+	}
+	
+	if(id == ""){
+		myAlert("请选择需要设置的酒店信息");
+		return;
+	}
+	if(id.length + 1 < ids.length){
+		myAlert("当前功能仅支持单选");
+		return;
+	}
+	window.location.href = "hotelProject.do?hotelId="+id;
 }
 
 function myAlert(msg){
@@ -199,7 +221,7 @@ function myAlert(msg){
 		<div class="fl yw-lump mt10">
 			<div id="tab2" class="yw-tab">
 				<div class="fl yw-lump mt10">
-					<form id="userForm" name="userForm"
+					<form id="hotelForm" name="hotelForm"
 						action="hotelList.do" method="get">
 						<div class="pd10-28">
 							<div align="left" class="mt30">

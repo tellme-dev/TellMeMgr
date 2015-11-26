@@ -23,6 +23,7 @@ import com.hotel.model.Region;
 import com.hotel.model.User;
 import com.hotel.service.BaseDataService;
 import com.hotel.service.FunctionService;
+import com.hotel.service.ItemTagService;
 import com.hotel.viewmodel.BaseData;
 
 @Scope("prototype")
@@ -36,6 +37,9 @@ public class BaseDataAction extends BaseAction {
 
 		@Resource(name="baseDataService")
 		private BaseDataService baseDataService;
+		
+		@Resource(name="itemTagService")
+		private ItemTagService itemTagService;
 
 		
 		/**
@@ -145,6 +149,26 @@ public class BaseDataAction extends BaseAction {
 			
 			try{
 				List<Region> temp = baseDataService.getAreaRegion(Integer.parseInt(cityId));
+				if(temp != null && temp.size() > 0){
+					list = temp;
+				}
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			return list;
+		}
+		
+		@ResponseBody
+		@RequestMapping(value = "/jsonLoadItemTagComboList.do", method = RequestMethod.GET, produces = "text/html;charset=UTF-8")
+		public List<ItemTag> loadItemTag(
+				HttpServletRequest request,
+				HttpServletResponse response) {
+			
+			List<ItemTag> list = new ArrayList<ItemTag>();
+			String itemId = request.getParameter("itemId");
+			
+			try{
+				List<ItemTag> temp = itemTagService.getTagByParentId(new Integer(itemId));
 				if(temp != null && temp.size() > 0){
 					list = temp;
 				}

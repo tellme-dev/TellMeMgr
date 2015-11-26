@@ -82,4 +82,12 @@
     where item_tag_id = #{itemTagId,jdbcType=INTEGER}
   </select>
   
+  <delete id="deleteByItemId" parameterType="java.util.HashMap" >
+    delete from t_item_tag_association
+    where item_id in 
+    <foreach item="item" collection="idList" open="(" separator="," close=")">  
+    	#{item.id}  
+    </foreach>
+  </delete>
+  
 </mapper>

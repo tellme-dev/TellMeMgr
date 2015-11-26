@@ -92,5 +92,29 @@
     from t_item_detail
     where item_id = #{itemId,jdbcType=INTEGER}
   </select>
-
+  
+  <insert id="batchInsert" parameterType="java.util.List" >
+    insert into t_item_detail (id, item_id, image_url, 
+      note)
+    values 
+    <foreach collection="list" item="item" index="index" separator="," >
+    (#{item.id,jdbcType=INTEGER}, #{item.itemId,jdbcType=INTEGER}, #{item.imageUrl,jdbcType=VARCHAR}, 
+      #{item.note,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  
+  <delete id="deleteByItemId" parameterType="java.util.HashMap" >
+    delete from t_item_detail
+    where item_id in 
+    <foreach item="item" collection="idList" open="(" separator="," close=")">  
+    	#{item.id}  
+    </foreach>
+  </delete>
+  
+  <select id="selectByItemId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_item_detail
+    where item_id = #{id,jdbcType=INTEGER}
+  </select>
 </mapper>
