@@ -82,13 +82,6 @@
     where item_tag_id = #{itemTagId,jdbcType=INTEGER}
   </select>
   
-  <select id="getTagTypeItem" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_item_tag_association
-    where item_tag_id = (select a.id from t_Item_tag a where tag_type = #{tagType,jdbcType=INTEGER})
-  </select>
-  
   <delete id="deleteByItemId" parameterType="java.util.HashMap" >
     delete from t_item_tag_association
     where item_id in 
