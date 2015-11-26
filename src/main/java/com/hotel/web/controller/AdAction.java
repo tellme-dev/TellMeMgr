@@ -16,22 +16,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.hotel.common.JsonResult;
 import com.hotel.common.Result;
 import com.hotel.common.utils.Constants;
+import com.hotel.common.utils.FileUtil;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Advertisement;
 import com.hotel.model.Function;
 import com.hotel.model.Hotel;
-import com.hotel.model.ItemTag;
 import com.hotel.model.User;
 import com.hotel.service.AdvertisementService;
 import com.hotel.service.BaseDataService;
 import com.hotel.service.FunctionService;
 import com.hotel.service.HotelService;
-import com.hotel.viewmodel.AdvertisementVM;
-import com.hotel.viewmodel.ItemTagVM;
+import com.hotel.viewmodel.AdvertisementWebVM;
+import com.hotel.viewmodel.ItemTagWebVM;
 
 @Scope("prototype")
 @Controller
@@ -61,7 +62,7 @@ public class AdAction extends BaseAction {
 			 */
 			@RequestMapping(value = "/adList.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 			public String logInitAd(Page page,
-					AdvertisementVM ad, 
+					AdvertisementWebVM ad, 
 					HttpServletRequest request,
 					HttpServletResponse response) {
 				/*分页参数*/
@@ -74,16 +75,13 @@ public class AdAction extends BaseAction {
 				User user = new User();
 				user.setChildMenuList(lf);
 				request.getSession().setAttribute(Constants.USER_SESSION_NAME,user);
-				/*查询项目tag*/
-				int tagType = 10;
-				List<ItemTag> taglist = baseDataService.selectTagByTagType(tagType);
-				request.setAttribute("taglist", taglist);
 				/*查询广告列表*/
 				Map<String,Object> map = new HashMap<String,Object>();
 				map.put("pageStart",page.getPageStart());
 				map.put("pageSize",page.getPageSize());
-				List<AdvertisementVM> lc = adService.getAdPageList(map);
-				int totalCount = adService.getAdPageListCount(ad);
+				map.put("isUsed", true);
+				List<AdvertisementWebVM> lc = adService.getAdPageList(map);
+				int totalCount = adService.getAdPageListCount(map);
 				page.setTotalCount(totalCount);
 				request.setAttribute("adlist", lc);
 				return "web/ad/adList";
@@ -91,7 +89,7 @@ public class AdAction extends BaseAction {
 			
 			@RequestMapping(value = "/adinfo.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 			public String gotoAdInfo(
-					AdvertisementVM ad,
+					AdvertisementWebVM ad,
 					@RequestParam(value = "adId", required = false) Integer id,
 					HttpServletRequest request, HttpServletResponse response) {
 //				if(ad.getId()!=null){
@@ -116,11 +114,11 @@ public class AdAction extends BaseAction {
 			
 			@ResponseBody
 			@RequestMapping(value = "/saveOrupdateAd.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-			public JsonResult<AdvertisementVM> saveOrupdateAd(
-					AdvertisementVM ad, 
+			public JsonResult<AdvertisementWebVM> saveOrupdateAd(
+					AdvertisementWebVM ad, 
 					HttpServletRequest request,
 					HttpServletResponse response) {
-				JsonResult<AdvertisementVM> json = new JsonResult<AdvertisementVM>();
+				JsonResult<AdvertisementWebVM> json = new JsonResult<AdvertisementWebVM>();
 				json.setCode(new Integer(0));
 				json.setMessage("保存失败!");
 				try { 
@@ -128,6 +126,16 @@ public class AdAction extends BaseAction {
 					if(ad.getId()==null){
 						ad.setId(0);
 					}
+					//创建一个通用的多部分解析器  
+			        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
+			        //判断 request 是否有文件上传,即多部分请求  
+			        if(multipartResolver.isMultipart(request)){  
+			        	List<String> imageUrl = FileUtil.uploadMultiFile2(request, "image/ad", FileUtil.RELATIVELY_PATH);
+			        	ad.setImageUrlList(imageUrl);
+			        }
+			        if(ad.getHotelId()!=null&&!"".equals(ad.getHotelId())){
+			        	ad.setTargetId(ad.getHotelId());
+			        }
 					adService.saveorUpdateAd(ad);
 					json.setCode(new Integer(1));
 					json.setMessage("保存成功!");
@@ -171,7 +179,7 @@ public class AdAction extends BaseAction {
 					HttpServletRequest request,
 					HttpServletResponse response) {
 				try{
-					List<ItemTagVM> list = baseDataService.getItemTagTree(pid);
+					List<ItemTagWebVM> list = baseDataService.getItemTagTree(pid);
 					//request.setAttribute("region", itemTag);
 					JSONArray  json = JSONArray.fromObject(list);
 					return json.toString();
@@ -188,7 +196,7 @@ public class AdAction extends BaseAction {
 					HttpServletResponse response) {
 				Result<Advertisement> result = null;
 				try{
-					adService.deleteUserByIds(adIds);
+					adService.updateUserByIds(adIds);
 					result = new Result<Advertisement>(null, true, "删除成功!");
 					return result.toJson();
 				}catch(Exception e){
@@ -196,7 +204,6 @@ public class AdAction extends BaseAction {
 					return result.toJson();
 				}
 			}
-
 			// [end]
 
 }

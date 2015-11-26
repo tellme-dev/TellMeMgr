@@ -183,7 +183,7 @@ function deleteAction(adIds){
 						<th>名称</th>
 						<th>关键字</th> 
 						<th>类型</th>
-						<th>标签</th>
+						<th>酒店或标签</th>
 						<th>内容</th>
 						<th>创建时间</th>
 					</tr>
@@ -197,7 +197,7 @@ function deleteAction(adIds){
 							  <td>酒店</td>
                             </c:if>
 							<c:if test="${item.targetType == 2}">
-							  <td>项目标签</td>
+							  <td>标签</td>
                             </c:if>
 							<c:if test="${item.targetType == 3}">
 							  <td>社区</td>

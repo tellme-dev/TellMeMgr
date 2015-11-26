@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.hotel.model.User;
-import com.hotel.viewmodel.UserVM;
+import com.hotel.viewmodel.UserWebVM;
 
 @MyBatisRepository
 public interface UserMapper {
@@ -14,7 +14,7 @@ public interface UserMapper {
 
     int insertSelective(User record);
 
-    UserVM selectByPrimaryKey(Integer id);
+    UserWebVM selectByPrimaryKey(Integer id);
 
     int updateByPrimaryKeySelective(User record);
 
@@ -27,8 +27,8 @@ public interface UserMapper {
 
 	int getUserPageListCount(Map<String, Object> map);
 
-	UserVM selectByID(Integer userId);
+	UserWebVM selectByID(Integer userId);
 
-	void deleteByIds(Map<String, Object> map);
+	void updateByIds(Map<String, Object> map);
 
 }

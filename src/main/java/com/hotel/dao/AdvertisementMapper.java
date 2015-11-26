@@ -4,7 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.hotel.model.Advertisement;
-import com.hotel.viewmodel.AdvertisementVM;
+import com.hotel.modelVM.AdvertisementVM;
+import com.hotel.viewmodel.AdvertisementWebVM;
 
 @MyBatisRepository
 public interface AdvertisementMapper {
@@ -16,17 +17,19 @@ public interface AdvertisementMapper {
 
     Advertisement selectByPrimaryKey(Integer id);
 
-    int updateByPrimaryKeySelective(AdvertisementVM record);
+    int updateByPrimaryKeySelective(AdvertisementWebVM record);
 
     int updateByPrimaryKey(Advertisement record);
 
-	List<AdvertisementVM> getAdPageList(Map<String, Object> map);
+	List<AdvertisementWebVM> getAdPageList(Map<String, Object> map);
 
-	int getAdPageListCount(AdvertisementVM ad);
+	int getAdPageListCount(Map<String, Object> map);
 
-	AdvertisementVM selectById(Integer id);
+	AdvertisementWebVM selectById(Integer id);
+	
+	AdvertisementVM getAdList(int id);
 
-	AdvertisementVM selectAdVMByPrimaryKey(Integer adId);
+	AdvertisementWebVM selectAdVMByPrimaryKey(Integer adId);
 
-	void deleteByIds(Map<String, Object> map);
+	void updateByIds(Map<String, Object> map);
 }

@@ -14,7 +14,7 @@ import com.hotel.dao.RegionMapper;
 import com.hotel.model.Org;
 import com.hotel.model.Region;
 import com.hotel.service.BaseDataService;
-import com.hotel.viewmodel.ItemTagVM;
+import com.hotel.viewmodel.ItemTagWebVM;
 
 @Service("baseDataService")
 public class BaseDataServiceImpl implements BaseDataService {
@@ -115,19 +115,19 @@ public class BaseDataServiceImpl implements BaseDataService {
      * 加载ItemTag树形结构
      */
 	@Override
-	public List<ItemTagVM> getItemTagTree(Integer pid) {
+	public List<ItemTagWebVM> getItemTagTree(Integer pid) {
 		// TODO Auto-generated method stub
-		List<ItemTagVM> ls = new ArrayList<ItemTagVM>();
-		List<ItemTagVM> list = new ArrayList<ItemTagVM>();
+		List<ItemTagWebVM> ls = new ArrayList<ItemTagWebVM>();
+		List<ItemTagWebVM> list = new ArrayList<ItemTagWebVM>();
 		ls = tagMapper.selectByPid(pid); 
 		list = getItemTagNodes(ls);
 		return list;
 	}
-	private List<ItemTagVM> getItemTagNodes(List<ItemTagVM> ls) {
+	private List<ItemTagWebVM> getItemTagNodes(List<ItemTagWebVM> ls) {
 		// TODO Auto-generated method stub
-		List<ItemTagVM> list = new ArrayList<ItemTagVM>();
-		for(ItemTagVM t:ls){
-			List<ItemTagVM> clist = tagMapper.selectByPid(t.getId());
+		List<ItemTagWebVM> list = new ArrayList<ItemTagWebVM>();
+		for(ItemTagWebVM t:ls){
+			List<ItemTagWebVM> clist = tagMapper.selectByPid(t.getId());
 			if(clist.size()>0){
 				t.setChildren(getItemTagNodes(clist));
 			}

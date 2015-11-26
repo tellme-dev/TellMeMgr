@@ -3,18 +3,18 @@ package com.hotel.service;
 import java.util.List;
 import java.util.Map;
 
-import com.hotel.viewmodel.AdvertisementVM;
+import com.hotel.viewmodel.AdvertisementWebVM;
 
 public interface AdvertisementService {
 
-	List<AdvertisementVM> getAdPageList(Map<String, Object> map);
+	List<AdvertisementWebVM> getAdPageList(Map<String, Object> map);
 
-	int getAdPageListCount(AdvertisementVM ad);
+	int getAdPageListCount(Map<String, Object> map);
 
-	void saveorUpdateAd(AdvertisementVM ad);
+	void saveorUpdateAd(AdvertisementWebVM ad);
 
-	AdvertisementVM getAdById(Integer id);
+	AdvertisementWebVM getAdById(Integer id);
 
-	void deleteUserByIds(String adIds);
+	void updateUserByIds(String adIds);
 
 }

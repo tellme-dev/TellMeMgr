@@ -1,5 +1,7 @@
 package com.hotel.dao;
 
+import java.util.List;
+
 import com.hotel.model.BannerDetail;
 
 @MyBatisRepository
@@ -15,4 +17,6 @@ public interface BannerDetailMapper {
     int updateByPrimaryKeySelective(BannerDetail record);
 
     int updateByPrimaryKey(BannerDetail record);
+
+	List<BannerDetail> getAdIdList(int banner);
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import com.hotel.model.ItemTag;
 import com.hotel.model.Org;
 import com.hotel.model.Region;
-import com.hotel.viewmodel.ItemTagVM;
+import com.hotel.viewmodel.ItemTagWebVM;
 
 public interface BaseDataService {
 	
@@ -27,5 +27,5 @@ public interface BaseDataService {
 	
 	Region getRegionById(int id);
 
-	List<ItemTagVM> getItemTagTree(Integer pid);
+	List<ItemTagWebVM> getItemTagTree(Integer pid);
 }

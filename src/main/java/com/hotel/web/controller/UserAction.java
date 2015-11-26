@@ -31,7 +31,7 @@ import com.hotel.model.User;
 import com.hotel.service.BaseDataService;
 import com.hotel.service.FunctionService;
 import com.hotel.service.UserService;
-import com.hotel.viewmodel.UserVM;
+import com.hotel.viewmodel.UserWebVM;
 
 @Scope("prototype")
 @Controller
@@ -81,6 +81,7 @@ public class UserAction extends BaseAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("pageStart",page.getPageStart());
 		map.put("pageSize",page.getPageSize());
+		map.put("isUsed", true);
 		List<User> lc = userService.getUserPageList(map);
 		int totalCount = userService.getUserPageListCount(map);
 		page.setTotalCount(totalCount);
@@ -90,7 +91,7 @@ public class UserAction extends BaseAction {
 	
 	@RequestMapping(value = "/userinfo.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public String gotoUserInfo(
-			UserVM user,
+			UserWebVM user,
 			@RequestParam(value = "userId", required = false) Integer userId,
 			HttpServletRequest request, HttpServletResponse response) {
 		/**/
@@ -158,7 +159,7 @@ public class UserAction extends BaseAction {
 			HttpServletResponse response) {
 		Result<User> result = null;
 		try{
-			userService.deleteUserByIds(userIds);
+			userService.updateUserByIds(userIds);
 			result = new Result<User>(null, true, "删除成功!");
 			return result.toJson();
 		}catch(Exception e){
