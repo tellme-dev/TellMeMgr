@@ -3,7 +3,6 @@ package com.hotel.service;
 import java.util.List;
 import java.util.Map;
 
-import com.hotel.common.ListResult;
 import com.hotel.model.Hotel;
 import com.hotel.model.ItemTagAssociation;
 import com.hotel.modelVM.HotelVM;

@@ -15,4 +15,7 @@ public interface BbsAttachMapper {
     int updateByPrimaryKeySelective(BbsAttach record);
 
     int updateByPrimaryKey(BbsAttach record);
+    
+    //
+    BbsAttach selectByBbsId(Integer bbsId);
 }

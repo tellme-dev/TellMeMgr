@@ -1,8 +1,8 @@
 package com.hotel.service;
 
 import com.hotel.common.ListResult;
-import com.hotel.model.Bbs;
 import com.hotel.model.BbsCategory;
+import com.hotel.modelVM.BbsVM;
 
 public interface BbsService {
 
@@ -18,6 +18,12 @@ public interface BbsService {
 	 * @param categoryId
 	 * @return 
 	 */
-	ListResult<Bbs> loadBbsListByCategoryId(int categoryId);
+	ListResult<BbsVM> loadBbsListByCategoryId(int categoryId);
+
+	/**
+	 * @author jun
+	 * @param bbs
+	 */
+	void saveBbs(BbsVM bbs);
 
 }

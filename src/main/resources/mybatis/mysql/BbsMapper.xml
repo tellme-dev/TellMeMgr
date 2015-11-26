@@ -23,7 +23,7 @@
     <result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
   </resultMap>
-  <resultMap id="BaseVMResultMap" type="com.hotel.viewmodel.BbsVM" >
+  <resultMap id="BaseVMResultMap" type="com.hotel.modelVM.BbsVM" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="customer_id" property="customerId" jdbcType="INTEGER" />
     <result column="bbs_type" property="bbsType" jdbcType="INTEGER" />
@@ -45,6 +45,7 @@
     <result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
     <association column="customer_id" property="customer" javaType="Customer" select="com.hotel.dao.CustomerMapper.selectByPrimaryKey"></association>
+    <collection column="id" property="BbsAttachs" select="com.hotel.dao.BbsAttachMapper.selectByBbsId"></collection>
   </resultMap>
   <sql id="Base_Column_List" >
     id, customer_id, bbs_type, category_id, post_type, target_type, target_id, parent_id, 

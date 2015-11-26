@@ -1,9 +1,11 @@
 package com.hotel.dao;
 
+import java.util.List;
 import java.util.Map;
 
 import com.hotel.common.ListResult;
 import com.hotel.model.Bbs;
+import com.hotel.modelVM.BbsVM;
 
 @MyBatisRepository
 public interface BbsMapper {
@@ -19,5 +21,5 @@ public interface BbsMapper {
 
     int updateByPrimaryKey(Bbs record);
 
-	ListResult<Bbs> selectByMap(Map<String, Object> map);
+	List<BbsVM> selectByMap(Map<String, Object> map);
 }
