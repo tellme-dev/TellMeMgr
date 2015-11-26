@@ -7,4 +7,6 @@ import com.hotel.model.ItemTag;
 public interface ItemTagService {
 
 	List<ItemTag> getTagFromMin(int tagType);
+	
+	List<ItemTag> getTagByParentId(int parentId);
 }

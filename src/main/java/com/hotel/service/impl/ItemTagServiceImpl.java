@@ -21,4 +21,10 @@ public class ItemTagServiceImpl implements ItemTagService{
 		// TODO Auto-generated method stub
 		return itemTagMapper.getTagFromMin(tagType);
 	}
+
+	@Override
+	public List<ItemTag> getTagByParentId(int parentId) {
+		// TODO Auto-generated method stub
+		return itemTagMapper.getTagByParentId(parentId);
+	}
 }

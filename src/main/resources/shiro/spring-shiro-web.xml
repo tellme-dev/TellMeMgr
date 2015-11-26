@@ -114,6 +114,7 @@
                 /index.do = anon
                 /login.do = anon
                 /source/** = anon
+                /app/** = anon
                 /unauthorized.jsp = anon
                 /login.jsp = authc
                 /logout = logout

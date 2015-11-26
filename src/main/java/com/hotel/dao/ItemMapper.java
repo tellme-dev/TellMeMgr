@@ -1,6 +1,7 @@
 package com.hotel.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hotel.model.Item;
 
@@ -19,4 +20,8 @@ public interface ItemMapper {
     int updateByPrimaryKey(Item record);
     
     List<Item> getItemByHotel(int hotelId);
+    
+    int addAndReturnId(Item item);
+    
+    int deleteByItemId(Map<String, Object> idMap);
 }

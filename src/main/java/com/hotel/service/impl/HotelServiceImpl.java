@@ -34,9 +34,9 @@ public class HotelServiceImpl implements HotelService{
 		return hotelMapper.getPageHotel(map);
 	}
 	@Override
-	public int getPageHotelCount(Hotel hotel) {
+	public int getPageHotelCount() {
 		// TODO Auto-generated method stub
-		return hotelMapper.getPageHotelCount(hotel);
+		return hotelMapper.getPageHotelCount();
 	}
 	@Override
 	public List<ItemTagAssociation> getTagTypeItem(int tagType) {

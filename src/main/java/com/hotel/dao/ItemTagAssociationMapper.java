@@ -1,6 +1,7 @@
 package com.hotel.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hotel.model.ItemTagAssociation;
 
@@ -19,4 +20,6 @@ public interface ItemTagAssociationMapper {
     int updateByPrimaryKey(ItemTagAssociation record);
     
     List<ItemTagAssociation> getTagTypeItem(int tagType);
+    
+    int deleteByItemId(Map<String, Object> idMap);
 }

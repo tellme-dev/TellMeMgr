@@ -23,7 +23,7 @@ public interface HotelMapper {
     
     List<Hotel> getPageHotel(Map<String, Object> map);
     
-    int getPageHotelCount(Hotel hotel);
+    int getPageHotelCount();
     
     int deleteByHotelId(Map<String, Object> idMap);
 }

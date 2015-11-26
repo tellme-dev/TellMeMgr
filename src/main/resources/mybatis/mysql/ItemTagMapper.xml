@@ -153,6 +153,12 @@
     from t_Item_tag t
     where t.tag_type >= #{tagType,jdbcType=INTEGER}
   </select>
+  <select id="getTagByParentId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_Item_tag t
+    where t.parent_id = #{parentId,jdbcType=INTEGER}
+  </select>
   <select id="selectByPid" resultMap="BaseVMResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />,t.name as text

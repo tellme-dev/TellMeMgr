@@ -12,7 +12,7 @@ public interface HotelService {
 	
     public List<Hotel> getPageHotel(Map<String, Object> map);
     
-    public int getPageHotelCount(Hotel hotel);
+    public int getPageHotelCount();
 	
     List<ItemTagAssociation> getTagTypeItem(int tagType);
     

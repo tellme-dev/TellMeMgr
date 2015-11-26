@@ -1,6 +1,7 @@
 package com.hotel.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 
@@ -20,6 +21,18 @@ public class ItemServiceImpl implements ItemService{
 	public List<Item> getItemByHotel(int hotelId) {
 		// TODO Auto-generated method stub
 		return itemMapper.getItemByHotel(hotelId);
+	}
+
+	@Override
+	public int addAndReturnId(Item item) {
+		// TODO Auto-generated method stub
+		return itemMapper.addAndReturnId(item);
+	}
+
+	@Override
+	public int deleteByItemId(Map<String, Object> idMap) {
+		// TODO Auto-generated method stub
+		return itemMapper.deleteByItemId(idMap);
 	}
 
 }

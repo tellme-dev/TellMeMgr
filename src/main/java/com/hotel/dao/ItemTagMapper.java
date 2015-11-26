@@ -24,6 +24,8 @@ public interface ItemTagMapper {
 	List<ItemTag> selectTagList();
     
     List<ItemTag> getTagFromMin(int tagType);
+    
+    List<ItemTag> getTagByParentId(int parentId);
 
 	List<ItemTagVM> selectByPid(Integer pid);
 }

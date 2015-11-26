@@ -22,136 +22,21 @@
 	href="${pageContext.request.contextPath}/source/js/pager/Pager.css"
 	rel="stylesheet" />
 <script type="text/javascript">
-var map_show = null;
-var map_edit = null;
 
 var tempImgArr = null;
-var projectArr = new Array();
 
-
-		$(document).ready(function(){
-			$("#pager").pager({
-			    pagenumber:'${hotel.pageNo}',                         /* 表示初始页数 */
-			    pagecount:'${hotel.pageCount}',                      /* 表示总页数 */
-			    totalCount:'${hotel.totalCount}',
-			    buttonClickCallback:PageClick                     /* 表示点击分页数按钮调用的方法 */                  
-			});
-			$("#hotelinfoList tr").each(function(i){
-				if(i>0){
-					$(this).bind("click",function(){
-						var hotelId = $(this).find("td").first().text();
-						 window.location.href="hotelinfo.do?hotelId="+hotelId;
-					});
-				}
-			}); 
-			
-			$("#province").combobox({
-				onChange: function (n,o) {
-					if(n == 0){
-						return ;
-					}
-					selectProvince(n);
-				}
-			});
-			
-			$("#city").combobox({
-				onChange: function (n,o) {
-					if(n == 0){
-						return ;
-					}
-					selectCity(n);
-				}
-			});
-			
-			tempImgArr = new ObjectImgItemList();
-			
-			map_show = new AMap.Map('show_mapContainer', {
-		      // 设置中心点
-		      center: [104.065735, 30.659462],
-		
-		      // 设置缩放级别
-		      zoom: 12
-		    });
-		    
-		    map_edit = new AMap.Map('edit_mapContainer', {
-		      // 设置中心点
-		      center: [104.065735, 30.659462],
-		
-		      // 设置缩放级别
-		      zoom: 12
-		    });
-		}); 
-		
-PageClick = function(pageclickednumber) {
-	$("#pager").pager({
-	    pagenumber:pageclickednumber,                 /* 表示启示页 */
-	    pagecount:'${hotel.pageCount}',                  /* 表示最大页数pagecount */
-	    buttonClickCallback:PageClick                 /* 表示点击页数时的调用的方法就可实现javascript分页功能 */            
+$(document).ready(function(){
+	$("#project_classification").combobox({
+		onChange: function (n,o) {
+			if(n == 0){
+				return ;
+			}
+			setTag(n);
+		}
 	});
-	
-	$("#pageNumber").val(pageclickednumber);          /* 给pageNumber从新赋值 */
-	/* 执行Action */
-	pagesearch();
-}
-function search(){
-	$("#pageNumber").val("1");
-	pagesearch(); 
-} 
-function pagesearch(){
-	hotelForm.submit();
-}
 
-//显示地理位置区域
-function showdialog(){
-	var val = $("#city").combobox("getValue");
-	if(val == 0){
-		alert("请先选中一个城市");
-		return ;
-	}
-
-	var wz = getDialogPosition($('#hotelInfoWindow').get(0),100);
-	$('#hotelInfoWindow').window({
-		  	top: 100,
-		    left: wz[1],
-		    onBeforeClose: function () {
-		    }
-	});
-	if(map_edit != null){
-		map_edit.clearMap();
-		var city = $("#city").combobox("getText");
-		map_edit.setCity(city);
-		
-		var center = map_edit.getCenter();
-		
-		var marker = new AMap.Marker({map:map_edit,position:center,draggable:true});
-		marker.on("dragend", function(e){
-			setLocationText(marker);
-		});
-		setLocationText(marker);
-		
-		AMap.service(["AMap.Geocoder"], function() {
-			geocoder = new AMap.Geocoder({
-	            radius: 1000,
-	            extensions: "all"
-	        });
-	        //步骤三：通过服务对应的方法回调服务返回结果，本例中通过逆地理编码方法getAddress回调结果
-	        geocoder.getLocation(city, function(status, result){
-	            //根据服务请求状态处理返回结果
-	            if(status=='complete') {
-	                var arr = result.geocodes;
-	                if(arr.length > 0){
-	                	marker.setPosition(arr[0].location);
-	                	setLocationText(marker);
-	                }
-	            }else{
-	            	alert("城市解析失败");
-	            }
-	        });
-			
-		});
-	}
-	$('#hotelInfoWindow').window('open');
-}
+	tempImgArr = new ObjectImgItemList();
+});
 
 //显示标签设置窗口
 function showTagdialog(type){
@@ -165,101 +50,63 @@ function showTagdialog(type){
 	$('#tagInfoWindow').window('open');
 }
 
-//设置初始位置或拖拽后的经纬度信息
-function setLocationText(marker){
-	var position = marker.getPosition();
-	document.getElementById("txt_location").innerHTML = "["+position.getLng()+", "+position.getLat()+"]";
+function saveProject(obj){
+	$(obj).attr("onclick", ""); 
+	$('#projectForm').form('submit',{
+	 		success:function(data){
+	 			data = $.parseJSON(data);
+	 			if(data.code==1){
+	 				$.messager.alert('保存信息',data.message,'info',function(){
+	 					$('#tagInfoWindow').window('close');
+	 					resetWindow();
+	 					$(obj).attr("onclick", "saveItem(this);"); 
+	 					refresh();
+	      			});
+	 			}else{
+				$.messager.alert('错误信息',data.message,'error',function(){
+					$(obj).attr("onclick", "saveItem(this);"); 
+	      			});
+	 			}
+	 		}
+	 	 });  
 }
 
-//保存当前的经纬度信息到文本框
-function saveLocation(){
-	var txtLocation = document.getElementById("txt_location").innerHTML;
-	document.getElementById("input_location").value = txtLocation;
-	var temp = txtLocation.substring(1, txtLocation.length - 1);
-	var arr = temp.split(",");
-	var location = new AMap.LngLat(new Number(arr[0]), new Number(arr[1]));
-	if(map_show != null){
-		map_show.clearMap();
-		new AMap.Marker({map:map_show,position:location});
-		map_show.panTo(location);
+
+//删除所选项目
+function deleteProject(obj){
+	var cbs = document.getElementsByName("cb_projectId");
+	if(cbs.length == 0){
+		myAlert("当前还没有数据");
+		return;
+	}
+	var ids = "";
+	for(var i = 0, len = cbs.length; i < len; i ++){
+		if(cbs[i].checked){
+			ids += cbs[i].value+",";
+		}
 	}
 	
-	$('#hotelInfoWindow').window('close');
-}
-function saveHotel(obj){
-	if ($('#saveHotelForm').form('validate')) {
-		$(obj).attr("onclick", ""); 
-		 $('#saveHotelForm').form('submit',{
-		  		success:function(data){
-		  			data = $.parseJSON(data);
-		  			if(data.code==0){
-		  				$.messager.alert('保存信息',data.message,'info',function(){
-		  					$('#hotelInfoWindow').window('close');
-		  					search();
-	        			});
-		  			}else{
-						$.messager.alert('错误信息',data.message,'error',function(){
-							$(obj).attr("onclick", "saveHotel(this);"); 
-	        			});
-		  			}
-		  		}
-		  	 });  
+	if(ids == ""){
+		myAlert("请选择需要删除的酒店信息");
+		return;
 	}
-}
-
-//选择指定省份后初始化城市数据
-function selectProvince(val){
-	var url = "${pageContext.request.contextPath}/web/base/jsonLoadRegionCityComboList.do?provinceId="+val;
-	requestGet(url, {}, function(data){
-		if(data.length > 0){
-			var dat = "[";
-			var fopt = "{\"value\":\"0\",\"text\":\"=请选择城市=\",\"selected\":true},";
-			dat += fopt;
-			
-			var len = data.length;
-			for(var i =0; i < len; i++){
-				var opt;
-				if(i == len - 1){
-					opt = "{\"value\":\""+data[i].id+"\",\"text\":\""+data[i].name+"\",\"selected\":false}";
+	
+	$.messager.confirm("删除确认","确认要删除所选数据吗？", function(b){
+		if(b){
+			ids = ids.substring(0, ids.length - 1);
+	
+			$(obj).attr("onclick", "javascript:void(0);");
+			var url = "${pageContext.request.contextPath}/web/hotel/jsonLoadDeleteHotelProject.do?projectId="+ids;
+			requestGet(url, {}, function(data){
+				if(data.code == 1){
+					myAlert("删除数据成功");
+					$(obj).attr("onclick", "deleteProject(this);");
+					refresh();
 				}else{
-					opt = "{\"value\":\""+data[i].id+"\",\"text\":\""+data[i].name+"\",\"selected\":false},";
+					myAlert(data.message);
+					$(obj).attr("onclick", "deleteProject(this);");
 				}
-				
-				dat += opt;
-			}
-			
-			dat += "]";
-			var json = eval(dat);
-			$("#city").combobox("loadData", json);
-			$("#area").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
-		}
-	});
-}
-
-//选择指定城市后初始化区域数据
-function selectCity(val){
-	var url = "${pageContext.request.contextPath}/web/base/jsonLoadRegionAreaComboList.do?cityId="+val;
-	requestGet(url, {}, function(data){
-		
-		if(data.length > 0){
-			var dat = "[";
-			var fopt = "{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true},";
-			dat += fopt;
-			var len = data.length;
-			for(var i =0; i < len; i++){
-				var opt;
-				if(i == len - 1){
-					opt = "{\"value\":\""+data[i].id+"\",\"text\":\""+data[i].name+"\",\"selected\":false}";
-				}else{
-					opt = "{\"value\":\""+data[i].id+"\",\"text\":\""+data[i].name+"\",\"selected\":false},";
-				}
-				
-				dat += opt;
-			}
-			
-			dat += "]";
-			var json = eval(dat);
-			$("#area").combobox("loadData", json);
+			});
 		}
 	});
 }
@@ -278,99 +125,109 @@ function requestGet(url, data, success){
 	
 }
 
-//更新项目列表
-function refreshTable(){
-	var table = document.getElementById("projectList");
-	table.innerHTML = "";
-	var trTitle = document.createElement("tr");
-	trTitle.className = "ts15";
-	trTitle.innerHTML = "<th style=\"width:5%;\">&nbsp;</th><th style=\"width:10%;\">项目名称</th><th style=\"width:5%;\">项目类型</th>"
-	+"<th style=\"width:15%;\">项目描述</th><th style=\"width:5%;\">联系电话</th><th style=\"width:10%;\">位置</th><th style=\"width:5%;\">评分</th>"
-	+"<th style=\"width:5%;\">状态</th><th style=\"width:40%;\">图片</th>";
-	table.appendChild(trTitle);
-	
-	if(projectArr.length > 0){
-		for(var i = 0; i < projectArr.length; i++){
-			var pro = projectArr[i];
-			var trLine = document.createElement("tr");
-			trLine.className = "ts14";
+function setTag(val){
+	var url = "${pageContext.request.contextPath}/web/base/jsonLoadItemTagComboList.do?itemId="+val;
+	requestGet(url, {}, function(data){
+		if(data.length > 0){
+			var dat = "[";
+			var fopt = "{\"value\":\"0\",\"text\":\"=请选择类型=\",\"selected\":true},";
+			dat += fopt;
 			
-			var tempImg = "<td><input type=\"checkbox\" value=\"0\"></td><td>"
-			+pro.name+"</td><td>"+pro.type+"</td><td>"+pro.text+"</td><td>"+pro.tel+"</td><td>"+pro.position+"</td><td>"+pro.score+"</td><td>"+pro.status+"</td><td>";
-			if(pro.imgItem != null){
-				if(pro.imgItem.arr.length > 0){
-					for(var j = 0; j < pro.imgItem.arr.length; j ++){
-						tempImg+= "<img class=\"icon\" src=\""+pro.imgItem.arr[j].url+"\"/>";
-					}
+			var len = data.length;
+			for(var i =0; i < len; i++){
+				var opt;
+				if(i == len - 1){
+					opt = "{\"value\":\""+data[i].id+"\",\"text\":\""+data[i].name+"\",\"selected\":false}";
+				}else{
+					opt = "{\"value\":\""+data[i].id+"\",\"text\":\""+data[i].name+"\",\"selected\":false},";
 				}
+				
+				dat += opt;
 			}
-			tempImg += "</td>";
 			
-			trLine.innerHTML = tempImg;
-			table.appendChild(trLine);
+			dat += "]";
+			var json = eval(dat);
+			$("#project_type").combobox("loadData", json);
 		}
-	}
+	});
 }
 
 function returnBack(){
 	window.history.back();
 }
-
-//保存数据
-function save(){
-	
+function refresh(){
+	window.location.reload();
 }
 
 //保存一个项目
-function saveItem(){
-	
+function saveItem(obj){
 	
 	var proName = document.getElementById("project_name").value;
 	if(proName.trim() == ""){
-		alert("请输入项目名称");
+		myAlert("请输入项目名称");
 		return ;
 	}
 	
 	var proTel = document.getElementById("project_tel").value;
 	if(proTel.trim() == ""){
-		alert("请输入联系电话");
+		myAlert("请输入联系电话");
 		return ;
 	}
 	
-	alert(checkTel(proTel));
+	if(!checkTel(proTel)){
+		myAlert("联系电话格式不正确");
+		return ;
+	}
 	
 	var classification = $("#project_classification").combobox("getValue");
 	if(classification == 0){
-		alert("请选择项目分类");
+		myAlert("请选择项目分类");
 		return ;
 	}
 	
 	var proText = document.getElementById("project_text").value;
 	if(proText.trim() == ""){
-		alert("请输入项目描述");
+		myAlert("请输入项目描述");
 		return ;
 	}
 	
 	var proPosition = document.getElementById("project_position").value;
 	if(proPosition.trim() == ""){
-		alert("请输入位置描述");
+		myAlert("请输入位置描述");
 		return ;
 	}
 	
-	var project = new ObjectProject();
-	project.name = proName.trim();
-	project.tel = proTel.trim();
-	project.type = new Number(classification);
-	project.text = proText.trim();
-	project.position = proPosition.trim();
-	project.imgItem = tempImgArr;
+	var type = classification;
 	if($("#project_type").combobox("getValue") != 0){
-		project.type = new Number($("#project_type").combobox("getValue"));
+		type = $("#project_type").combobox("getValue");
 	}
-
-	projectArr.push(project);
-	$('#tagInfoWindow').window('close');
 	
+	document.getElementById("project_type_item").value = type;
+	
+	if(tempImgArr != null && tempImgArr.size() > 0){
+		var view = document.getElementById("submit_hidden_view");
+		var len = tempImgArr.size();
+		document.getElementById("project_file_count").value = ""+len;
+		for(var i = 0; i < len; i ++){
+			var item = tempImgArr.arr[i];
+			var input = document.createElement("input");
+			input.type = "hidden";
+			input.name = "file"+i;
+			input.value = item.url;
+			view.appendChild(input);
+			
+			var ip_text = document.createElement("input");
+			ip_text.type = "hidden";
+			ip_text.name = "fileText"+i;
+			ip_text.value = item.text;
+			view.appendChild(ip_text);
+		}
+	}
+	
+	saveProject(obj);
+}
+
+function resetWindow(){
 	document.getElementById("project_name").value = "";
 	document.getElementById("project_tel").value = "";
 	document.getElementById("project_text").value = "";
@@ -379,9 +236,10 @@ function saveItem(){
 	$("#project_type").combobox("setValue", 0);
 	document.getElementById("item_info").value = "";
 	document.getElementById("item_file").value = "";
+	document.getElementById("project_file_count").value="0";
+	document.getElementById("project_type_item").value="";
+	document.getElementById("project_id").value="0";
 	clearFile();
-	
-	refreshTable();
 }
 
 function addFile(){
@@ -396,13 +254,13 @@ function addFile(){
 			addImgItem(obj, this.result);
 		};
 	}else{
-		alert("请先选择一个文件");
+		myAlert("请先选择一个文件");
 	}
 }
 
 function deleteFile(){
 	if(tempImgArr == null){
-		alert("缓存内存初始化失败");
+		myAlert("缓存内存初始化失败");
 		return;
 	}
 	if(tempImgArr.arr.length > 0){
@@ -419,10 +277,10 @@ function deleteFile(){
 				tempImgArr.remove(temp[j]);
 			}
 		}else{
-			alert("没有找到需要删除的元素");
+			myAlert("没有找到需要删除的元素");
 		}
 	}else{
-		alert("当前还没有可以删除的元素");
+		myAlert("当前还没有可以删除的元素");
 	}
 }
 
@@ -438,7 +296,7 @@ function clearFile(){
 }
 
 /**
-* 添加缓存的酒店元素
+* 添加缓存的酒店图片元素
 */
 function addImgItem(file, url){
 	var text = document.getElementById("item_info").value;
@@ -468,7 +326,7 @@ function addImgItem(file, url){
 	tempView.appendChild(imgItem);
 	
 	if(tempImgArr == null){
-		alert("缓存内存初始化失败");
+		myAlert("缓存内存初始化失败");
 		return ;
 	}
 	
@@ -490,6 +348,10 @@ function checkTel(value){
 	}else{
 		return false;
 	}
+}
+
+function myAlert(msg){
+	$.messager.alert('提示', msg,'info',function(){});
 }
 
 //====================
@@ -563,20 +425,6 @@ var ObjectImgItemList = function(){
 	};
 };
 
-/**
-* ObjectImgItemList
-*/
-var ObjectProject = function(){
-	this.name = "";
-	this.tel = "";
-	this.type = 0;
-	this.text = "";
-	this.position = "";
-	this.score = 0;
-	this.status = "激活";
-	this.imgItem=null;
-};
-
 
 </script>
 <style type="text/css">
@@ -598,11 +446,6 @@ var ObjectProject = function(){
 .icon{
 	width: 32px;
 	height: 32px;
-}
-
-.map_style{
-	width: 600px;
-	height: 240px;
 }
 
 .imgs_style{
@@ -690,95 +533,56 @@ var ObjectProject = function(){
 	<div class="con-right" id="conRight">
 		<div class="fl yw-lump">
 			<div class="yw-lump-title">
-				<div class="fl"><span class="txt_function ml20" onclick="returnBack();">[返回]</span></div>
-				<div class="fr"><span class="txt_function mr20" onclick="save();">[保存]</span></div>
-				<div class="cl"></div>
+				<span class="txt_function ml20" onclick="returnBack();">[返回]</span>
 			</div>
 		</div>
 
 		<div class="fl yw-lump mt10">
 			<div id="tab2" class="yw-tab">
-				<div class="fl yw-lump mt10">
-					<form id="userForm" name="userForm"
-						action="userList.do" method="get">
-						<div class="pd10-28">
-							<div class="fl">
-								<div>
-									<span class="ts15">酒店名称：</span><input type="text" class="yw-input wid200" />
-									<span class="hint_red">**必填项**</span>
-								</div>
-								<div class = "mt20">
-									<span class="ts15">酒店区域：</span>
-									<select id="province" name="province" style="width:120px;height:30px;" class="easyui-combobox">
-								 	 	<option selected="selected" value="0">=请选择省份=</option>
-								 	 	<c:forEach var="item" items="${regionList}">
-								 	 		<option value="${item.id}">${item.name}</option>
-										</c:forEach>
-								 	 	
-									</select>
-									<select id="city" name="city" style="width:120px;height:30px;" class="easyui-combobox">
-								 	 	<option  value="0" selected="selected">=请选择城市=</option>
-									</select>
-									<select id="area" name="area" style="width:120px;height:30px;" class="easyui-combobox">
-								 	 	<option  value="0" selected="selected">=请选择区域=</option>
-									</select>
-									<span class="hint_red">**必填项**</span>
-								</div>
-								<div class = "mt20">
-									<span class="ts15">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述：</span><textarea cols="50" rows="6" style="vertical-align: top; border: 1px #C4C4C4 solid;"></textarea>
-								</div>
-								<div class = "mt20">
-									<span class="ts15">经&nbsp;纬&nbsp;度：</span><input id="input_location" type="text" readonly="readonly" class="yw-input wid200 ts14" /><img alt="点击标记位置" onclick="showdialog();" class="icon_location" src="${pageContext.request.contextPath}/source/images/location.png">
-									<span class="hint_red">**必填项&nbsp;&nbsp;&nbsp;&nbsp;点击标记图标可设置指定位置的经纬度**</span>
-								</div>
-							</div>
-							<div class="fr">
-								<div class="fl"><span class="ts15">位置：</span></div><div id="show_mapContainer" class="fr map_style"></div>
-								<div class="cl"></div>
-							</div>
-							<div class="cl"></div>
-						</div>
-			
-						<input type="hidden" id="pageNumber" name="pageNo"
-							value="${hotel.pageNo}" />
-					</form>
-				</div>
 				<div class="fl yw-lump">
 					<div class="yw-lump-title">
-						<span class="txt ts15 ml20">项目</span>
+						<div align="left" class="ml10">
+							<span class="yw-btn bg-green cur ts15" onclick="showTagdialog(true);">添加项目</span>
+							<!-- <span class="yw-btn bg-blue ml20 cur ts15" onclick="loadHotelInfo(false);">修改项目</span> -->
+							<span class="yw-btn bg-orange ml20 cur ts15" onclick="deleteProject(this);">删除项目</span>
+						</div>
 					</div>
 				</div>
 				<div class="cl"></div>
-				<div class="mt10"><span class="txt_function ml20" onclick="showTagdialog();">[添加]</span><span class="txt_function ml20">[修改]</span><span class="txt_function ml20">[删除]</span></div>
+				
 				<table class="yw-cm-table" id="projectList">
 					<tr class="ts15">
-						<th style="width:5%;">&nbsp;</th>
+						<th style="width:5%;">选择</th>
 						<th style="width:10%;">项目名称</th> 
 						<th style="width:5%;">项目类型</th>
 						<th style="width:15%;">项目描述</th>
-						<th style="width:5%;">联系电话</th>
+						<th style="width:10%;">联系电话</th>
 						<th style="width:10%;">位置</th>
 						<th style="width:5%;">评分</th>
 						<th style="width:5%;">状态</th>
-						<th style="width:40%;">图片</th>
+						<th style="width:35%;">图片</th>
 					</tr>
 					<c:forEach var="item" items="${itemList}">
 						<tr class="ts14">
-							<td align="left"><input type="checkbox" value="${item.id}"></td>
-							<td>${item.name}</td> 
-							<td>${item.text}</td> 
-							<td>${item.tel}</td> 
-							<td>${item.position}</td> 
-							<td>${item.score}</td>
-							<td>
-								<c:if test="${item.isUsed==1}">激活</c:if>
-								<c:if test="${item.isUsed!=1}">禁用</c:if>
-							</td>
+							<td align="left"><input name="cb_projectId" type="checkbox" value="${item.item.id}"></td>
+							<td>${item.item.name}</td>
 							<td>&nbsp;</td>
+							<td>${item.item.text}</td> 
+							<td>${item.item.tel}</td> 
+							<td>${item.item.position}</td> 
+							<td>${item.item.score}</td>
+							<td>
+								<c:if test="${item.item.isUsed}">激活</c:if>
+								<c:if test="${!item.item.isUsed}">禁用</c:if>
+							</td>
+							<td>
+								<c:forEach var="temp" items="${item.details}">
+									<img class="icon" alt="" src="${pageContext.request.contextPath}/${temp.imageUrl}">
+								</c:forEach>
+							</td>
 						</tr>
 					</c:forEach>
 				</table>
-				<div class="page" id="pager"></div>
 			</div>
 		</div>
 		
@@ -786,42 +590,43 @@ var ObjectProject = function(){
 
 	</div>
 	<div class="cl"></div>
-	<div id="hotelInfoWindow" class="easyui-window" title="选择位置" style="width:560px;height:480px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
-		<div>
-			<div class="fl"><span class="ts14">经纬度：</span><span id="txt_location" class="txt_location">[104.065735, 30.659462]</span></div>
-			<div class="fr"><span class="yw-btn bg-blue ml40 cur ts15" onclick="saveLocation();">确定</span></div>
-			<div class="cl"></div>
-		</div>
-		<div id="edit_mapContainer" style="width: 540px; height: 390px; margin-top: 10px;"></div>
-	</div>
 	
 	<div id="tagInfoWindow" class="easyui-window" title="项目设置" style="width:520px;height:560px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
-		<div>
-			<span class="txt ts14">项目名称：</span><input id="project_name" type="text" class="yw-input wid170 ts14" />
-			<span class="txt ts14 ml10">联系电话：</span><input id="project_tel" type="text" class="yw-input wid170 ts14" />
-		</div>
-		<div class="mt10">
-			<span class="txt ts14">项目类型：</span>
-			<select id="project_classification" style="width:160px;height:30px;" class="easyui-combobox">
-		 	 	<option  value="0" selected="selected">=请选择项目分类=</option>
-		 	 	<c:forEach var="item" items="${tagList}">
-					<option  value="${item.id}">${item.name}</option>
-				</c:forEach>
-			</select>
-			<select id="project_type" style="width:160px;height:30px;" class="easyui-combobox ml10">
-		 	 	<option  value="0" selected="selected">=请选择项目类型=</option>
-			</select>
-		</div>
-		<div class="mt10">
-			<span class="txt ts14">项目描述：</span><input id="project_text" type="text" class="yw-input wid170 ts14" />
-			<span class="txt ts14 ml10">位置描述：</span><input id="project_position" type="text" class="yw-input wid170 ts14" />
-		</div>
+		<form name="projectForm" id="projectForm" action="saveOrupdateHotelProject.do" method="post">
+			<div>
+				<span class="txt ts14">项目名称：</span><input id="project_name" name="projectName" type="text" class="yw-input wid170 ts14" />
+				<span class="txt ts14 ml10">联系电话：</span><input id="project_tel" name="projectTel" type="text" class="yw-input wid170 ts14" />
+			</div>
+			<div class="mt10">
+				<span class="txt ts14">项目类型：</span>
+				<select id="project_classification" style="width:160px;height:30px;" class="easyui-combobox">
+			 	 	<option  value="0" selected="selected">=请选择项目分类=</option>
+			 	 	<c:forEach var="item" items="${tagList}">
+						<option  value="${item.id}">${item.name}</option>
+					</c:forEach>
+				</select>
+				<select id="project_type" style="width:160px;height:30px;" class="easyui-combobox ml10">
+			 	 	<option  value="0" selected="selected">=请选择项目类型=</option>
+				</select>
+			</div>
+			<div class="mt10">
+				<span class="txt ts14">项目描述：</span><input id="project_text" name="projectText" type="text" class="yw-input wid170 ts14" />
+				<span class="txt ts14 ml10">位置描述：</span><input id="project_position" name="projectPosition" type="text" class="yw-input wid170 ts14" />
+			</div>
+			<input id="project_id" name="projectId" type="hidden" value="0"/>
+			<input name="hotelId" type="hidden" value="${hotelId}"/>
+			<input id="project_type_item" name="projectType" type="hidden"/>
+			<input id="project_file_count" name="fileCount" type="hidden" value="0"/>
+			<div id="submit_hidden_view">
+			</div>
+		</form>
 		<div class="divider mt20"></div>
 		<div class="mt10">
 			<div class="fl"><span class="txt ts14">图片：</span></div>
 			<div class="fr"><span class="txt_function" onclick="deleteFile();">[删除]</span></div>
 			<div class="cl"></div>
 		</div>
+			
 		<div id="temp_img_view" class="imgs_style">
 			
 		</div>
@@ -844,8 +649,9 @@ var ObjectProject = function(){
 		<div class="divider mt10"></div>
 		
 		<div class="mt30" align="center">
-			<span onclick="saveItem();" class="yw-btn bg-blue ml20 cur ts15">保存</span>
+			<span onclick="saveItem(this);" class="yw-btn bg-blue ml20 cur ts15">保存</span>
 		</div>
+		
 	</div>
 </body>
 </html>

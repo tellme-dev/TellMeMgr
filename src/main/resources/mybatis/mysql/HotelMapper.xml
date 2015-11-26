@@ -118,7 +118,7 @@
         limit #{pageStart}, #{pageSize}
      </if>
   </select>
-  <select id="getPageHotelCount" resultType="java.lang.Integer" parameterType="com.hotel.model.Hotel" >
+  <select id="getPageHotelCount" resultType="java.lang.Integer">
     select count(id) from t_hotle
   </select>
   <delete id="deleteByHotelId" parameterType="java.util.HashMap" >

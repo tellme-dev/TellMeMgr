@@ -133,4 +133,27 @@
     where hotel_id = #{hotelId,jdbcType=INTEGER}
   </select>
   
+  <insert id="addAndReturnId" parameterType="com.hotel.model.Item">
+  	<selectKey resultType="INTEGER" keyProperty="id">
+       SELECT LAST_INSERT_ID()
+  	</selectKey>
+  	
+	insert into t_item (id, hotel_id, name, 
+      text, tel, position, 
+      score, is_used)
+    values (#{id,jdbcType=INTEGER}, #{hotelId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{text,jdbcType=VARCHAR}, #{tel,jdbcType=VARCHAR}, #{position,jdbcType=VARCHAR}, 
+      #{score,jdbcType=DECIMAL}, #{isUsed,jdbcType=BIT})
+	
+ </insert>
+ 
+ <delete id="deleteByItemId" parameterType="java.util.HashMap" >
+    delete from t_item
+    where id in 
+    <foreach item="item" collection="idList" open="(" separator="," close=")">  
+    	#{item.id}  
+    </foreach>
+  </delete>
+  
+  
 </mapper>
