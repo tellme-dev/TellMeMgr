@@ -3,6 +3,7 @@ package com.hotel.dao;
 import java.util.List;
 import java.util.Map;
 
+import com.hotel.common.ListResult;
 import com.hotel.model.Hotel;
 import com.hotel.modelVM.HotelVM;
 
@@ -31,4 +32,6 @@ public interface HotelMapper {
     List<Hotel> getPageHotel(Hotel hotel);
     
     HotelVM getHotelVMById(int id);
+
+	HotelVM getHotelVMByMap(Map<String, Object> map);
 }

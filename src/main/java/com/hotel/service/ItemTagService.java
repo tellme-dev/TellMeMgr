@@ -3,6 +3,7 @@ package com.hotel.service;
 import java.util.List;
 
 import com.hotel.model.ItemTag;
+import com.hotel.viewmodel.ItemTagWebVM;
 
 public interface ItemTagService {
 
@@ -19,5 +20,5 @@ public interface ItemTagService {
 	ItemTag selectByItemId(int itemId);
 
 	ItemTag getItemTagById(int tagId);
-	
+
 }

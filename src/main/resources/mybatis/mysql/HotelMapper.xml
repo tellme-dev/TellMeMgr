@@ -117,6 +117,30 @@
       latitude = #{latitude,jdbcType=DECIMAL}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <sql id="query_sql">
+      <if test="id != null" >
+        and h.id #{id,jdbcType=INTEGER}
+      </if>
+      <if test="name != null" >
+        and h.name = #{name,jdbcType=VARCHAR}
+      </if>
+      <if test="text != null" >
+        and h.text = #{text,jdbcType=VARCHAR}
+      </if>
+      <if test="regionId != null" >
+        and h.region_id = #{regionId,jdbcType=INTEGER}
+      </if>
+      <if test="longitude != null" >
+        and h.longitude = #{longitude,jdbcType=DECIMAL}
+      </if>
+      <if test="latitude != null" >
+        and h.latitude = #{latitude,jdbcType=DECIMAL}
+      </if>
+      
+      <if test="adId != null" >
+        and a.id = #{adId,jdbcType=INTEGER}
+      </if>
+  </sql>
   
   <select id="selectHotelList" resultMap="BaseResultMap" >
     select 
@@ -134,5 +158,11 @@
   </select>
   <select id="getPageHotelCount" resultType="java.lang.Integer" parameterType="com.hotel.model.Hotel" >
     select count(id) from t_hotle
+  </select>
+  <select id="getHotelVMByMap" resultMap="resultHotelVMMap"  parameterType="java.util.Map" >
+  	select *
+  	from t_hotle h
+  	left join t_ad a on a.target_id = h.id
+  	where 1=1 <include refid="query_sql" />
   </select>
 </mapper>

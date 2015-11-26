@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hotel.dao.ItemMapper;
@@ -14,7 +15,7 @@ import com.hotel.service.ItemService;
 @Service("itemService")
 public class ItemServiceImpl implements ItemService{
 	
-	@Resource
+	@Autowired
 	private ItemMapper itemMapper;
 
 	@Override

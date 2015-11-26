@@ -1,20 +1,23 @@
 package com.hotel.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hotel.dao.ItemTagMapper;
 import com.hotel.model.ItemTag;
 import com.hotel.service.ItemTagService;
+import com.hotel.viewmodel.ItemTagWebVM;
 
 @Service("itemTagService")
 public class ItemTagServiceImpl implements ItemTagService{
 	
-	@Resource
+	@Autowired
 	private ItemTagMapper itemTagMapper;
 
 	@Override
@@ -52,4 +55,5 @@ public class ItemTagServiceImpl implements ItemTagService{
 		// TODO Auto-generated method stub
 		return itemTagMapper.selectByPrimaryKey(tagId);
 	}
+
 }

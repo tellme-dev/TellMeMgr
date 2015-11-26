@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hotel.common.ReturnResult;
@@ -12,7 +13,7 @@ import com.hotel.model.Function;
 import com.hotel.service.FunctionService;
 @Service("functionService")
 public class FunctionServiceImpl implements FunctionService {
-	@Resource
+	@Autowired
 	private FunctionMapper functionMapper;
 
 	@Override
