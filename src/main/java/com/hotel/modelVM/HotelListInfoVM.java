@@ -1,8 +1,8 @@
-package com.hotel.viewmodel;
+package com.hotel.modelVM;
 
 import java.math.BigDecimal;
 
-public class HotelVM {
+public class HotelListInfoVM {
 	private Integer id;
     private String name;
     private String text;
