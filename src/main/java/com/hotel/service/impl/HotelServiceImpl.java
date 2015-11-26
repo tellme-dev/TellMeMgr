@@ -11,6 +11,7 @@ import com.hotel.dao.HotelMapper;
 import com.hotel.dao.ItemTagAssociationMapper;
 import com.hotel.model.Hotel;
 import com.hotel.model.ItemTagAssociation;
+import com.hotel.modelVM.HotelVM;
 import com.hotel.service.HotelService;
 
 @Service("hotelService")

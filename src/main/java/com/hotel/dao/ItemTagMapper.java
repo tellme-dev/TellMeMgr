@@ -3,7 +3,7 @@ package com.hotel.dao;
 import java.util.List;
 
 import com.hotel.model.ItemTag;
-import com.hotel.viewmodel.ItemTagVM;
+import com.hotel.viewmodel.ItemTagWebVM;
 
 @MyBatisRepository
 public interface ItemTagMapper {
@@ -31,7 +31,7 @@ public interface ItemTagMapper {
     
     List<ItemTag> getTagByParentId(int parentId);
 
-	List<ItemTagVM> selectByPid(Integer pid);
+	//List<ItemTagVM> selectByPid(Integer pid);
 	
 	List<ItemTagWebVM> selectByPid(Integer pid);
 }

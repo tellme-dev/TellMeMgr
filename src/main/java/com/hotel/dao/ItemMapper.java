@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.hotel.model.Item;
+import com.hotel.modelVM.ItemVM;
 
 @MyBatisRepository
 public interface ItemMapper {

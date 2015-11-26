@@ -23,6 +23,7 @@ import com.hotel.model.Region;
 import com.hotel.model.User;
 import com.hotel.service.BaseDataService;
 import com.hotel.service.FunctionService;
+import com.hotel.service.ItemTagService;
 import com.hotel.viewmodel.BaseData;
 
 @Scope("prototype")
