@@ -21,4 +21,13 @@ public interface ItemTagService {
 	ItemTag selectByItemId(int itemId);
 
 	ItemTag getItemTagById(int tagId);
+	
+	/**
+	 * 获取level对应的所有itemItags
+	 * @param i
+	 * @return
+	 * @author hzf
+	 */
+	List<ItemTag> getItemTagsByLevel(int i);
+	
 }

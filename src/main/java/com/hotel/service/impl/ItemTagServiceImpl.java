@@ -58,4 +58,10 @@ public class ItemTagServiceImpl implements ItemTagService{
 		// TODO Auto-generated method stub
 		return itemTagMapper.selectByPrimaryKey(tagId);
 	}
+
+	@Override
+	public List<ItemTag> getItemTagsByLevel(int i) {
+		// TODO Auto-generated method stub
+		return itemTagMapper.getItemTagsByLevel(i);
+	}
 }

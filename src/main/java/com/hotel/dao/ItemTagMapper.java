@@ -34,4 +34,12 @@ public interface ItemTagMapper {
 	//List<ItemTagVM> selectByPid(Integer pid);
 	
 	List<ItemTagWebVM> selectByPid(Integer pid);
+	/**
+	 * 获取level对应的所有itemItags
+	 * @param level
+	 * @return
+	 * @author hzf
+	 */
+	List<ItemTag> getItemTagsByLevel(int level);
+	
 }

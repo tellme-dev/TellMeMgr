@@ -165,4 +165,10 @@
     from t_Item_tag t
     where t.parent_id = #{pid,jdbcType=INTEGER}
   </select>
+    <select id="getItemTagsByLevel" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_Item_tag t
+    where t.level >= #{level,jdbcType=INTEGER}
+  </select>
 </mapper>
