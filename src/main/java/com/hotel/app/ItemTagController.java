@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
@@ -25,13 +26,13 @@ import com.hotel.service.ItemTagAssociationService;
 import com.hotel.service.ItemTagService;
 
 /**
- * 首页，启动页面APP数据接口
+ * 酒店服务项目
  * @author charo
  *
  */
 @Controller
 @RequestMapping("/app/menu")
-public class AppHomeController {
+public class ItemTagController {
 	@Autowired ItemTagService itemTagService;
 	@Autowired ItemTagAssociationService itemTagAssociationService; 
 	@Autowired ItemService itemService;
@@ -254,5 +255,36 @@ public class AppHomeController {
 			childItemTagList = itemTagService.getchildItemTagsByParentId(tagId);
 		}
 		return childItemTagList;
+	}
+	/**
+	 * 获取酒店服务项目标签的一级项目
+	 * @param request
+	 * @return
+	 * @author hzf
+	 */
+	@RequestMapping(value = "getFirstLevelItemTag.do", produces = "application/json;charset=UTF-8")
+	public String getFirstLevelItemTag(HttpServletRequest request){
+		List<ItemTag> list = itemTagService.getItemTagsByLevel(1);
+		if(list ==null ||list.size() ==0){
+			return new ListResult<ItemTag>(null,false,"获取一级项目标签失败").toJson();
+		}
+		return new ListResult<ItemTag>(list,true,"获取成功").toJson();
+	}
+	/**
+	 * 获取酒店服务项目标签的二级项目
+	 * @param parentId
+	 * @param request
+	 * @return
+	 * @author hzf
+	 */
+	@RequestMapping(value = "getSecondLevelItemTagByParentId.do", produces = "application/json;charset=UTF-8")
+	public String getSecondLevelItemTagByParentId(
+			@RequestParam(value = "parentId", required = false) int parentId,
+			HttpServletRequest request){
+		List<ItemTag> list = itemTagService.getchildItemTagsByParentId(parentId);
+		if(list ==null ||list.size() ==0){
+			return new ListResult<ItemTag>(null,false,"获取二级项目标签失败").toJson();
+		}
+		return new ListResult<ItemTag>(list,true,"获取成功").toJson();
 	}
 }

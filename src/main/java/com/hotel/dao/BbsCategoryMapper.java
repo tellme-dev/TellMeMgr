@@ -1,5 +1,6 @@
 package com.hotel.dao;
 
+import com.hotel.common.ListResult;
 import com.hotel.model.BbsCategory;
 
 @MyBatisRepository
@@ -15,4 +16,6 @@ public interface BbsCategoryMapper {
     int updateByPrimaryKeySelective(BbsCategory record);
 
     int updateByPrimaryKey(BbsCategory record);
+
+	ListResult<BbsCategory> selectCategoryList();
 }

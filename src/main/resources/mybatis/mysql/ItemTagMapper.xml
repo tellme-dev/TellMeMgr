@@ -11,6 +11,17 @@
     <result column="note" jdbcType="VARCHAR" property="note" />
     <result column="tag_type" jdbcType="INTEGER" property="tagType" />
   </resultMap>
+  <!-- <resultMap id="ResultItemTagVMMap" type="com.hotel.viewmodel.ItemTagWebVM">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="level" jdbcType="TINYINT" property="level" />
+    <result column="is_leaf" jdbcType="BIT" property="isLeaf" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="tag_type" jdbcType="INTEGER" property="tagType" />
+    <collection column="id" property="itemSession" select="com.hotel.dao.ItemMapper.selectByPrimaryKey"></collection>
+  </resultMap> -->
   <resultMap id="BaseVMResultMap" type="com.hotel.viewmodel.ItemTagWebVM">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="parent_id" jdbcType="INTEGER" property="parentId" />
@@ -164,5 +175,11 @@
     <include refid="Base_Column_List" />,t.name as text
     from t_Item_tag t
     where t.parent_id = #{pid,jdbcType=INTEGER}
+  </select>
+    <select id="getItemTagsByLevel" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_Item_tag t
+    where t.level >= #{level,jdbcType=INTEGER}
   </select>
 </mapper>

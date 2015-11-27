@@ -31,4 +31,6 @@ public interface HotelMapper {
     List<Hotel> getPageHotel(Hotel hotel);
     
     HotelVM getHotelVMById(int id);
+
+	HotelVM getHotelVMByMap(Map<String, Object> map);
 }

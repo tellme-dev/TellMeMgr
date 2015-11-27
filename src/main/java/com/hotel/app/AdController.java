@@ -12,13 +12,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-
-
 import com.hotel.common.ListResult;
-import com.hotel.model.Customer;
+import com.hotel.common.Result;
+import com.hotel.model.Hotel;
 import com.hotel.modelVM.AdParam;
 import com.hotel.modelVM.AdvertisementVM;
-import com.hotel.service.AdService;
+import com.hotel.modelVM.HotelVM;
+import com.hotel.service.AdvertisementService;
+import com.hotel.service.HotelService;
+import com.hotel.service.ItemTagService;
 
 /**
  * 广告，主题，推广的APP数据服务接口
@@ -31,7 +33,11 @@ import com.hotel.service.AdService;
 @RequestMapping("/app/ad")
 public class AdController {
 	
-	@Autowired AdService adService;
+	@Autowired AdvertisementService adService;
+	
+	@Autowired HotelService hotelService;
+	
+	@Autowired ItemTagService itemTagService;
 	/**
 	 * 查询获取广告信息
 	 * @param request
@@ -68,6 +74,31 @@ public class AdController {
 		}
 		
 		return result.toJson();
+	}
+	/**
+	 * 对酒店打广告，根据广告对应的的hotelId查询各种信息
+	 * @author jun
+	 * @param hotelParam {"hotelId": }
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "getHotelInfo.do", produces = "application/json;charset=UTF-8")
+	public String getHotelInfo(
+			@RequestParam(value = "hotelParam", required = false) String hotelParam,
+			HttpServletRequest request)
+	{
+		JSONObject jObj = JSONObject.fromObject(hotelParam);
+		Hotel hotel = (Hotel) JSONObject.toBean(jObj,Hotel.class);
+		Result<HotelVM> result = new Result<HotelVM>();
+		int adId = hotel.getId();
+        try{
+        	HotelVM h = hotelService.getHotelVMByAdId(adId);
+        	return result.toJson();
+		}catch(Exception e){
+			result = new Result<HotelVM>(null,false,"获取数据失败");
+			return result.toJson();
+		}
 	}
 
 }

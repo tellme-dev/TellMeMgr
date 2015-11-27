@@ -26,5 +26,6 @@ public interface HotelService {
     Hotel selectByPrimaryKey(Integer id);
     
     HotelVM getHotelVMById(int id);
-}
 
+	HotelVM getHotelVMByAdId(Integer adId);
+}

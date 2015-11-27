@@ -7,30 +7,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hotel.common.utils.GeneralUtil;
 import com.hotel.dao.AdDetailMapper;
 import com.hotel.dao.AdvertisementMapper;
+import com.hotel.dao.BannerDetailMapper;
 import com.hotel.model.AdDetail;
 import com.hotel.model.Advertisement;
+import com.hotel.model.BannerDetail;
+import com.hotel.modelVM.AdvertisementVM;
 import com.hotel.service.AdvertisementService;
 import com.hotel.viewmodel.AdvertisementWebVM;
 
 @Service("adService")
 public class AdvertisementServiceImpl implements AdvertisementService {
 	
-	@Resource
-	private AdvertisementMapper adMapper;
-	@Resource
+	@Autowired
+	private AdvertisementMapper advertisementMapper;
+	@Autowired
 	private AdDetailMapper adDetailMapper;
+	@Autowired
+	private BannerDetailMapper bannerDetailMapper;
 
 	@Override
 	public List<AdvertisementWebVM> getAdPageList(Map<String,Object> map) {
 		// TODO Auto-generated method stub
-		List<AdvertisementWebVM> adlist = adMapper.getAdPageList(map);
+		List<AdvertisementWebVM> adlist = advertisementMapper.getAdPageList(map);
 		/*转换时间格式*/
 		List<AdvertisementWebVM> list = new ArrayList<AdvertisementWebVM>();
 		for(int i=0;i<adlist.size();i++){
@@ -46,7 +50,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	@Override
 	public int getAdPageListCount(Map<String, Object> map) {
 		// TODO Auto-generated method stub
-		return adMapper.getAdPageListCount(map);
+		return advertisementMapper.getAdPageListCount(map);
 	}
 
 	@Override
@@ -87,7 +91,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		
 		AdDetail adDetail = new AdDetail();
 		if(ad.getId()>0){
-			adMapper.updateByPrimaryKeySelective(ad);
+			advertisementMapper.updateByPrimaryKeySelective(ad);
 			//adDetail表
 			int i=0;
 			//编辑
@@ -122,7 +126,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		}else{
 			ad.setCreateTime(new Date());
 			ad.setIsUsed(true);
-			adMapper.insert(ad);
+			advertisementMapper.insert(ad);
 			//adDetail表插入
 			for(int i=0;i<imageUrls.size();i++){
 				String text = imageTexts.get(i);
@@ -140,7 +144,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	@Override
 	public AdvertisementWebVM getAdById(Integer adId) {
 		// TODO Auto-generated method stub
-		AdvertisementWebVM ad = adMapper.selectAdVMByPrimaryKey(adId);
+		AdvertisementWebVM ad = advertisementMapper.selectAdVMByPrimaryKey(adId);
 		List<AdDetail> adDetail = adDetailMapper.selectByAdId(adId);
 		//ad.setAdDetail(adDetail);
 		ad.setAdDetailList(adDetail);
@@ -160,7 +164,36 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("ids", ids);
 		map.put("isUsed", false);
-		adMapper.updateByIds(map);
+		advertisementMapper.updateByIds(map);
+	}
+	
+	@Override
+	public List<AdvertisementVM> getAdList(int banner, int adNum) {
+		//通过banner获取adid
+		List<BannerDetail> BannerDetailList = bannerDetailMapper.getAdIdList(banner);
+		if(BannerDetailList==null||BannerDetailList.size()==0){
+			return null;
+		}
+		//获取adNum数量的广告
+		if(BannerDetailList.size()<adNum){
+			adNum = BannerDetailList.size();
+		}
+		
+		List<AdvertisementVM> adList = new ArrayList<AdvertisementVM>();
+		for(int i= 0;i<adNum;i++){
+			int id = BannerDetailList.get(i).getAdId();
+			AdvertisementVM ad =advertisementMapper.getAdList(id); 
+			if(ad!=null){
+				adList.add(ad);
+			}
+		}
+		return adList;
+		
 	}
 
+	@Override
+	public Advertisement getAdByPrimaryKey(Integer id) {
+		// TODO Auto-generated method stub
+		return advertisementMapper.selectByPrimaryKey(id);
+	}
 }

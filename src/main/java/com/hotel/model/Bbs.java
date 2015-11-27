@@ -5,13 +5,13 @@ import java.util.Date;
 public class Bbs {
     private Integer id;
 
-    private Integer customerId;
+    private Integer customerId;//发帖人
 
-    private Integer bbsType;
+    private Integer bbsType;  //1:论坛，2：评价
 
-    private Integer categoryId;
+    private Integer categoryId;//论坛分类模块，bbs_type !=1 时，本字段=0
 
-    private Integer postType;
+    private Integer postType; //0:表示主贴，1:表示回帖，2：表示点赞
 
     private Integer targetType;
 
