@@ -1,5 +1,7 @@
 package com.hotel.service;
 
+import java.util.List;
+
 import com.hotel.common.ListResult;
 import com.hotel.model.BbsCategory;
 import com.hotel.modelVM.BbsVM;
@@ -25,5 +27,13 @@ public interface BbsService {
 	 * @param bbs
 	 */
 	void saveBbs(BbsVM bbs);
+
+	/**
+	 * @author jun
+	 * 加载bbs树形子节点
+	 * @param pid
+	 * @return
+	 */
+	List<BbsVM> loadBbsTree(Integer pid);
 
 }

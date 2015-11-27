@@ -3,9 +3,9 @@ package com.hotel.model;
 import java.util.Date;
 
 public class Bbs {
-    private Integer id;
+    private Integer id;//0：发帖、回帖，大于0：点赞
 
-    private Integer customerId;//发帖人
+    private Integer customerId;//发帖人回帖人
 
     private Integer bbsType;  //1:论坛，2：评价
 
@@ -13,19 +13,19 @@ public class Bbs {
 
     private Integer postType; //0:表示主贴，1:表示回帖，2：表示点赞
 
-    private Integer targetType;
+    private Integer targetType;//关联类型,0:论坛，1:酒店，2:广告，3:推广.
 
     private Integer targetId;
 
-    private Integer parentId;
+    private Integer parentId;//0表示主贴，大于0表示回帖
 
     private Integer level;
 
     private String path;
 
-    private String title;
+    private String title;//标题
 
-    private String text;
+    private String text;//文字
 
     private Byte score;
 

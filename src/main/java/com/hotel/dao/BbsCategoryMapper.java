@@ -1,5 +1,7 @@
 package com.hotel.dao;
 
+import java.util.List;
+
 import com.hotel.common.ListResult;
 import com.hotel.model.BbsCategory;
 
@@ -17,5 +19,5 @@ public interface BbsCategoryMapper {
 
     int updateByPrimaryKey(BbsCategory record);
 
-	ListResult<BbsCategory> selectCategoryList();
+	List<BbsCategory> selectCategoryList();
 }

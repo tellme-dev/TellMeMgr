@@ -8,23 +8,23 @@ import com.hotel.model.Customer;
 
 public class BbsVM extends Bbs {
 	private Customer customer;
-	private List<BbsAttach> BbsAttachs;
-	private String attachUrl;
+	private List<BbsAttach> bbsAttachUrls;
+	private List<BbsVM> children;
 
-	public String getAttachUrl() {
-		return attachUrl;
+	public List<BbsVM> getChildren() {
+		return children;
 	}
 
-	public void setAttachUrl(String attachUrl) {
-		this.attachUrl = attachUrl;
+	public void setChildren(List<BbsVM> children) {
+		this.children = children;
 	}
 
-	public List<BbsAttach> getBbsAttachs() {
-		return BbsAttachs;
+	public List<BbsAttach> getBbsAttachUrls() {
+		return bbsAttachUrls;
 	}
 
-	public void setBbsAttachs(List<BbsAttach> bbsAttachs) {
-		BbsAttachs = bbsAttachs;
+	public void setBbsAttachUrls(List<BbsAttach> bbsAttachUrls) {
+		this.bbsAttachUrls = bbsAttachUrls;
 	}
 
 	public Customer getCustomer() {

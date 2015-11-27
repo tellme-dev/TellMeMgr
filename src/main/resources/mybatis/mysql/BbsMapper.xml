@@ -45,7 +45,30 @@
     <result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
     <association column="customer_id" property="customer" javaType="Customer" select="com.hotel.dao.CustomerMapper.selectByPrimaryKey"></association>
-    <collection column="id" property="BbsAttachs" select="com.hotel.dao.BbsAttachMapper.selectByBbsId"></collection>
+    <collection column="id" property="bbsAttachUrls" select="com.hotel.dao.BbsAttachMapper.selectByBbsId"></collection>
+  </resultMap>
+  <resultMap id="BaseVMResultMap2" type="com.hotel.modelVM.BbsVM" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="customer_id" property="customerId" jdbcType="INTEGER" />
+    <result column="bbs_type" property="bbsType" jdbcType="INTEGER" />
+    <result column="category_id" property="categoryId" jdbcType="INTEGER" />
+    <result column="post_type" property="postType" jdbcType="INTEGER" />
+    <result column="target_type" property="targetType" jdbcType="INTEGER" />
+    <result column="target_id" property="targetId" jdbcType="INTEGER" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="path" property="path" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="text" property="text" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="TINYINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="browse_count" property="browseCount" jdbcType="INTEGER" />
+    <result column="agree_count" property="agreeCount" jdbcType="INTEGER" />
+    <result column="answer_count" property="answerCount" jdbcType="INTEGER" />
+    <result column="delete_user_id" property="deleteUserId" jdbcType="INTEGER" />
+    <result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
+    <association column="customer_id" property="customer" javaType="Customer" select="com.hotel.dao.CustomerMapper.selectByPrimaryKey"></association>
   </resultMap>
   <sql id="Base_Column_List" >
     id, customer_id, bbs_type, category_id, post_type, target_type, target_id, parent_id, 
@@ -78,7 +101,7 @@
       #{agreeCount,jdbcType=INTEGER}, #{answerCount,jdbcType=INTEGER}, #{deleteUserId,jdbcType=INTEGER}, 
       #{deleteTime,jdbcType=TIMESTAMP}, #{timeStamp,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.hotel.model.Bbs" >
+  <insert id="insertSelective" parameterType="com.hotel.modelVM.BbsVM" >
     insert into t_bbs
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -358,5 +381,11 @@
     from t_bbs b
     where 1=1 
     <include refid="query_sql" />
+  </select>
+  <select id="selectByPid" resultMap="BaseVMResultMap2" parameterType="java.lang.Integer" >
+    select *
+    from t_bbs b
+    left join t_customer c on c.id = b.customer_id
+    where b.parent_id = #{pid,jdbcType=INTEGER}
   </select>
 </mapper>

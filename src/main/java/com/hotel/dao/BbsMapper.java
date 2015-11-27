@@ -3,7 +3,6 @@ package com.hotel.dao;
 import java.util.List;
 import java.util.Map;
 
-import com.hotel.common.ListResult;
 import com.hotel.model.Bbs;
 import com.hotel.modelVM.BbsVM;
 
@@ -13,7 +12,7 @@ public interface BbsMapper {
 
     int insert(Bbs record);
 
-    int insertSelective(Bbs record);
+    int insertSelective(BbsVM record);
 
     Bbs selectByPrimaryKey(Integer id);
 
@@ -22,4 +21,6 @@ public interface BbsMapper {
     int updateByPrimaryKey(Bbs record);
 
 	List<BbsVM> selectByMap(Map<String, Object> map);
+
+	List<BbsVM> selectByPid(Integer pid);
 }
