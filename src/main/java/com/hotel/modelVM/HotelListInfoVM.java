@@ -1,6 +1,9 @@
 package com.hotel.modelVM;
 
 import java.math.BigDecimal;
+import java.util.List;
+
+import com.hotel.model.Item;
 
 public class HotelListInfoVM {
 	private Integer id;
@@ -14,6 +17,7 @@ public class HotelListInfoVM {
     private BigDecimal score;
     private int countBrowse;
     private int countCollection;
+    private List<Item> projects;
     
 	public Integer getId() {
 		return id;
@@ -81,6 +85,12 @@ public class HotelListInfoVM {
 	}
 	public void setCountCollection(int countCollection) {
 		this.countCollection = countCollection;
+	}
+	public List<Item> getProjects() {
+		return projects;
+	}
+	public void setProjects(List<Item> projects) {
+		this.projects = projects;
 	}
 	public void clear(){
 		if(name == null){

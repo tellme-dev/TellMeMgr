@@ -193,6 +193,7 @@ public class HotelController {
 						vm.setAddress(address);
 					}
 				}
+				vm.setProjects(notSelfItems);
 				
 				//空数据清理
 				vm.clear();
