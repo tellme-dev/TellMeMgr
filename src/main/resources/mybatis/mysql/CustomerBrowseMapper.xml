@@ -90,4 +90,10 @@
       visit_time = #{visitTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="countByItemId" resultType="java.lang.Integer">
+    select count(id) from t_customer_browse where target_type = 1 and 
+    target_id = #{itemId,jdbcType=INTEGER}
+  </select>
+  
 </mapper>

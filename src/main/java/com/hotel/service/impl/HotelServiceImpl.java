@@ -82,4 +82,16 @@ public class HotelServiceImpl implements HotelService{
 		map.put("adId", adId);
 		return hotelMapper.getHotelVMByMap(map);
 	}
+
+	@Override
+	public List<Hotel> getPageHotelByItemTag(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return hotelMapper.getPageHotelByItemTag(map);
+	}
+
+	@Override
+	public int getPageHotelCountByItemTag(int itemTagId) {
+		// TODO Auto-generated method stub
+		return hotelMapper.getPageHotelCountByItemTag(itemTagId);
+	}
 }
