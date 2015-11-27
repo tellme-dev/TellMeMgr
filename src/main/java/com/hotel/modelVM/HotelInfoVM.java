@@ -15,7 +15,6 @@ public class HotelInfoVM {
     private List<ImageVM> imgUrl;
     private int countBrowse;
     private int countCollection;
-    private int countZambia;
     
 	public Integer getId() {
 		return id;
@@ -82,11 +81,5 @@ public class HotelInfoVM {
 	}
 	public void setCountCollection(int countCollection) {
 		this.countCollection = countCollection;
-	}
-	public int getCountZambia() {
-		return countZambia;
-	}
-	public void setCountZambia(int countZambia) {
-		this.countZambia = countZambia;
 	}
 }

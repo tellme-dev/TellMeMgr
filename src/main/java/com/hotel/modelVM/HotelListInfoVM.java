@@ -10,6 +10,10 @@ public class HotelListInfoVM {
     private BigDecimal longitude;
     private BigDecimal latitude;
     private String imgUrl;
+    private String address;
+    private BigDecimal score;
+    private int countBrowse;
+    private int countCollection;
     
 	public Integer getId() {
 		return id;
@@ -54,6 +58,30 @@ public class HotelListInfoVM {
 		this.imgUrl = imgUrl;
 	}
 	
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public BigDecimal getScore() {
+		return score;
+	}
+	public void setScore(BigDecimal score) {
+		this.score = score;
+	}
+	public int getCountBrowse() {
+		return countBrowse;
+	}
+	public void setCountBrowse(int countBrowse) {
+		this.countBrowse = countBrowse;
+	}
+	public int getCountCollection() {
+		return countCollection;
+	}
+	public void setCountCollection(int countCollection) {
+		this.countCollection = countCollection;
+	}
 	public void clear(){
 		if(name == null){
 			name = "";
@@ -66,6 +94,9 @@ public class HotelListInfoVM {
 		}
 		if(imgUrl == null){
 			imgUrl = "";
+		}
+		if(address == null){
+			address = "";
 		}
 	}
 }

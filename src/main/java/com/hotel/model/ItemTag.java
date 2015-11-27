@@ -16,6 +16,8 @@ public class ItemTag {
     private String note;
 
     private Integer tagType;
+    
+    private String imageUrl;
 
     public Integer getId() {
         return id;
@@ -53,7 +55,15 @@ public class ItemTag {
         return path;
     }
 
-    public void setPath(String path) {
+    public String getImageUrl() {
+		return imageUrl;
+	}
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public void setPath(String path) {
         this.path = path;
     }
 
