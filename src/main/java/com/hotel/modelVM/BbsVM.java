@@ -10,6 +10,15 @@ public class BbsVM extends Bbs {
 	private Customer customer;
 	private List<BbsAttach> bbsAttachUrls;
 	private List<BbsVM> children;
+	private Integer collectionCount;
+
+	public Integer getCollectionCount() {
+		return collectionCount;
+	}
+
+	public void setCollectionCount(Integer collectionCount) {
+		this.collectionCount = collectionCount;
+	}
 
 	public List<BbsVM> getChildren() {
 		return children;

@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hotel.common.ListResult;
+import com.hotel.common.utils.Page;
+import com.hotel.dao.BbsAttachMapper;
 import com.hotel.dao.BbsCategoryMapper;
 import com.hotel.dao.BbsMapper;
 import com.hotel.model.Bbs;
@@ -23,6 +25,8 @@ public class BbsServiceImpl implements BbsService {
 	@Autowired BbsMapper bbsMapper;
 	
 	@Autowired BbsCategoryMapper bbsCategoryMapper;
+	
+	@Autowired BbsAttachMapper bbsAttachMapper;
 
 	@Override
 	public ListResult<BbsCategory> loadBbsCategoryList() {
@@ -33,13 +37,16 @@ public class BbsServiceImpl implements BbsService {
 	}
 
 	@Override
-	public ListResult<BbsVM> loadBbsListByCategoryId(int categoryId) {
+	public ListResult<BbsVM> loadBbsListByCategoryId(Page page,int categoryId) {
 		// TODO Auto-generated method stub
 		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("pageStart", page.getPageStart());
+		map.put("pageSize",page.getPageSize());
 		map.put("parentId", 0);//加载主贴
 		map.put("categoryId", categoryId);
 		List<BbsVM> list = bbsMapper.selectByMap(map);
-		ListResult<BbsVM> result = new ListResult<BbsVM>(list);
+		int total = bbsMapper.countByMap(map);
+		ListResult<BbsVM> result = new ListResult<BbsVM>(total,list);
 		return result;
 	}
 
@@ -48,15 +55,17 @@ public class BbsServiceImpl implements BbsService {
 		// TODO Auto-generated method stub
 		if(bbs.getBbsType()==1){//论坛
 			//bbs.setId(0);
-			bbs.setCategoryId(1);
 			if(bbs.getPostType() == 0){//发帖
+				bbs.setCategoryId(1);
 				bbs.setLevel(1);
 				bbs.setCreateTime(new Date());
+				bbs.setTimeStamp(new Date());
 				bbsMapper.insertSelective(bbs);
+				//bbsAttachMapper.insertSelective(record);
 			}
-			else if(bbs.getPostType() == 1){//回帖
+			else if(bbs.getPostType() == 1){//回贴回复
 				Bbs b = bbsMapper.selectByPrimaryKey(bbs.getParentId());
-				//bbsMapper.updateAnswerCount();//更新父节点的回帖次数
+				bbsMapper.updateAnswerCount(bbs.getParentId());//更新父节点的回帖次数
 				bbs.setCategoryId(b.getCategoryId());
 				bbs.setLevel(b.getLevel()+1);
 				if(b.getPath()!=null&&b.getPath().length()>0){
@@ -65,24 +74,36 @@ public class BbsServiceImpl implements BbsService {
 					bbs.setPath(b.getId().toString());
 				}
 				bbs.setCreateTime(new Date());
+				bbs.setTimeStamp(new Date());
+				bbsMapper.insertSelective(bbs);
+			}else{//点赞 postType = 2
+				bbsMapper.updateAgreeCount(bbs.getId());
 			}
 		}
 	}
 	
 	@Override
-	public List<BbsVM> loadBbsTree(Integer pid) {
+	public ListResult<BbsVM> loadBbsTree(Page page,Integer pid) {
 		// TODO Auto-generated method stub
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("pageStart", page.getPageStart());
+		map.put("pageSize", page.getPageSize());
+		map.put("parentId", pid);
 		List<BbsVM> ls = new ArrayList<BbsVM>();
 		List<BbsVM> list = new ArrayList<BbsVM>();
-		ls = bbsMapper.selectByPid(pid); 
+		ls = bbsMapper.selectByPid(map); 
+		int count = bbsMapper.countByMap(map);
 		list = getItemTagNodes(ls);
-		return list;
+		ListResult<BbsVM> result = new ListResult<BbsVM>(count,list);
+		return result;
 	}
 	private List<BbsVM> getItemTagNodes(List<BbsVM> ls) {
 		// TODO Auto-generated method stub
 		List<BbsVM> list = new ArrayList<BbsVM>();
 		for(BbsVM bbs:ls){
-			List<BbsVM> clist = bbsMapper.selectByPid(bbs.getId());
+			Map<String,Object> map = new HashMap<String, Object>();
+			map.put("parentId", bbs.getId());
+			List<BbsVM> clist = bbsMapper.selectByPid(map);
 			if(clist.size()>0){
 				bbs.setChildren(getItemTagNodes(clist));
 			}
@@ -90,6 +111,5 @@ public class BbsServiceImpl implements BbsService {
 		}
 		return list;
 	}
-	
 
 }

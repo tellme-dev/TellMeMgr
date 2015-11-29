@@ -1,6 +1,8 @@
 package com.hotel.app;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -14,7 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hotel.common.ListResult;
 import com.hotel.common.Result;
-import com.hotel.model.Bbs;
+import com.hotel.common.utils.Constants;
+import com.hotel.common.utils.Page;
 import com.hotel.model.BbsCategory;
 import com.hotel.modelVM.BbsVM;
 import com.hotel.service.BbsService;
@@ -46,7 +49,7 @@ public class BbsController {
 	/**
 	 * 获取社区帖子列表
 	 * @author jun
-	 * @param bbsParam:categoryId
+	 * @param bbsParam:categoryId,pageNo
 	 * @param request
 	 * @return
 	 */
@@ -56,10 +59,14 @@ public class BbsController {
 			@RequestParam(value = "bbsParam", required = false) String bbsParam,
 			HttpServletRequest request){
 		JSONObject jObj = JSONObject.fromObject(bbsParam);
-		Bbs bbs = (Bbs) JSONObject.toBean(jObj,Bbs.class);
-		int categoryId = bbs.getCategoryId();
+		//Bbs bbs = (Bbs) JSONObject.toBean(jObj,Bbs.class);
+		int categoryId = jObj.getInt("categoryId");
+		int pageNo = jObj.getInt("pageNo");
 		try{
-			ListResult<BbsVM> result = bbsService.loadBbsListByCategoryId(categoryId);
+			Page page = new Page();
+			page.setPageNo(pageNo);
+			page.setPageSize(Constants.DEFAULT_PAGE_SIZE);
+			ListResult<BbsVM> result = bbsService.loadBbsListByCategoryId(page,categoryId);
 			return result.toJson();
 		}catch(Exception e){
 			ListResult<BbsVM> result = new ListResult<BbsVM>(null, false, "获取数据失败");
@@ -75,15 +82,18 @@ public class BbsController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "loadBbsTree.do", produces = "application/json;charset=UTF-8")
-	public String loadBbsByPid(
+	public String loadBbsTree(
 			@RequestParam(value = "bbsParam", required = false) String bbsParam,
 			HttpServletRequest request){
 		JSONObject jObj = JSONObject.fromObject(bbsParam);
-		BbsVM bbs = (BbsVM) JSONObject.toBean(jObj,BbsVM.class);
-		int pid = bbs.getId();
+		//BbsVM bbs = (BbsVM) JSONObject.toBean(jObj,BbsVM.class);
+		int pid = jObj.getInt("id");
+		int pageNo = jObj.getInt("pageNo");
 		try{
-			List<BbsVM> bbsVM = bbsService.loadBbsTree(pid);
-			ListResult<BbsVM> result = new ListResult<BbsVM>(bbsVM, false, "获取数据成功");
+			Page page = new Page();
+			page.setPageNo(pageNo);
+			page.setPageSize(Constants.PAGE_SIZE_2);
+			ListResult<BbsVM> result = bbsService.loadBbsTree(page,pid);
 			return result.toJson();
 		}catch(Exception e){
 			ListResult<BbsVM> result = new ListResult<BbsVM>(null, false, "获取数据失败");

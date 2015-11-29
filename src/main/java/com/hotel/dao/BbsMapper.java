@@ -22,5 +22,11 @@ public interface BbsMapper {
 
 	List<BbsVM> selectByMap(Map<String, Object> map);
 
-	List<BbsVM> selectByPid(Integer pid);
+	List<BbsVM> selectByPid(Map<String, Object> map);
+
+	int countByMap(Map<String, Object> map);
+
+	void updateAnswerCount(Integer id);
+
+	void updateAgreeCount(Integer id);
 }
