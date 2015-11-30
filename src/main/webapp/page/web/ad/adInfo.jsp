@@ -20,6 +20,7 @@
     	type = ${type};
     	initHotel();
     	initItemTagTree();
+    	//initBbs();
     	setShowStates();
     	if(type==1){//编辑
     		var targetType = '${adinfo.targetType}';
@@ -29,21 +30,42 @@
     	    	doc[0].checked = true; 
     	    	$("#hotelSelect").combobox("setValue",'${adinfo.targetId}');
     	    	$("#hotelSelect").combobox("enable",true); 
+    	    	var doc = document.getElementById("hotel");
+        	    doc.style.backgroundColor="#ffa8a8";
+        	    $("#bbsSelect").val("");
+        	    $("#bbsShow").val("");
     	    	break;
     	    case '2':
     	    	doc[1].checked = true;
     	    	$("#itemTagSelect").combotree("setValue",'${adinfo.targetId}');
     	    	$("#itemTagSelect").combotree("enable",true);
+    	    	var doc = document.getElementById("itemTag");
+        	    doc.style.backgroundColor="#ffa8a8";
+    	    	$("#bbsSelect").val("");
+        	    $("#bbsShow").val("");
     	    	break;
     	    case '3':
     	    	doc[2].checked = true;
-    	    	$("#txtTagContent").removeAttr("readonly");break;
+    	    	$("#select_bbs").show();
+    	    	var doc = document.getElementById("bbs");
+        	    doc.style.backgroundColor="#ffa8a8";
+    	    	break;
     	    case '4':
     	    	doc[3].checked = true;
-    	    	$("#txtTagContent").removeAttr("readonly");break;
+    	    	$("#txtTagContent").removeAttr("readonly");
+    	    	var doc = document.getElementById("tagContent");
+        	    doc.style.backgroundColor="#ffa8a8";
+    	    	$("#bbsSelect").val("");
+        	    $("#bbsShow").val("");
+        	    break;
     	    case '5':
     	    	doc[4].checked = true;
-    	    	$("#txtTagContent").removeAttr("readonly");break;
+    	    	$("#txtTagContent").removeAttr("readonly");
+    	    	var doc = document.getElementById("tagContent");
+        	    doc.style.backgroundColor="#ffa8a8";
+    	    	$("#bbsSelect").val("");
+        	    $("#bbsShow").val("");
+        	    break;
     	    };
     	    
     	}
@@ -60,18 +82,24 @@
     	    var doc = document.getElementById("itemTag");
     	    doc.style.backgroundColor="white";
     	    
+    	    var doc = document.getElementById("bbs");
+    	    doc.style.backgroundColor="white";
+    	    
     	    var doc = document.getElementById("tagContent");
     	    doc.style.backgroundColor="white";
     	    
     	    /*内容清空*/
     	    $("#itemTagSelect").combotree("setValue","");
     	    $("#txtTagContent").val("");
+    	    $("#bbsSelect").val("");
+    	    $("#bbsShow").val("");
     	    
     	    /*只读、可编辑转换*/
     	    $("#hotelSelect").combobox("enable",true);
     	    
     	    $("#txtTagContent").attr("readonly","readonly");
     	    $("#itemTagSelect").combotree("disable",true);
+    	    $("#select_bbs").hide();
     	}
     	else if(type == 2){
     		//选择“项目” 操作 itemTag
@@ -82,18 +110,52 @@
     	    var doc = document.getElementById("hotel");
     	    doc.style.backgroundColor="white";
     	    
+    	    var doc = document.getElementById("bbs");
+    	    doc.style.backgroundColor="white";
+    	    
     	    var doc = document.getElementById("tagContent");
     	    doc.style.backgroundColor="white";
     	    
     	    /*内容清空*/
     	    $("#hotelSelect").combobox("setValue","");
     	    $("#txtTagContent").val("");
+    	    $("#bbsSelect").val("");
+    	    $("#bbsShow").val("");
     	    
     	    /*只读、可编辑转换*/
     	    $("#itemTagSelect").combotree("enable",true);
     	    
     		$("#txtTagContent").attr("readonly","readonly");
     		$("#hotelSelect").combobox("disable",true);
+    		$("#select_bbs").hide();
+    	}
+    	else if(type == 3){
+    		//选择“社区” 操作bbs
+    		/*改变颜色*/
+    		var doc = document.getElementById("bbs");
+    	    doc.style.backgroundColor="#ffa8a8";
+    	    
+    	    var doc = document.getElementById("itemTag");
+    	    doc.style.backgroundColor="white";
+    	    
+    	    var doc = document.getElementById("hotel");
+    	    doc.style.backgroundColor="white";
+    	    
+    	    var doc = document.getElementById("tagContent");
+    	    doc.style.backgroundColor="white";
+    	    
+    	    /*内容清空*/
+    	    $("#hotelSelect").combobox("setValue","");
+    	    $("#itemTagSelect").combotree("setValue","");
+    	    $("#txtTagContent").val("");
+    	    
+    	    /*只读、可编辑转换*/
+    	    $("#select_bbs").show();
+    		
+    		$("#itemTagSelect").combotree("disable",true);
+    		$("#hotelSelect").combobox("disable",true);
+    		$("#txtTagContent").attr("readonly","readonly");
+    		
     	}
     	else{
     		//选择“html”、“url” 操作 tagContent文本框
@@ -104,24 +166,32 @@
     	    var doc = document.getElementById("hotel");
     	    doc.style.backgroundColor="white";
     	    
+    	    var doc = document.getElementById("bbs");
+    	    doc.style.backgroundColor="white";
+    	    
     	    var doc = document.getElementById("itemTag");
     	    doc.style.backgroundColor="white";
     	    
     	    /*内容清空*/
     	    $("#hotelSelect").combobox("setValue","");
     	    $("#itemTagSelect").combotree("setValue","");
+    	    $("#bbsSelect").val("");
+    	    $("#bbsShow").val("");
     	    
     	    /*只读、可编辑转换*/
     		$("#txtTagContent").removeAttr("readonly");
     		
     		$("#itemTagSelect").combotree("disable",true);
     		$("#hotelSelect").combobox("disable",true);
+    		$("#select_bbs").hide();
+    		
     	}
     }
 	function setShowStates(){
 		$("#txtTagContent").attr("readonly","readonly");
 		$("#itemTagSelect").combotree("disable",true);
 		$("#hotelSelect").combobox("disable",true);
+		$("#select_bbs").hide();
 	};
 	function edit(){
 		$("#hotelSelect").combobox("enable",true);
@@ -149,10 +219,14 @@
     		return;
     	}
     	if(targetType == 2&&$("#itemTagSelect").combotree("getValue") == ""){
-    		$.messager.alert('提示信息', "请选择标签！", "warning");
+    		$.messager.alert('提示信息', "请选择标签 ！", "warning");
     		return;
     	}
-    	if(targetType != 1&&targetType != 2&&$("#txtTagContent").val() == ""){
+    	if(targetType == 3&&$("#bbsSelect").val() == ""){
+    		$.messager.alert('提示信息', "请选择社区！", "warning");
+    		return;
+    	}
+    	if(targetType != 1&&targetType != 2&&targetType != 3&&$("#txtTagContent").val() == ""){
     		$.messager.alert('提示信息', "请填写内容！", "warning");
     		return;
     	}
@@ -270,14 +344,19 @@
 	}
    } 
 	function showdialog(){
-		var wz = getDialogPosition($('#photoWindow').get(0),100);
-		$('#photoWindow').window({
+		var wz = getDialogPosition($('#bbsWindow').get(0),100);
+		$('#bbsWindow').window({
 			  	top: 100,
 			    left: wz[1],
 			    onBeforeClose: function () {
 			    }
 		});
-		$('#photoWindow').window('open');
+		$('#bbsWindow').window('open');
+	}
+	function selectBbs(bbsId,title){
+		document.getElementById("bbsShow").value = title;
+		document.getElementById("bbsSelect").value = bbsId;
+		$('#bbsWindow').window('close');
 	}
 	function initItemTagTree(){
 	    $('#itemTagSelect').combotree( {  
@@ -299,11 +378,20 @@
           valueField:'id',
           textField:'name',
           onChange:function(){
-            	var a = $('#hotelSelect').combobox("getValue");
+            	//var a = $('#hotelSelect').combobox("getValue");
       	      }
        });  
 	}
-	
+	function initBbs(){
+	    $('#bbsSelect').combobox( {  
+          url : 'jsonLoadBbsComboList.do',
+          valueField:'id',
+          textField:'title',
+          onChange:function(){
+            	//var a = $('#bbsSelect').combobox("getValue");
+      	      }
+       });  
+	}
 </script>
 </head>
 
@@ -331,20 +419,20 @@
 					<table id="tab1" class="yw-cm-table font16">
 						<tr>
 							<td width="10%" align="center">名称：</td>
-							<td>
-								<input id="txtname" name="name" type="text" value="${adinfo.name}" class="easyui-validatebox" required="true" validType="Length[1,25]" style="width:254px;height:30px;" /> 
+							<td colspan="2">
+								<input id="txtname" name="name" type="text" value="${adinfo.name}" class="easyui-validatebox" required="true" style="width:254px;height:30px;" /> 
 								<input name="id" type="hidden" value="${adinfo.id}" /> 
 							</td>
 						</tr>
 						<tr>
 							<td width="10%" align="center">关键字：</td>
-							<td>
-							    <input id="txtkey" name="keyWord" type="text" value="${adinfo.keyWord}" placeholder="关键字之间用逗号隔开" class="easyui-validatebox" validType="Length[1,25]" style="width:254px;height:30px;" />
+							<td colspan="2">
+							    <input id="txtkey" name="keyWord" type="text" value="${adinfo.keyWord}" placeholder="关键字之间用逗号隔开" class="easyui-validatebox" style="width:500px;height:30px;" />
 							</td>
 						</tr>
 						<tr>
 							<td align="center">类型：</td>
-							<td>
+							<td colspan="2">
 							        <input type="radio" name="targetType" onclick="tagChange(1)" value="1">酒店　　
 							        <input type="radio" name="targetType" onclick="tagChange(2)" value="2">标签　　
         	                        <input type="radio" name="targetType" onclick="tagChange(3)" value="3">社区　　
@@ -353,21 +441,29 @@
 							</td>
 						</tr> 
 						<tr id="hotel">
-							<td width="10%" align="center">酒店：</td>
-							<td>
+							<td width="10%" align="center">关联酒店：</td>
+							<td colspan="2">
 							   <input id="hotelSelect" name="hotelId" class="easyui-combobox" data-options="editable:false" style="width:254px;height:30px;"/>
 							</td>
 						</tr>
 						<tr id="itemTag">
-							<td width="10%" align="center">标签：</td>
-							<td>
+							<td width="10%" align="center">关联标签：</td>
+							<td colspan="2">
 							   <input id="itemTagSelect" name="targetId" class="easyui-combotree" data-options="editable:false" style="width:254px;height:30px;"/>
 							</td>
 						</tr>
+						<tr id="bbs">
+							<td width="10%" align="center">关联社区：</td>
+							<td colspan="2">
+							   <input id="bbsShow" class="easyui-validatebox" value="${adinfo.bbsName}" readonly="readonly" placeholder="选择社区类型才能编辑此项" style="width:500px;height:30px;"/>
+							   <input type="hidden" id="bbsSelect" name="bbsId" value="${adinfo.bbsId}" class="easyui-validatebox" style="width:500px;height:30px;"/>
+							   <span id="select_bbs" class="yw-btn bg-blue mt12" style="cursor: pointer;" onclick="showdialog()">选择社区</span>
+							</td>
+						</tr>
 						<tr id="tagContent">
-							<td width="10%" align="center">内容：</td>
-							<td>
-							    <input id="txtTagContent" name="targetContent" type="text" value="${adinfo.targetContent}" class="easyui-validatebox"  validType="Length[1,25]" style="width:254px;height:30px;"/>
+							<td width="10%" align="center">关联内容：</td>
+							<td colspan="2">
+							    <input id="txtTagContent" name="targetContent" type="text" value="${adinfo.targetContent}" placeholder="url/html内容" class="easyui-validatebox" style="width:254px;height:30px;"/>
 							</td>
 						</tr>
 						<tr>
@@ -402,6 +498,15 @@
 				</form>
 			</div>
 		</div>
+	</div>
+	<div id="bbsWindow" class="easyui-window" title="关联社区" style="width:560px;height:480px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
+	   <table id="tab2" class="yw-cm-table font16">
+	     <c:forEach var="item" items="${bbsList}"> 
+	      <tr>
+	        <td onclick="selectBbs(${item.id},'${item.title}')">${item.title}</td>
+	      </tr>
+	      </c:forEach>
+	   </table>
 	</div>
     <div id="photoWindow" class="easyui-window" title="添加图片" style="width:560px;height:480px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
         <form id="uploadPhotoForm" action="saveOrupdatePhoto.do" enctype="multipart/form-data" method="post">

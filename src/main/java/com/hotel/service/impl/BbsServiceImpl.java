@@ -1,6 +1,5 @@
 package com.hotel.service.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +18,7 @@ import com.hotel.model.BbsCategory;
 import com.hotel.modelVM.BbsVM;
 import com.hotel.service.BbsService;
 
-@Service
+@Service("bbsService")
 public class BbsServiceImpl implements BbsService {
 	
 	@Autowired BbsMapper bbsMapper;
@@ -76,14 +75,30 @@ public class BbsServiceImpl implements BbsService {
 				bbs.setCreateTime(new Date());
 				bbs.setTimeStamp(new Date());
 				bbsMapper.insertSelective(bbs);
-			}else{//点赞 postType = 2
+			}
+			else if(bbs.getPostType() == 2){//点赞 
 				bbsMapper.updateAgreeCount(bbs.getId());
+			}else{//分享 postType = 3
+				bbsMapper.updateShareCount(bbs.getId());
 			}
 		}
 	}
 	
 	@Override
-	public ListResult<BbsVM> loadBbsTree(Page page,Integer pid) {
+	public ListResult<BbsVM> loadBbsChildren(Page page,Integer pid) {
+		// TODO Auto-generated method stub
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("pageStart", page.getPageStart());
+		map.put("pageSize", page.getPageSize());
+		map.put("parentId", pid);
+		List<BbsVM> ls = bbsMapper.selectByPid(map);
+		int count = bbsMapper.countByMap(map);
+		ListResult<BbsVM> result = new ListResult<BbsVM>(count,ls);
+		bbsMapper.updateBrowseCount(pid);//更新浏览次数
+		return result;
+	}
+	
+	/*public ListResult<BbsVM> loadBbsTree(Page page,Integer pid) {
 		// TODO Auto-generated method stub
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("pageStart", page.getPageStart());
@@ -103,6 +118,8 @@ public class BbsServiceImpl implements BbsService {
 		for(BbsVM bbs:ls){
 			Map<String,Object> map = new HashMap<String, Object>();
 			map.put("parentId", bbs.getId());
+			map.put("pageStart", 0);
+			map.put("pageSize", 2);
 			List<BbsVM> clist = bbsMapper.selectByPid(map);
 			if(clist.size()>0){
 				bbs.setChildren(getItemTagNodes(clist));
@@ -110,6 +127,20 @@ public class BbsServiceImpl implements BbsService {
 			list.add(bbs);
 		}
 		return list;
+	}*/
+
+	@Override
+	public BbsVM loadBbsById(Integer id) {
+		// TODO Auto-generated method stub
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("id", id);
+		return bbsMapper.selectBbsByMap(map);
+	}
+
+	@Override
+	public List<BbsVM> loadBbsList(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return bbsMapper.selectByMap(map);
 	}
 
 }
