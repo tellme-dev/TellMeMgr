@@ -1,5 +1,7 @@
 package com.hotel.app;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
 
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,8 +22,10 @@ import com.hotel.common.Result;
 import com.hotel.common.utils.GeneralUtil;
 import com.hotel.common.utils.StringUtil;
 import com.hotel.model.Customer;
+import com.hotel.model.Varifycode;
 import com.hotel.modelVM.RegisterData;
 import com.hotel.service.CustomerService;
+import com.hotel.service.VarifycodeService;
 import com.hotel.viewmodel.SmsInfo;
 /**
  * 顾客数据访问接口
@@ -31,7 +36,7 @@ import com.hotel.viewmodel.SmsInfo;
 @RequestMapping("/app/customer")
 public class CustomerController {
 	@Autowired CustomerService customerService;
-	
+	@Autowired VarifycodeService varifycodeService;
 	/**
 	 * 判断用户是否注册
 	 * @param autoInfo
@@ -81,21 +86,27 @@ public class CustomerController {
 		hMap = restAPI.sendTemplateSMS(mobile,"51106", new String[] { verifCode, "2" });
 		
 		if ("000000".equals(hMap.get("statusCode"))) {
-			@SuppressWarnings("unchecked")
-			Map<String, SmsInfo> smss = (Map<String, SmsInfo>) request.getSession()
-					.getAttribute("verifCodes");
-
-			if (smss == null) {
-				smss = new HashMap<String, SmsInfo>();
-				request.getSession().setAttribute("verifCodes", smss);
-			}
+//			@SuppressWarnings("unchecked")
+//			Map<String, SmsInfo> smss = (Map<String, SmsInfo>) request.getSession()
+//					.getAttribute("verifCodes");
+//
+//			if (smss == null) {
+//				smss = new HashMap<String, SmsInfo>();
+//				request.getSession().setAttribute("verifCodes", smss);
+//			}
+//			
+//			SmsInfo smsInfo = new SmsInfo(); 
+//			smsInfo.setMobile(mobile); 
+//			smsInfo.setVerifCode(verifCode);
+//			smsInfo.setSendTime(new Date());
+//			smss.put(mobile, smsInfo);
+			Varifycode v = new Varifycode();
+			v.setMobile(mobile);
+			v.setVarifyCode(verifCode);
+			v.setCreatetime(new Date());
 			
-			SmsInfo smsInfo = new SmsInfo(); 
-			smsInfo.setMobile(mobile); 
-			smsInfo.setVerifCode(verifCode);
-			smsInfo.setSendTime(new Date());
-			smss.put(mobile, smsInfo);
-
+			varifycodeService.insert(v);
+			
 			result = new Result<Object>(null, true, "获取短信验证码成功");
 		}else{
 			String retMsg = hMap.get("statusMsg").toString();
@@ -118,8 +129,11 @@ public class CustomerController {
 		JSONObject jObj = JSONObject.fromObject(loginData);
 		Customer customer = (Customer) JSONObject.toBean(jObj,Customer.class);
 		int temp = customerService.login(customer.getMobile(), customer.getPsd());
-		Result<Integer> result = new Result<Integer>(temp,true,"");
-		return result.toJson();
+		if(temp ==1){
+			customer = customerService.getCustomerByMobile(customer.getMobile());
+			return new Result<Customer>(customer,true,"登录成功").toJson();
+		}
+		return new Result<Customer>(null,false,""+temp).toJson();
 	} 
 	/**
 	 * 用户注册
@@ -140,20 +154,28 @@ public class CustomerController {
 			return new Result<Object>(null, false, checkMsg).toJson();
 		}
 		
-		@SuppressWarnings("unchecked")
-		Map<String, SmsInfo> smss = (Map<String, SmsInfo>) request.getSession()
-				.getAttribute("verifCodes");
-		if(smss ==null){
-			return new Result<Object>(null, false, "验证码已过期").toJson();
-		}
-		if(!registerInfo.getVerifyCode().equals(smss.get(registerInfo.getMobile()).getVerifCode())){
-			return new Result<Object>(null, false, "验证码不正确").toJson();
-		}
-
+//		@SuppressWarnings("unchecked")
+//		Map<String, SmsInfo> smss = (Map<String, SmsInfo>) request.getSession()
+//				.getAttribute("verifCodes");
+//		if(smss ==null){
+//			return new Result<Object>(null, false, "验证码已过期").toJson();
+//		}
+//		if(!registerInfo.getVerifyCode().equals(smss.get(registerInfo.getMobile()).getVerifCode())){
+//			return new Result<Object>(null, false, "验证码不正确").toJson();
+//		}
 		//判断该电话号码是否已经注册
 		Customer c = customerService.getCustomerByMobile(registerInfo.getMobile());
 		if(c !=null){
 			return new Result<Customer>(null,false,"该号码已注册").toJson();
+		}
+		//判断输入的验证码是否正确
+		Varifycode v = varifycodeService.selectByMobile(registerInfo.getMobile());
+		if(!v.getVarifyCode().equals(registerInfo.getVerifyCode())){
+			return new Result<Customer>(null,false,"验证码输入不正确").toJson();
+		}
+		long seconds = this.getBetweenDate(v.getCreatetime(), new Date());
+		if(seconds==0&&seconds>=30*60){
+			return new Result<Customer>(null,false,"验证码已过期").toJson();
 		}
 		
 		//插入数据
@@ -169,7 +191,46 @@ public class CustomerController {
 			return new Result<Object>(null, true, "注册成功").toJson();
 		}
 	}
-	
+	/**
+	 * 获取两个时间之间的秒差
+	 * @param min
+	 * @param max
+	 * @return
+	 * @author hzf
+	 */
+	private long getBetweenDate(Date min,Date max){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String minStr = sdf.format(min);
+		String maxStr = sdf.format(max);
+		try
+		{
+		    Date d1 = sdf.parse(maxStr);
+		    Date d2 = sdf.parse(minStr);
+		    long diff = d1.getTime() - d2.getTime();
+		    long seconds = diff / (1000 );
+		    return seconds;
+		}
+		catch (Exception e)
+		{
+			return 0;
+		}
+	}
+	@Test
+	public void test(){
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		try
+		{
+		    Date d1 = df.parse("2004-03-26 13:40:40");
+		    Date d2 = df.parse("2004-03-26 13:40:20");
+		    long diff = d1.getTime() - d2.getTime();
+		    long days = diff / (1000 );
+		    System.out.println(diff);
+		    System.out.println(days);
+		}
+		catch (Exception e)
+		{
+		}
+	}
 	/**
 	 * 插件传入的注册信息是否符合规范
 	 * @param data

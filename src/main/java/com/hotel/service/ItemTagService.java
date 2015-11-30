@@ -29,5 +29,7 @@ public interface ItemTagService {
 	 * @author hzf
 	 */
 	List<ItemTag> getItemTagsByLevel(int i);
+
+	List<ItemTag> getMoreItemList();
 	
 }

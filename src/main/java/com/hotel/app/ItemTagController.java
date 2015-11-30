@@ -57,9 +57,10 @@ public class ItemTagController {
 		int size = homeItemVMList.size();
 		for(int count = 0;count<size;count++){
 			List<String> urlList = this.getImageUrlsByTagId(homeItemVMList.get(count).getItemTagId());
-			if(urlList==null){
-				return new ListResult<HomeItemVM>(null,false,"获取菜单项失败").toJson();
-			}
+//			if(urlList==null){
+//				//return new ListResult<HomeItemVM>(null,false,"获取菜单项失败").toJson();
+//				homeItemVMList.get(count).setImageUrls(null);
+//			}
 			homeItemVMList.get(count).setImageUrls(urlList);
 		}
 		return new ListResult<HomeItemVM>(homeItemVMList,true,"获取菜单项成功").toJson();
@@ -103,6 +104,9 @@ public class ItemTagController {
 		//所有酒店进行排序
 		//1、获取酒店
 		List<HotelVM> hotels = this.getHotelVMListByTagId(tagId);
+		if(hotels==null||hotels.size() ==0){
+			return null;
+		}
 		//2、获取所有酒店的评分
 		
 		if(tagId ==0){
@@ -127,7 +131,7 @@ public class ItemTagController {
 			List<ItemVM> list = hotels.get(i).getItemVMs();
 			for(int j = 0;j<list.size();j++){
 				ItemVM itemVM = list.get(j);
-				if(itemVM.getItemTag().getId() ==itemTag){
+				if(itemVM.getItemTag()!=null&&itemVM.getItemTag().getId() ==itemTag){
 					result.add(itemVM.getItemDetails().get(0).getImageUrl());
 					break;
 				}
@@ -142,6 +146,12 @@ public class ItemTagController {
 	 */
 	private List<HotelVM> findTheBestHotels(List<HotelVM> hotels,int hotelNum){
 		List<HotelVM> result = new ArrayList<HotelVM>();
+		if(hotels==null||hotels.size()==0){
+			return null;
+		}
+		if(hotels.size()<hotelNum){
+			hotelNum = hotels.size();
+		}
 		for(int i=0;i<hotelNum;i++){
 			HotelVM hotel =this.getTheBestHotel(hotels); 
 			result.add(hotel);
@@ -162,6 +172,7 @@ public class ItemTagController {
 			BigDecimal score = this.getScoreOfHotel(hotels.get(i));
 			if(score.compareTo(maxScore)==1){//大于
 				maxScore = score;
+				hotel = hotels.get(i);
 			}
 		}
 		return hotel;
@@ -174,11 +185,14 @@ public class ItemTagController {
 	private BigDecimal getScoreOfHotel(HotelVM hotel){
 		BigDecimal result = BigDecimal.ZERO;
 		for(int i = 0;i<hotel.getItemVMs().size();i++){
-			if(hotel.getItemVMs().get(i).getItemTag().getId() ==1){
-				return hotel.getItemVMs().get(i).getScore();
-			}
+//			获取“酒店”标签下的评分
+//			if(hotel.getItemVMs().get(i).getItemTag().getId() ==1){
+//				return hotel.getItemVMs().get(i).getScore();
+//			}
+			result.add(hotel.getItemVMs().get(i).getScore());
 		}
-		return result;
+		
+		return result.divide(BigDecimal.valueOf(hotel.getItemVMs().size()));
 	}
 	/**
 	 * 获取标签下的所有酒店
@@ -237,7 +251,11 @@ public class ItemTagController {
 			}
 			//剔除相同的酒店
 			int j = 0;
-			for(j=0;i<result.size();j++){
+			for(j=0;j<=result.size();j++){
+				if(j ==0){
+					result.add(temp);
+					break;
+				}
 				if(temp.getHotelId() == result.get(j).getHotelId()){
 					break;
 				}
@@ -275,7 +293,7 @@ public class ItemTagController {
 		List<ItemTag> childItemTagList = new ArrayList<ItemTag>();
 		//如果是"更多"
 		if(tagId ==0){
-			List<ItemTag> temp = itemTagService.getTagFromMin(3);
+			List<ItemTag> temp = itemTagService.getMoreItemList();
 			childItemTagList = itemTagService.getchildItemTagsByParentId(temp.get(0).getId());
 		}else if(tagId ==1){
 			//如果是"酒店"的话，它就没有二级标签
