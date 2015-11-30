@@ -1,8 +1,5 @@
 package com.hotel.app;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,12 +8,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
 
-import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloopen.rest.sdk.CCPRestSmsSDK;
 import com.hotel.common.Result;

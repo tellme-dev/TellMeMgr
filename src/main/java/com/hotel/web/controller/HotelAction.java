@@ -255,7 +255,9 @@ public class HotelAction extends BaseAction {
 						if(!fl.exists()){
 							fl.mkdirs();
 						}
-						ImgBase64.GenerateImage(file.split(",")[1], filePath+fileName);
+						String[] arr = file.split(",");
+						//arr[0]
+						ImgBase64.GenerateImage(arr[1], filePath+fileName);
 						
 						detail.setImageUrl(savePath + fileName);
 						

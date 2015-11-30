@@ -1,6 +1,5 @@
 package com.hotel.web.controller;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,11 +20,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hotel.common.JsonResult;
 import com.hotel.common.Result;
 import com.hotel.common.utils.Constants;
-import com.hotel.common.utils.EndecryptUtils;
-import com.hotel.common.utils.GeneralUtil;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Function;
-import com.hotel.model.Hotel;
 import com.hotel.model.Org;
 import com.hotel.model.User;
 import com.hotel.service.BaseDataService;

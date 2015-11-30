@@ -23,16 +23,63 @@
     <result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
   </resultMap>
+  <resultMap id="BaseVMResultMap" type="com.hotel.modelVM.BbsVM" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="customer_id" property="customerId" jdbcType="INTEGER" />
+    <result column="bbs_type" property="bbsType" jdbcType="INTEGER" />
+    <result column="category_id" property="categoryId" jdbcType="INTEGER" />
+    <result column="post_type" property="postType" jdbcType="INTEGER" />
+    <result column="target_type" property="targetType" jdbcType="INTEGER" />
+    <result column="target_id" property="targetId" jdbcType="INTEGER" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="path" property="path" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="text" property="text" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="TINYINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="browse_count" property="browseCount" jdbcType="INTEGER" />
+    <result column="agree_count" property="agreeCount" jdbcType="INTEGER" />
+    <result column="answer_count" property="answerCount" jdbcType="INTEGER" />
+    <result column="delete_user_id" property="deleteUserId" jdbcType="INTEGER" />
+    <result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
+    <association column="customer_id" property="customer" javaType="Customer" select="com.hotel.dao.CustomerMapper.selectByPrimaryKey"></association>
+    <collection column="id" property="bbsAttachUrls" select="com.hotel.dao.BbsAttachMapper.selectByBbsId"></collection>
+  </resultMap>
+  <resultMap id="BaseVMResultMap2" type="com.hotel.modelVM.BbsVM" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="customer_id" property="customerId" jdbcType="INTEGER" />
+    <result column="bbs_type" property="bbsType" jdbcType="INTEGER" />
+    <result column="category_id" property="categoryId" jdbcType="INTEGER" />
+    <result column="post_type" property="postType" jdbcType="INTEGER" />
+    <result column="target_type" property="targetType" jdbcType="INTEGER" />
+    <result column="target_id" property="targetId" jdbcType="INTEGER" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="path" property="path" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="text" property="text" jdbcType="VARCHAR" />
+    <result column="score" property="score" jdbcType="TINYINT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="browse_count" property="browseCount" jdbcType="INTEGER" />
+    <result column="agree_count" property="agreeCount" jdbcType="INTEGER" />
+    <result column="answer_count" property="answerCount" jdbcType="INTEGER" />
+    <result column="delete_user_id" property="deleteUserId" jdbcType="INTEGER" />
+    <result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP" />
+    <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
+    <association column="customer_id" property="customer" javaType="Customer" select="com.hotel.dao.CustomerMapper.selectByPrimaryKey"></association>
+  </resultMap>
   <sql id="Base_Column_List" >
-    id, customer_id, bbs_type, category_id, post_type, target_type, target_id, parent_id, 
-    level, path, title, text, score, create_time, browse_count, agree_count, answer_count, 
-    delete_user_id, delete_time, time_stamp
+    b.id, b.customer_id, b.bbs_type, b.category_id, b.post_type, b.target_type, b.target_id, b.parent_id, 
+    b.level, b.path, b.title, b.text, b.score, b.create_time, b.browse_count, b.agree_count, b.answer_count, 
+    b.delete_user_id, b.delete_time, b.time_stamp
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from t_bbs
-    where id = #{id,jdbcType=INTEGER}
+    from t_bbs b
+    where b.id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from t_bbs
@@ -54,7 +101,7 @@
       #{agreeCount,jdbcType=INTEGER}, #{answerCount,jdbcType=INTEGER}, #{deleteUserId,jdbcType=INTEGER}, 
       #{deleteTime,jdbcType=TIMESTAMP}, #{timeStamp,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.hotel.model.Bbs" >
+  <insert id="insertSelective" parameterType="com.hotel.modelVM.BbsVM" >
     insert into t_bbs
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -265,6 +312,106 @@
       delete_user_id = #{deleteUserId,jdbcType=INTEGER},
       delete_time = #{deleteTime,jdbcType=TIMESTAMP},
       time_stamp = #{timeStamp,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <sql id="query_sql">
+      <if test="customerId != null" >
+        and b.id = #{id,jdbcType=INTEGER}
+      </if>
+      <if test="customerId != null" >
+        and b.customer_id = #{customerId,jdbcType=INTEGER}
+      </if>
+      <if test="bbsType != null" >
+        and b.bbs_type = #{bbsType,jdbcType=INTEGER}
+      </if>
+      <if test="categoryId != null" >
+        and b.category_id = #{categoryId,jdbcType=INTEGER}
+      </if>
+      <if test="postType != null" >
+        and b.post_type = #{postType,jdbcType=INTEGER}
+      </if>
+      <if test="targetType != null" >
+        and b.target_type = #{targetType,jdbcType=INTEGER}
+      </if>
+      <if test="targetId != null" >
+        and b.target_id = #{targetId,jdbcType=INTEGER}
+      </if>
+      <if test="parentId != null" >
+        and b.parent_id = #{parentId,jdbcType=INTEGER}
+      </if>
+      <if test="level != null" >
+        and b.level = #{level,jdbcType=INTEGER}
+      </if>
+      <if test="path != null" >
+        and b.path = #{path,jdbcType=VARCHAR}
+      </if>
+      <if test="title != null" >
+        and b.title = #{title,jdbcType=VARCHAR}
+      </if>
+      <if test="text != null" >
+        and b.text = #{text,jdbcType=VARCHAR}
+      </if>
+      <if test="score != null" >
+        and b.score = #{score,jdbcType=TINYINT}
+      </if>
+      <if test="createTime != null" >
+        and b.create_time = #{createTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="browseCount != null" >
+        and b.browse_count = #{browseCount,jdbcType=INTEGER}
+      </if>
+      <if test="agreeCount != null" >
+        and b.agree_count = #{agreeCount,jdbcType=INTEGER}
+      </if>
+      <if test="answerCount != null" >
+        and b.answer_count = #{answerCount,jdbcType=INTEGER}
+      </if>
+      <if test="deleteUserId != null" >
+        and b.delete_user_id = #{deleteUserId,jdbcType=INTEGER}
+      </if>
+      <if test="deleteTime != null" >
+        and b.delete_time = #{deleteTime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="timeStamp != null" >
+        and b.time_stamp = #{timeStamp,jdbcType=TIMESTAMP}
+      </if>
+  </sql>
+  <select id="selectByMap" resultMap="BaseVMResultMap" parameterType="java.util.Map" >
+    select <include refid="Base_Column_List" />,
+    (select count(cc.id) from t_customer_collection cc where cc.target_id = b.id and cc.collection_type = 3) as collectionCount
+    from t_bbs b
+    where 1=1 
+    <include refid="query_sql" />
+    order by b.create_time
+    <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+        limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+  <select id="countByMap" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(b.id)
+    from t_bbs b
+    where 1=1 
+    <include refid="query_sql" />
+  </select>
+  <select id="selectByPid" resultMap="BaseVMResultMap2" parameterType="java.util.Map" >
+    select <include refid="Base_Column_List" />,
+    (select count(b2.id) from t_bbs b2 where b2.parent_id = b.id) as childCount
+    from t_bbs b
+    where b.parent_id = #{parentId,jdbcType=INTEGER}
+    <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+        limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+  <update id="updateAnswerCount" parameterType="java.lang.Integer" >
+    update t_bbs
+    set
+    answer_count = answer_count+1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateAgreeCount" parameterType="java.lang.Integer" >
+    update t_bbs
+    set
+    agree_count = agree_count+1
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

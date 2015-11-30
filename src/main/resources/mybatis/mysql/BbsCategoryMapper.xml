@@ -68,4 +68,9 @@
       note = #{note,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectCategoryList" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_bbs_category
+  </select>
 </mapper>

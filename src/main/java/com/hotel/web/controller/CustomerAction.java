@@ -11,12 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import com.hotel.common.ReturnResult;
 import com.hotel.common.utils.Constants;
 import com.hotel.common.utils.Page;
-import com.hotel.model.Customer;
 import com.hotel.model.Function;
-import com.hotel.model.Hotel;
 import com.hotel.model.User;
 import com.hotel.service.FunctionService;
 

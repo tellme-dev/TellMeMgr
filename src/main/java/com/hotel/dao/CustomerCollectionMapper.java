@@ -15,4 +15,6 @@ public interface CustomerCollectionMapper {
     int updateByPrimaryKeySelective(CustomerCollection record);
 
     int updateByPrimaryKey(CustomerCollection record);
+    
+    int countByItemId(int itemId);
 }

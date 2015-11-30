@@ -3,8 +3,7 @@ package com.hotel.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hotel.dao.ItemTagMapper;
@@ -19,11 +18,11 @@ import com.hotel.viewmodel.ItemTagWebVM;
 @Service("baseDataService")
 public class BaseDataServiceImpl implements BaseDataService {
 	
-	@Resource
+	@Autowired
 	private OrgMapper orgMapper;
-	@Resource
+	@Autowired
 	private ItemTagMapper tagMapper;
-	@Resource
+	@Autowired
 	private RegionMapper regionMapper;
 
 	@Override

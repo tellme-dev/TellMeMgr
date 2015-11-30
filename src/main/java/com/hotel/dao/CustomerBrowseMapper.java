@@ -15,4 +15,6 @@ public interface CustomerBrowseMapper {
     int updateByPrimaryKeySelective(CustomerBrowse record);
 
     int updateByPrimaryKey(CustomerBrowse record);
+    
+    int countByItemId(int itemId);
 }

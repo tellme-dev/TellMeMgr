@@ -1,8 +1,11 @@
-package com.hotel.viewmodel;
+package com.hotel.modelVM;
 
 import java.math.BigDecimal;
+import java.util.List;
 
-public class HotelVM {
+import com.hotel.model.Item;
+
+public class HotelListInfoVM {
 	private Integer id;
     private String name;
     private String text;
@@ -10,6 +13,11 @@ public class HotelVM {
     private BigDecimal longitude;
     private BigDecimal latitude;
     private String imgUrl;
+    private String address;
+    private BigDecimal score;
+    private int countBrowse;
+    private int countCollection;
+    private List<Item> projects;
     
 	public Integer getId() {
 		return id;
@@ -54,6 +62,36 @@ public class HotelVM {
 		this.imgUrl = imgUrl;
 	}
 	
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public BigDecimal getScore() {
+		return score;
+	}
+	public void setScore(BigDecimal score) {
+		this.score = score;
+	}
+	public int getCountBrowse() {
+		return countBrowse;
+	}
+	public void setCountBrowse(int countBrowse) {
+		this.countBrowse = countBrowse;
+	}
+	public int getCountCollection() {
+		return countCollection;
+	}
+	public void setCountCollection(int countCollection) {
+		this.countCollection = countCollection;
+	}
+	public List<Item> getProjects() {
+		return projects;
+	}
+	public void setProjects(List<Item> projects) {
+		this.projects = projects;
+	}
 	public void clear(){
 		if(name == null){
 			name = "";
@@ -66,6 +104,9 @@ public class HotelVM {
 		}
 		if(imgUrl == null){
 			imgUrl = "";
+		}
+		if(address == null){
+			address = "";
 		}
 	}
 }

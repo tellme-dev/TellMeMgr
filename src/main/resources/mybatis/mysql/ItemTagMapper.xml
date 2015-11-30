@@ -10,7 +10,19 @@
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="note" jdbcType="VARCHAR" property="note" />
     <result column="tag_type" jdbcType="INTEGER" property="tagType" />
+    <result column="image_url" jdbcType="VARCHAR" property="imageUrl" />
   </resultMap>
+  <!-- <resultMap id="ResultItemTagVMMap" type="com.hotel.viewmodel.ItemTagWebVM">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="level" jdbcType="TINYINT" property="level" />
+    <result column="is_leaf" jdbcType="BIT" property="isLeaf" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="tag_type" jdbcType="INTEGER" property="tagType" />
+    <collection column="id" property="itemSession" select="com.hotel.dao.ItemMapper.selectByPrimaryKey"></collection>
+  </resultMap> -->
   <resultMap id="BaseVMResultMap" type="com.hotel.viewmodel.ItemTagWebVM">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="parent_id" jdbcType="INTEGER" property="parentId" />
@@ -22,7 +34,7 @@
     <result column="tag_type" jdbcType="INTEGER" property="tagType" />
   </resultMap>
   <sql id="Base_Column_List">
-     t.id, t.parent_id, t.level, t.is_leaf, t.path, t.name, t.note, t.tag_type
+     t.id, t.parent_id, t.level, t.is_leaf, t.path, t.name, t.note, t.tag_type, t.image_url
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 

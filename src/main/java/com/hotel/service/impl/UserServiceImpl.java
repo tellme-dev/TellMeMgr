@@ -8,12 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hotel.common.ReturnResult;
@@ -28,7 +27,7 @@ import com.hotel.viewmodel.UserWebVM;
 @Service("userService")
 public class UserServiceImpl implements UserService {
 
-	@Resource
+	@Autowired
 	private UserMapper userMapper;
 	
 	@Override
