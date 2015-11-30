@@ -116,6 +116,7 @@
                 /app/** = anon
                 /source/** = anon
                 /app/** = anon
+                /hotel/** = anon
                 /unauthorized.jsp = anon
                 /login.jsp = authc
                 /logout = logout

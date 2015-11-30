@@ -66,6 +66,25 @@ public class ItemTagController {
 	}
 	
 	/**
+	 * 获取后台配置的菜单
+	 * @param customerInfo
+	 * @return
+	 */
+	@RequestMapping(value = "loadMenuRootList.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody String loadMenuRootListss(HttpServletRequest request)
+	{
+		List<HomeItemVM> homeItemVMList = new ArrayList<HomeItemVM>();
+		List<ItemTag> itemTagList = itemTagService.getTagByParentId(0);
+		for(int index=0;index<itemTagList.size();index++){
+			if(itemTagList.get(index).getTagType() == 2){
+				homeItemVMList.add(new HomeItemVM(itemTagList.get(index).getId(),itemTagList.get(index).getName()));
+			}
+		}
+		
+		return new ListResult<HomeItemVM>(homeItemVMList,true,"获取菜单项成功").toJson();
+	}
+	
+	/**
 	 * 获取后台配置的二级菜单菜单
 	 * @author LiuTaiXiong
 	 * @param customerInfo

@@ -161,11 +161,11 @@ public class HotelController {
 						}
 						//设置数量统计
 						//查询浏览次数
-						int countBrowse = customerBrowseService.countByItemId(temp.getId());
+						//int countBrowse = customerBrowseService.countByItemId(temp.getId());
 						//查询收藏次数
-						int countCollectiono = customerCollectionService.countByItemId(temp.getId());
-						vm.setCountBrowse(countBrowse);
-						vm.setCountCollection(countCollectiono);
+						//int countCollectiono = customerCollectionService.countByItemId(temp.getId());
+						//vm.setCountBrowse(countBrowse);
+						//vm.setCountCollection(countCollectiono);
 						
 						//设置非自身的项目数据
 						for(Item tempItem : items){
@@ -182,16 +182,16 @@ public class HotelController {
 					Region area = baseDataService.getRegionById(hotel.getRegionId());
 					String path = area.getPath();
 					String[] arr = path.split("\\.");
-					Region province = baseDataService.getRegionById(new Integer(arr[0]));
+					//Region province = baseDataService.getRegionById(new Integer(arr[0]));
 					Region city = baseDataService.getRegionById(new Integer(arr[1]));
-					
-					String address = province.getName()+city.getName()+area.getName();
+					vm.setCity(city.getName());
+					//String address = province.getName()+city.getName()+area.getName();
 					//检查是否有位置描述
-					if(vm.getAddress() != null){
-						vm.setAddress(address+vm.getAddress());
-					}else{
-						vm.setAddress(address);
-					}
+					//if(vm.getAddress() != null){
+					//	vm.setAddress(address+vm.getAddress());
+					//}else{
+					//	vm.setAddress(address);
+					//}
 				}
 				vm.setProjects(notSelfItems);
 				
