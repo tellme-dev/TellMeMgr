@@ -8,14 +8,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hotel.common.shiro.ShiroUsernamePasswordToken;
+import com.hotel.dao.CustomerCollectionMapper;
 import com.hotel.dao.CustomerMapper;
 import com.hotel.model.Customer;
-
+import com.hotel.model.CustomerCollection;
 import com.hotel.service.CustomerService;
 @Service
 public class CustomerServiceImpl implements CustomerService{
 	
 	@Autowired CustomerMapper customerMapper;
+	
+	@Autowired CustomerCollectionMapper customerCollectionMapper;
+	
 	/**
 	 * 
 	 */
@@ -50,6 +54,11 @@ public class CustomerServiceImpl implements CustomerService{
 	public int insert(Customer c) {
 		// TODO Auto-generated method stub
 		return customerMapper.insert(c);
+	}
+	@Override
+	public void saveCollection(CustomerCollection cc) {
+		// TODO Auto-generated method stub
+		customerCollectionMapper.insertSelective(cc);
 	}
 
 }

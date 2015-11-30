@@ -259,7 +259,7 @@ public class HotelAction extends BaseAction {
 						//arr[0]
 						ImgBase64.GenerateImage(arr[1], filePath+fileName);
 						
-						detail.setImageUrl(savePath + fileName);
+						detail.setImageUrl("hotel/item/h"+hotelId+"/" + fileName);
 						
 					}
 					if(fileText != null){

@@ -19,6 +19,7 @@
     <result column="browse_count" property="browseCount" jdbcType="INTEGER" />
     <result column="agree_count" property="agreeCount" jdbcType="INTEGER" />
     <result column="answer_count" property="answerCount" jdbcType="INTEGER" />
+    <result column="share_count" property="shareCount" jdbcType="INTEGER" />
     <result column="delete_user_id" property="deleteUserId" jdbcType="INTEGER" />
     <result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
@@ -41,6 +42,7 @@
     <result column="browse_count" property="browseCount" jdbcType="INTEGER" />
     <result column="agree_count" property="agreeCount" jdbcType="INTEGER" />
     <result column="answer_count" property="answerCount" jdbcType="INTEGER" />
+    <result column="share_count" property="shareCount" jdbcType="INTEGER" />
     <result column="delete_user_id" property="deleteUserId" jdbcType="INTEGER" />
     <result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
@@ -65,6 +67,7 @@
     <result column="browse_count" property="browseCount" jdbcType="INTEGER" />
     <result column="agree_count" property="agreeCount" jdbcType="INTEGER" />
     <result column="answer_count" property="answerCount" jdbcType="INTEGER" />
+    <result column="share_count" property="shareCount" jdbcType="INTEGER" />
     <result column="delete_user_id" property="deleteUserId" jdbcType="INTEGER" />
     <result column="delete_time" property="deleteTime" jdbcType="TIMESTAMP" />
     <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
@@ -73,7 +76,7 @@
   <sql id="Base_Column_List" >
     b.id, b.customer_id, b.bbs_type, b.category_id, b.post_type, b.target_type, b.target_id, b.parent_id, 
     b.level, b.path, b.title, b.text, b.score, b.create_time, b.browse_count, b.agree_count, b.answer_count, 
-    b.delete_user_id, b.delete_time, b.time_stamp
+    b.share_count,b.delete_user_id, b.delete_time, b.time_stamp
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -91,15 +94,15 @@
       target_id, parent_id, level, 
       path, title, text, 
       score, create_time, browse_count, 
-      agree_count, answer_count, delete_user_id, 
+      agree_count, answer_count, share_count,delete_user_id, 
       delete_time, time_stamp)
     values (#{id,jdbcType=INTEGER}, #{customerId,jdbcType=INTEGER}, #{bbsType,jdbcType=INTEGER}, 
       #{categoryId,jdbcType=INTEGER}, #{postType,jdbcType=INTEGER}, #{targetType,jdbcType=INTEGER}, 
       #{targetId,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{level,jdbcType=INTEGER}, 
       #{path,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR}, 
       #{score,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{browseCount,jdbcType=INTEGER}, 
-      #{agreeCount,jdbcType=INTEGER}, #{answerCount,jdbcType=INTEGER}, #{deleteUserId,jdbcType=INTEGER}, 
-      #{deleteTime,jdbcType=TIMESTAMP}, #{timeStamp,jdbcType=TIMESTAMP})
+      #{agreeCount,jdbcType=INTEGER}, #{answerCount,jdbcType=INTEGER}, #{shareCount,jdbcType=INTEGER},
+      #{deleteUserId,jdbcType=INTEGER}, #{deleteTime,jdbcType=TIMESTAMP}, #{timeStamp,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.hotel.modelVM.BbsVM" >
     insert into t_bbs
@@ -154,6 +157,9 @@
       </if>
       <if test="answerCount != null" >
         answer_count,
+      </if>
+      <if test="shareCount != null" >
+        share_count,
       </if>
       <if test="deleteUserId != null" >
         delete_user_id,
@@ -217,6 +223,9 @@
       <if test="answerCount != null" >
         #{answerCount,jdbcType=INTEGER},
       </if>
+      <if test="shareCount != null" >
+        #{shareCount,jdbcType=INTEGER},
+      </if>
       <if test="deleteUserId != null" >
         #{deleteUserId,jdbcType=INTEGER},
       </if>
@@ -279,6 +288,9 @@
       <if test="answerCount != null" >
         answer_count = #{answerCount,jdbcType=INTEGER},
       </if>
+      <if test="shareCount != null" >
+        share_count = #{shareCount,jdbcType=INTEGER},
+      </if>
       <if test="deleteUserId != null" >
         delete_user_id = #{deleteUserId,jdbcType=INTEGER},
       </if>
@@ -309,13 +321,14 @@
       browse_count = #{browseCount,jdbcType=INTEGER},
       agree_count = #{agreeCount,jdbcType=INTEGER},
       answer_count = #{answerCount,jdbcType=INTEGER},
+      share_count = #{shareCount,jdbcType=INTEGER},
       delete_user_id = #{deleteUserId,jdbcType=INTEGER},
       delete_time = #{deleteTime,jdbcType=TIMESTAMP},
       time_stamp = #{timeStamp,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <sql id="query_sql">
-      <if test="customerId != null" >
+      <if test="id != null" >
         and b.id = #{id,jdbcType=INTEGER}
       </if>
       <if test="customerId != null" >
@@ -366,6 +379,9 @@
       <if test="answerCount != null" >
         and b.answer_count = #{answerCount,jdbcType=INTEGER}
       </if>
+      <if test="shareCount != null" >
+        and b.share_count = #{shareCount,jdbcType=INTEGER}
+      </if>
       <if test="deleteUserId != null" >
         and b.delete_user_id = #{deleteUserId,jdbcType=INTEGER}
       </if>
@@ -377,9 +393,10 @@
       </if>
   </sql>
   <select id="selectByMap" resultMap="BaseVMResultMap" parameterType="java.util.Map" >
-    select <include refid="Base_Column_List" />,
+    select <include refid="Base_Column_List" />,bc.name as categoryName,
     (select count(cc.id) from t_customer_collection cc where cc.target_id = b.id and cc.collection_type = 3) as collectionCount
     from t_bbs b
+    left join t_bbs_category bc on bc.id = b.category_id
     where 1=1 
     <include refid="query_sql" />
     order by b.create_time
@@ -393,9 +410,18 @@
     where 1=1 
     <include refid="query_sql" />
   </select>
-  <select id="selectByPid" resultMap="BaseVMResultMap2" parameterType="java.util.Map" >
+  <select id="selectBbsByMap" resultMap="BaseVMResultMap" parameterType="java.util.Map" >
+    select <include refid="Base_Column_List" />,bc.name as categoryName, count(cc.id) as collectionCount
+    from t_bbs b
+    left join t_customer_collection cc on cc.target_id = b.id and cc.collection_type = 3
+    left join t_bbs_category bc on bc.id = b.category_id
+    where 1=1 
+    <include refid="query_sql" />
+    group By b.id
+  </select>
+  <select id="selectByPid" resultMap="BaseVMResultMap" parameterType="java.util.Map" >
     select <include refid="Base_Column_List" />,
-    (select count(b2.id) from t_bbs b2 where b2.parent_id = b.id) as childCount
+    (select count(cc.id) from t_customer_collection cc where cc.target_id = b.id and cc.collection_type = 3) as collectionCount
     from t_bbs b
     where b.parent_id = #{parentId,jdbcType=INTEGER}
     <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
@@ -412,6 +438,18 @@
     update t_bbs
     set
     agree_count = agree_count+1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateShareCount" parameterType="java.lang.Integer" >
+    update t_bbs
+    set
+    share_count = share_count+1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateBrowseCount" parameterType="java.lang.Integer" >
+    update t_bbs
+    set
+    browse_count = browse_count+1
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

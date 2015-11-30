@@ -3,6 +3,7 @@ package com.hotel.service;
 import org.springframework.stereotype.Service;
 
 import com.hotel.model.Customer;
+import com.hotel.model.CustomerCollection;
 
 @Service
 public interface CustomerService {
@@ -11,4 +12,6 @@ public interface CustomerService {
 	Customer getCustomerByMobile(String mobile);
 
 	int insert(Customer c);
+
+	void saveCollection(CustomerCollection cc);
 }

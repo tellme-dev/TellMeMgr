@@ -183,8 +183,8 @@ function deleteAction(adIds){
 						<th>名称</th>
 						<th>关键字</th> 
 						<th>类型</th>
-						<th>酒店或标签</th>
-						<th>内容</th>
+						<th>关联酒店/标签/社区</th>
+						<th>关联内容</th>
 						<th>创建时间</th>
 					</tr>
 					<c:forEach var="item" items="${adlist}">
@@ -214,7 +214,10 @@ function deleteAction(adIds){
                             <c:if test="${item.targetType == 2}">
 							  <td>${item.targetName}</td>
                             </c:if>
-                            <c:if test="${item.targetType == 3||item.targetType == 4||item.targetType == 5}">
+                            <c:if test="${item.targetType == 3}">
+							  <td>${item.bbsName}</td>
+                            </c:if>
+                            <c:if test="${item.targetType == 4||item.targetType == 5}">
 							  <td></td>
                             </c:if>
 							<td>${item.targetContent}</td> 

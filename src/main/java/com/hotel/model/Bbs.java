@@ -3,7 +3,7 @@ package com.hotel.model;
 import java.util.Date;
 
 public class Bbs {
-    private Integer id;//0：发帖、回帖，大于0：点赞
+    private Integer id;//0：发帖、回帖，大于0：点赞、分享
 
     private Integer customerId;//发帖人回帖人
 
@@ -11,7 +11,7 @@ public class Bbs {
 
     private Integer categoryId;//论坛分类模块，bbs_type !=1 时，本字段=0
 
-    private Integer postType; //0:表示主贴，1:表示回帖，2：表示点赞
+    private Integer postType; //0:表示主贴，1:表示回帖，2：表示点赞，3：表示分享
 
     private Integer targetType;//关联类型,0:论坛，1:酒店，2:广告，3:推广.
 
@@ -36,6 +36,8 @@ public class Bbs {
     private Integer agreeCount;
 
     private Integer answerCount;
+    
+    private Integer shareCount;
 
     private Integer deleteUserId;
 
@@ -43,7 +45,15 @@ public class Bbs {
 
     private Date timeStamp;
 
-    public Integer getId() {
+    public Integer getShareCount() {
+		return shareCount;
+	}
+
+	public void setShareCount(Integer shareCount) {
+		this.shareCount = shareCount;
+	}
+
+	public Integer getId() {
         return id;
     }
 

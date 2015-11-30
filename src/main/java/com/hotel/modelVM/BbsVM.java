@@ -9,16 +9,15 @@ import com.hotel.model.Customer;
 public class BbsVM extends Bbs {
 	private Customer customer;
 	private List<BbsAttach> bbsAttachUrls;
-	private List<BbsVM> children;
-	private Integer childCount;//子节点数量
 	private Integer collectionCount;//收藏次数
+	private String categoryName;
 
-	public Integer getChildCount() {
-		return childCount;
+	public String getCategoryName() {
+		return categoryName;
 	}
 
-	public void setChildCount(Integer childCount) {
-		this.childCount = childCount;
+	public void setCategoryName(String categoryName) {
+		this.categoryName = categoryName;
 	}
 
 	public Integer getCollectionCount() {
@@ -27,14 +26,6 @@ public class BbsVM extends Bbs {
 
 	public void setCollectionCount(Integer collectionCount) {
 		this.collectionCount = collectionCount;
-	}
-
-	public List<BbsVM> getChildren() {
-		return children;
-	}
-
-	public void setChildren(List<BbsVM> children) {
-		this.children = children;
 	}
 
 	public List<BbsAttach> getBbsAttachUrls() {
