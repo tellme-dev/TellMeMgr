@@ -14,6 +14,7 @@ public class HotelListInfoVM {
     private BigDecimal latitude;
     private String imgUrl;
     private String address;
+    private String city;
     private BigDecimal score;
     private int countBrowse;
     private int countCollection;
@@ -92,6 +93,12 @@ public class HotelListInfoVM {
 	public void setProjects(List<Item> projects) {
 		this.projects = projects;
 	}
+	public String getCity() {
+		return city;
+	}
+	public void setCity(String city) {
+		this.city = city;
+	}
 	public void clear(){
 		if(name == null){
 			name = "";
@@ -107,6 +114,9 @@ public class HotelListInfoVM {
 		}
 		if(address == null){
 			address = "";
+		}
+		if(city == null){
+			city = "";
 		}
 	}
 }
