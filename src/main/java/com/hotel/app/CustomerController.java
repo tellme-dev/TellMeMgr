@@ -71,8 +71,8 @@ public class CustomerController {
 		
 		HashMap hMap = null;
 		CCPRestSmsSDK restAPI = new CCPRestSmsSDK();
-		//restAPI.init("app.cloopen.com", "8883"); 
-		restAPI.init("sandboxapp.cloopen.com", "8883"); 
+		restAPI.init("app.cloopen.com", "8883"); 
+		//restAPI.init("sandboxapp.cloopen.com", "8883"); 
 
 		// 初始化服务器地址和端口，沙盒环境配置成sandboxapp.cloopen.com，生产环境配置成app.cloopen.com，端口都是8883. 
 		restAPI.setAccount("8a48b55150f4a7260150fa741c1118ec","5e487ba9d0de4bf080cf847853b45d03"); 
@@ -82,7 +82,7 @@ public class CustomerController {
 		// 初始化应用ID，如果是在沙盒环境开发，请配置"控制台-应用-测试DEMO"中的APPID。
 		// 如切换到生产环境，请使用自己创建应用的APPID
 		String verifCode = GeneralUtil.createVerifCode();
-		hMap = restAPI.sendTemplateSMS(mobile,"1", new String[] { verifCode, "2" });
+		hMap = restAPI.sendTemplateSMS(mobile,"51106", new String[] { verifCode, "2" });
 		
 		if ("000000".equals(hMap.get("statusCode"))) {
 			@SuppressWarnings("unchecked")
