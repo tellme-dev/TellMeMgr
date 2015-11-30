@@ -10,7 +10,16 @@ public class BbsVM extends Bbs {
 	private Customer customer;
 	private List<BbsAttach> bbsAttachUrls;
 	private List<BbsVM> children;
-	private Integer collectionCount;
+	private Integer childCount;//子节点数量
+	private Integer collectionCount;//收藏次数
+
+	public Integer getChildCount() {
+		return childCount;
+	}
+
+	public void setChildCount(Integer childCount) {
+		this.childCount = childCount;
+	}
 
 	public Integer getCollectionCount() {
 		return collectionCount;
