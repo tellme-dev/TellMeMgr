@@ -9,7 +9,7 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>公司管理</title>
+<title>广告管理</title>
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, minimum-scale=1  ,maximum-scale=1, user-scalable=no" />
 <script

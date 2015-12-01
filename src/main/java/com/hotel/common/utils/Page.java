@@ -28,7 +28,7 @@ public class Page {
     
     private Integer pageEnd;
     
-    private Integer roleUserId;
+    //private Integer roleUserId;
     
 	public Integer getPageStart() {
 		if (pageNo != null && pageSize != null) {
@@ -84,12 +84,12 @@ public class Page {
 		return pageEnd;
 	}
 
-	public Integer getRoleUserId() {
-		return roleUserId;
-	}
-
-	public void setRoleUserId(Integer roleUserId) {
-		this.roleUserId = roleUserId;
-	}
+//	public Integer getRoleUserId() {
+//		return roleUserId;
+//	}
+//
+//	public void setRoleUserId(Integer roleUserId) {
+//		this.roleUserId = roleUserId;
+//	}
 }
 
