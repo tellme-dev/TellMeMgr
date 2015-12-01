@@ -29,78 +29,9 @@
 		$("#select_bbs").hide();
 	};
 	function save(obj) {
-		var doc=$(":radio:checked");
-    	if(doc.length == 0){
-    		$.messager.alert('提示信息', "请选择类型！", "warning");
-    		return;
-    	}
-    	var targetType = doc[0].value;
-    	if(targetType == 1&&$("#hotelSelect").combobox("getValue") == ""){
-    		$.messager.alert('提示信息', "请选择酒店！", "warning");
-    		return;
-    	}
-    	if(targetType == 2&&$("#itemTagSelect").combotree("getValue") == ""){
-    		$.messager.alert('提示信息', "请选择标签 ！", "warning");
-    		return;
-    	}
-    	if(targetType == 3&&$("#bbsSelect").val() == ""){
-    		$.messager.alert('提示信息', "请选择社区！", "warning");
-    		return;
-    	}
-    	if(targetType != 1&&targetType != 2&&targetType != 3&&$("#txtTagContent").val() == ""){
-    		$.messager.alert('提示信息', "请填写内容！", "warning");
-    		return;
-    	}
-    	//遍历文件 判断是否有空的
-    	var file = $("#tab1 input[type='file']");
-    	for(var j=0;j<file.length;j++){
-    	   var url = $("#file_"+(j+1)).val();
-			if(url == ""||url == null){
-    		   $.messager.alert('提示信息', "请选择图片！", "warning");
-    		   return;
-    	    }
-    	}
-    	
-    	//遍历图片描述框
-    	var text = "";
-		var imageText = document.getElementsByName("imagetext");
-		for(var i=0;i<imageText.length;i++){
-			var imgText = imageText[i].value;
-			if(imgText == ""||imgText == null){
-    		   $.messager.alert('提示信息', "请填写图片描述！", "warning");
-    		   return;
-    	    }
-			//将多个图片描述拼接为字符串
-			if(i==0){
-				text += imgText;
-			}else{
-				text += ","+imgText;
-			}
-		}
-		//将图片描述放到影藏标签中
-		var imageTexts = document.getElementById("imageText");
-		imageTexts.value = text;
-		
-		//编辑时遍历原有图片id 将其拼接为字符串再放入隐藏标签（不包括新增的图片）
-		if(type == 1){
-		    var adDetailIds = "";
-		    var doc = document.getElementsByName("adDetailId");
-		    for(var k=0;k<doc.length;k++){
-		         var adDetailId = doc[k].value;
-		         if(k==0){
-		            adDetailIds += adDetailId;
-		         }else{
-		            adDetailIds += ","+adDetailId;
-		         }
-		    }
-		    var doc2 = document.getElementById("adDetailIds");
-		    doc2.value = adDetailIds;
-		    //将已删除的图片id放入隐藏标签中
-		    document.getElementById("delAdDetailIds").value = delAdDetailIds;
-		}
-		if ($('#adForm').form('validate')) {
+		if ($('#bannerForm').form('validate')) {
 			$(obj).attr("onclick", "");
-			$('#adForm').form(
+			$('#bannerForm').form(
 					'submit',
 					{
 						success : function(data) {
@@ -108,7 +39,7 @@
 							if (data.code == 1) {
 								$.messager.alert('保存信息', data.message, 'info',
 										function() {  
-									     window.location.href='adList.do';
+									     window.location.href='bannerList.do';
 										});
 							} else {
 								$.messager.alert('错误信息', data.message, 'error');
@@ -118,20 +49,33 @@
 		}
 	}; 
 	function showdialog(){
-		var wz = getDialogPosition($('#bbsWindow').get(0),100);
-		$('#bbsWindow').window({
+		var wz = getDialogPosition($('#adWindow').get(0),100);
+		$('#adWindow').window({
 			  	top: 100,
 			    left: wz[1],
-			    scrollbars:true,
 			    onBeforeClose: function () {
 			    }
 		});
-		$('#bbsWindow').window('open',"/","","scrollbars=yes");
+		$('#adWindow').window('open');
+		
 	}
-	function selectAd(bbsId,title){
-		document.getElementById("bbsShow").value = title;
-		document.getElementById("bbsSelect").value = bbsId;
-		$('#bbsWindow').window('close');
+	function saveAds(){
+		var adIds = "";
+		var adNames = "";
+		$(":checkbox:checked").each(function(i){
+			var adId = $(this).parents("tr").find("td").first().text();
+			var adName = $(this).parents("tr").find("td")[2].innerText;
+			if(i==0){
+				adIds += adId;
+				adNames += adName;
+			}else{
+				adIds += ","+adId; 
+				adNames += "，"+adName;
+			}
+		}); 
+		document.getElementById("adShow").value = adNames;
+		document.getElementById("adSelect").value = adIds;
+		$('#adWindow').window('close');
 	}
 </script>
 </head>
@@ -183,14 +127,20 @@
 			</div>
 		</div>
 	</div>
-	<div id="bbsWindow" class="easyui-window" title="关联社区" style="width:560px;height:480px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
+	<div id="adWindow" class="easyui-window" title="选择广告" style="width:560px;height:480px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
 	   <table id="tab2" class="yw-cm-table font16">
 	     <c:forEach var="item" items="${adList}"> 
 	      <tr>
-	        <td>${item.name }</td>
+	        <td style="display:none" align="left">${item.id}</td>
+	        <td width="5%"><input name="checkbox" type="checkbox"/></td>
+	        <td>${item.name}</td>
 	      </tr>
 	      </c:forEach>
 	   </table>
+	   <div class="yw-window-footer txt-right">
+        	<span class="yw-window-btn bg-lightgray mt12" style="cursor: pointer;" onclick="$('#adWindow').window('close');">退出</span>
+        	<span class="yw-window-btn bg-blue mt12" onclick="saveAds();" style="cursor: pointer;">保存</span>
+       </div>
 	</div>
 </body>
 </html>
