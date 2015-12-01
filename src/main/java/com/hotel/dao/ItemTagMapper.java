@@ -2,6 +2,7 @@ package com.hotel.dao;
 
 import java.util.List;
 
+import com.hotel.model.Item;
 import com.hotel.model.ItemTag;
 import com.hotel.viewmodel.ItemTagWebVM;
 
@@ -41,5 +42,8 @@ public interface ItemTagMapper {
 	 * @author hzf
 	 */
 	List<ItemTag> getItemTagsByLevel(int level);
+
+	List<ItemTag> getTagByHomeItemList(int i);
+	
 	
 }

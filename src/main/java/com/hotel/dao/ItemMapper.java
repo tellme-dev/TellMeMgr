@@ -29,4 +29,6 @@ public interface ItemMapper {
     List<ItemVM> selectItemVMByHotelId(int hotelId);
     
     int deleteByItemId(Map<String, Object> idMap);
+    
+    List<Item> selectItemByItemTagId(int itemTagId);
 }
