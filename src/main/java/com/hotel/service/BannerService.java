@@ -14,4 +14,6 @@ public interface BannerService {
 
 	BannerWebVM loadBannerById(Integer id);
 
+	void saveorUpdateAd(BannerWebVM banner);
+
 }

@@ -39,7 +39,7 @@ public class BbsServiceImpl implements BbsService {
 	public ListResult<BbsVM> loadBbsListByCategoryId(Page page,int categoryId) {
 		// TODO Auto-generated method stub
 		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("pageStart", page.getPageStart());
+		map.put("pageNo", page.getPageNo());
 		map.put("pageSize",page.getPageSize());
 		map.put("parentId", 0);//加载主贴
 		map.put("categoryId", categoryId);
@@ -88,7 +88,7 @@ public class BbsServiceImpl implements BbsService {
 	public ListResult<BbsVM> loadBbsChildren(Page page,Integer pid) {
 		// TODO Auto-generated method stub
 		Map<String,Object> map = new HashMap<String, Object>();
-		map.put("pageStart", page.getPageStart());
+		map.put("pageNo", page.getPageNo());
 		map.put("pageSize", page.getPageSize());
 		map.put("parentId", pid);
 		List<BbsVM> ls = bbsMapper.selectByPid(map);

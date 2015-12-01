@@ -62,7 +62,7 @@
 	function saveAds(){
 		var adIds = "";
 		var adNames = "";
-		$(":checkbox:checked").each(function(i){
+		$("#tab2:checkbox:checked").each(function(i){
 			var adId = $(this).parents("tr").find("td").first().text();
 			var adName = $(this).parents("tr").find("td")[2].innerText;
 			if(i==0){
@@ -113,6 +113,10 @@
 							     </c:forEach>
 							  </select>
 							</td>
+						</tr>
+						<tr>
+						   <td width="10%" align="center">是否使用：</td>
+						   <td><input type="checkbox" name="rememberMe" value="false" id="chkRememberPwd">下次自动登录</label></td>
 						</tr>
 						<tr>
 							<td width="10%" align="center">广告：</td>

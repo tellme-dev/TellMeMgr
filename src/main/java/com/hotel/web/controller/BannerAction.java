@@ -14,8 +14,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+import com.hotel.common.JsonResult;
 import com.hotel.common.utils.Constants;
+import com.hotel.common.utils.FileUtil;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Function;
 import com.hotel.model.User;
@@ -95,6 +99,29 @@ public class BannerAction {
 		List<AdvertisementWebVM> list = adService.getAdPageList(map);
 		request.setAttribute("adList", list);
 		return "web/banner/bannerInfo";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/saveOrupdateBanner.do", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	public JsonResult<BannerWebVM> saveOrupdateBanner(
+			BannerWebVM banner, 
+			HttpServletRequest request,
+			HttpServletResponse response) {
+		JsonResult<BannerWebVM> json = new JsonResult<BannerWebVM>();
+		json.setCode(new Integer(0));
+		json.setMessage("保存失败!");
+		try { 
+			/*新增时没有传id值*/
+			if(banner.getId()==null){
+				banner.setId(0);
+			}
+			bannerService.saveorUpdateAd(banner);
+			json.setCode(new Integer(1));
+			json.setMessage("保存成功!");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return json;
 	}
 
 }

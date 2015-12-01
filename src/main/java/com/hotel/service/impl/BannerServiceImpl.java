@@ -51,4 +51,16 @@ public class BannerServiceImpl implements BannerService {
 		return bannerMapper.selectObjByMap(map);
 	}
 
+	@Override
+	public void saveorUpdateAd(BannerWebVM banner) {
+		// TODO Auto-generated method stub
+		if(banner.getId() == 0){//新增
+			banner.setCreateTime(new Date());
+			bannerMapper.insertSelective(banner);
+		}else{
+			
+		}
+		
+	}
+
 }
