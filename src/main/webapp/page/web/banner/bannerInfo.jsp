@@ -16,7 +16,7 @@
     var type;//0为新增；1为编辑
     $(document).ready(function(){
     	type = ${type};
-    	setShowStates();
+    	//setShowStates();
     	if(type==1){//编辑
     	}
     	
@@ -62,7 +62,7 @@
 	function saveAds(){
 		var adIds = "";
 		var adNames = "";
-		$("#tab2:checkbox:checked").each(function(i){
+		$("#tab2 :checkbox:checked").each(function(i){
 			var adId = $(this).parents("tr").find("td").first().text();
 			var adName = $(this).parents("tr").find("td")[2].innerText;
 			if(i==0){
@@ -115,17 +115,28 @@
 							</td>
 						</tr>
 						<tr>
-						   <td width="10%" align="center">是否使用：</td>
-						   <td><input type="checkbox" name="rememberMe" value="false" id="chkRememberPwd">下次自动登录</label></td>
+						   <td width="10%" align="center"></td>
+						   <td><input type="checkbox" name="isUsed" value="true" id="is_used">是否使用</label></td>
 						</tr>
 						<tr>
 							<td width="10%" align="center">广告：</td>
-							<td colspan="2">
+							<%-- <td colspan="2">
 							   <input id="adShow" class="easyui-validatebox" value="${bannerinfo.adName}" readonly="readonly" placeholder="请选择广告" style="width:500px;height:30px;"/>
 							   <input type="hidden" id="adSelect" name="adIds" value="${bannerinfo.adIds}" class="easyui-validatebox" style="width:500px;height:30px;"/>
 							   <span id="select_ad" class="yw-btn bg-blue mt12" style="cursor: pointer;" onclick="showdialog()">选择广告</span>
-							</td>
+							</td> --%>
 						</tr>
+						<tr>
+						  <th style="display:none">序号</th>
+						  <th width="5%"></th>
+						</tr>
+						<c:forEach var="item" items="${badlist}">
+						<tr>
+							<td style="display:none" align="left">${item.id}</td>
+							<td width="5%"><input name="checkbox" type="checkbox"/></td>
+							<td>${item.name}</td> 
+						</tr>
+					    </c:forEach>
 					</table>
 				</form>
 			</div>

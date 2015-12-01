@@ -27,6 +27,9 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.hotel.model.Banner" >
+  <selectKey resultType="INTEGER" keyProperty="id">
+       SELECT LAST_INSERT_ID()
+  </selectKey>
     insert into t_banner (id, position_type, is_used, 
       create_time)
     values (#{id,jdbcType=INTEGER}, #{positionType,jdbcType=TINYINT}, #{isUsed,jdbcType=BIT}, 

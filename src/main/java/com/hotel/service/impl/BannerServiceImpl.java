@@ -1,6 +1,7 @@
 package com.hotel.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -10,9 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hotel.common.utils.GeneralUtil;
+import com.hotel.dao.BannerDetailMapper;
 import com.hotel.dao.BannerMapper;
+import com.hotel.model.BannerDetail;
 import com.hotel.service.BannerService;
-import com.hotel.viewmodel.AdvertisementWebVM;
 import com.hotel.viewmodel.BannerWebVM;
 
 @Service("bannerService")
@@ -20,6 +22,9 @@ public class BannerServiceImpl implements BannerService {
 	
 	@Autowired
 	private BannerMapper bannerMapper;
+	
+	@Autowired
+	private BannerDetailMapper badMapper;
 
 	@Override
 	public List<BannerWebVM> getBannerPageList(Map<String, Object> map) {
@@ -54,11 +59,31 @@ public class BannerServiceImpl implements BannerService {
 	@Override
 	public void saveorUpdateAd(BannerWebVM banner) {
 		// TODO Auto-generated method stub
+		//adIds格式"1,2,3"
+		List<Integer> adIds = new ArrayList<Integer>();
+		if(banner.getAdIds() != null&&!"".equals(banner.getAdIds())){
+			String[] str = banner.getAdIds().split(",");
+			Integer array[] = new Integer[str.length];  
+			for(int i=0;i<str.length;i++){  
+			    array[i]=Integer.parseInt(str[i]);
+			}
+			adIds = Arrays.asList(array);
+		}
 		if(banner.getId() == 0){//新增
 			banner.setCreateTime(new Date());
-			bannerMapper.insertSelective(banner);
+			bannerMapper.insert(banner);
+			int i = 1;
+			for(int adId: adIds){
+				BannerDetail bad = new BannerDetail();
+				bad.setId(0);
+				bad.setAdId(adId);
+				bad.setBannerId(banner.getId());
+				bad.setSort(i++);
+				badMapper.insert(bad);
+			}
 		}else{
-			
+			bannerMapper.updateByPrimaryKeySelective(banner);
+			//badMapper.deleteByBannerId(banner.getId());
 		}
 		
 	}
