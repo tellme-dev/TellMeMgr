@@ -18,6 +18,12 @@
     <result column="latitude" property="latitude" jdbcType="DECIMAL" />
     <collection property="itemVMs" column="id" select="com.hotel.dao.ItemMapper.selectItemVMByHotelId"></collection>
   </resultMap>
+  <resultMap id="resultHotelParamMap" type="com.hotel.modelVM.HotelParam">
+  <id column="id" property="id" jdbcType="INTEGER" />
+  <result column="name" property="name" jdbcType="VARCHAR" />
+  <result column="score" property="score" jdbcType="DECIMAL" />
+  </resultMap>
+  
   <sql id="Base_Column_List" >
     id, name, text, region_id, longitude, latitude
   </sql>
@@ -185,4 +191,15 @@
     select count(id) from t_hotle where id in (select distinct hotel_id from t_item where id in (select item_id from t_item_tag_association where item_tag_id in (select id from t_Item_tag where parent_id = #{itemTagId})))
   </select>
   
+  <select id="getRecommandHotelListOfSQL" resultMap="resultHotelParamMap" parameterType="java.lang.Integer">
+  	SELECT a.id as id ,e.`name` as name, a.score as score from t_item a
+		LEFT JOIN t_item_tag_association b ON a.id = b.item_id
+		LEFT JOIN t_Item_tag c ON b.item_tag_id = c.id
+		LEFT JOIN t_item_detail d on a.id = d.item_id
+		LEFT JOIN t_hotle e on a.hotel_id = e.id
+		WHERE c.id = 1
+		GROUP BY a.hotel_id
+		ORDER BY a.score DESC
+		LIMIT 0,#{0};
+  </select>
 </mapper>
