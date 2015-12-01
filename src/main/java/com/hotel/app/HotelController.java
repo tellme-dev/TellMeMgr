@@ -19,14 +19,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hotel.common.ListResult;
+import com.hotel.common.Result;
 import com.hotel.model.CustomerBrowse;
 import com.hotel.model.Hotel;
 import com.hotel.model.Item;
 import com.hotel.model.ItemDetail;
 import com.hotel.model.ItemTagAssociation;
 import com.hotel.model.Region;
+import com.hotel.model.SearchText;
 import com.hotel.modelVM.HotelInfoVM;
 import com.hotel.modelVM.HotelListInfoVM;
+import com.hotel.modelVM.HotelParam;
 import com.hotel.modelVM.ImageVM;
 import com.hotel.service.BaseDataService;
 import com.hotel.service.CustomerBrowseService;
@@ -48,6 +51,7 @@ public class HotelController {
 	private final static int DEFAULT_PAGE_NUM = 1;
 	private final static int DEFAULT_PAGE_SIZE = 10;
 	private final static int TAG_TYPE_HOTEL = 1;
+	private final static int DEFAULT_RECOMMAND_NUM = 5;
 	
 	@Resource(name="hotelService")
 	private HotelService hotelService;
@@ -483,5 +487,21 @@ public class HotelController {
 	@RequestMapping(value = "/demo.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public ListResult<HotelListInfoVM> demo(String json, HttpServletRequest request, HttpServletResponse response) {
 		return null;
+	}
+	/**
+	 * 获取推荐的酒店列表(搜索)
+	 * @param request
+	 * @return
+	 * @author hzf
+	 */
+	@RequestMapping(value = "getRecommandHotels.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody  String getRecommandHotels(
+			HttpServletRequest request)
+	{
+		List<HotelParam> temp = hotelService.getRecommandHotelList(DEFAULT_RECOMMAND_NUM);
+		if(temp ==null){
+			return new ListResult<HotelParam>(null,false,"获取推荐酒店失败").toJson();
+		}
+		return new ListResult<HotelParam>(temp,true,"获取推荐酒店成功").toJson();
 	}
 }

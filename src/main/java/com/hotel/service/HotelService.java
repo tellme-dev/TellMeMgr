@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.hotel.model.Hotel;
 import com.hotel.model.ItemTagAssociation;
+import com.hotel.modelVM.HotelParam;
 import com.hotel.modelVM.HotelVM;
 
 public interface HotelService {
@@ -32,4 +33,6 @@ public interface HotelService {
     HotelVM getHotelVMById(int id);
 
 	HotelVM getHotelVMByAdId(Integer adId);
+	
+	List<HotelParam> getRecommandHotelList(int num);
 }

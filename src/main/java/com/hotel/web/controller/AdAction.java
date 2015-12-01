@@ -27,8 +27,10 @@ import com.hotel.model.Advertisement;
 import com.hotel.model.Function;
 import com.hotel.model.Hotel;
 import com.hotel.model.User;
+import com.hotel.modelVM.BbsVM;
 import com.hotel.service.AdvertisementService;
 import com.hotel.service.BaseDataService;
+import com.hotel.service.BbsService;
 import com.hotel.service.FunctionService;
 import com.hotel.service.HotelService;
 import com.hotel.viewmodel.AdvertisementWebVM;
@@ -51,9 +53,11 @@ public class AdAction extends BaseAction {
 			
 			@Resource(name="hotelService")
 			private HotelService hotelService;
+			
+			@Resource(name="bbsService")
+			private BbsService bbsService;
 
 			/**
-			 * 
 			 * 
 			 * @param user
 			 * @param request
@@ -103,6 +107,11 @@ public class AdAction extends BaseAction {
 				}else{
 					request.setAttribute("type", Constants.ADD_TYPE);
 				}
+				/*查询社区列表*/
+				Map<String,Object> map = new HashMap<String,Object>();
+				map.put("parentId", 0);
+				List<BbsVM> list = bbsService.loadBbsList(map);
+				request.setAttribute("bbsList", list);
 //				/*查询项目tag*/
 //				List<ItemTag> taglist = baseDataService.selectTagList();
 //				request.setAttribute("taglist", taglist);
@@ -133,6 +142,9 @@ public class AdAction extends BaseAction {
 			        	List<String> imageUrl = FileUtil.uploadMultiFile2(request, "image/ad", FileUtil.RELATIVELY_PATH);
 			        	ad.setImageUrlList(imageUrl);
 			        }
+			        if(ad.getBbsId()!=null&&!"".equals(ad.getBbsId())){
+			        	ad.setTargetId(ad.getBbsId());
+			        }
 			        if(ad.getHotelId()!=null&&!"".equals(ad.getHotelId())){
 			        	ad.setTargetId(ad.getHotelId());
 			        }
@@ -146,7 +158,7 @@ public class AdAction extends BaseAction {
 			}
 			/**
 			 * 加载酒店列表，以下拉选择形式呈现
-			 * @param pid
+			 * @author jun
 			 * @param request
 			 * @param response
 			 * @return
@@ -167,6 +179,7 @@ public class AdAction extends BaseAction {
 			}
 			/**
 			 * 加载ItemTag列表，以下拉树形式呈现
+			 * @author jun
 			 * @param pid
 			 * @param request
 			 * @param response
@@ -187,7 +200,36 @@ public class AdAction extends BaseAction {
 					return "";
 				}
 			}
-			
+			/**
+			 * 加载社区列表
+			 * @author jun
+			 * @param request
+			 * @param response
+			 * @return
+			 */
+			/*@ResponseBody
+			@RequestMapping(value = "/jsonLoadBbsComboList.do", produces = "text/html;charset=UTF-8")
+			public String loadBbsComboList(
+					HttpServletRequest request,
+					HttpServletResponse response) {
+				try{
+					Map<String,Object> map = new HashMap<String,Object>();
+					map.put("parentId", 0);
+					List<BbsVM> list = bbsService.loadBbsList(map);
+					request.setAttribute("bbsList", list);
+					JSONArray  json = JSONArray.fromObject(list);
+					return json.toString();
+				}catch(Exception e){
+					return "";
+				}
+			}*/
+			/**
+			 * @author jun
+			 * @param adIds
+			 * @param request
+			 * @param response
+			 * @return
+			 */
 			@ResponseBody
 			@RequestMapping(value = "/jsonDeleteAd.do",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 			public String deleteAd(

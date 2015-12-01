@@ -20,7 +20,7 @@
     <result column="position" property="position" jdbcType="VARCHAR" />
     <result column="score" property="score" jdbcType="DECIMAL" />
     <result column="is_used" property="isUsed" jdbcType="BIT" />
-    <association property="itemTag" javaType="ItemTag" column="item_id" select="com.hotel.dao.ItemTagMapper.selectByItemId"></association>
+    <association property="itemTag" javaType="ItemTag" column="id" select="com.hotel.dao.ItemTagMapper.selectByItemId"></association>
     <collection property="itemDetails" column="id" select="com.hotel.dao.ItemDetailMapper.selectItemVMByItemId"></collection>
   </resultMap>
   <sql id="Base_Column_List" >
@@ -178,4 +178,11 @@
     	#{item.id}  
     </foreach>
   </delete>
+  <select id="selectItemByItemTagId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    a.id, a.hotel_id, a.name, a.text, a.tel, a.position, a.score, a.is_used
+    from t_item a
+    left join t_item_tag_association t on a.id = t.item_id 
+    where t.item_tag_id = #{0}
+  </select>
 </mapper>

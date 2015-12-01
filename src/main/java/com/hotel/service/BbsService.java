@@ -1,6 +1,7 @@
 package com.hotel.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hotel.common.ListResult;
 import com.hotel.common.utils.Page;
@@ -23,6 +24,11 @@ public interface BbsService {
 	 * @return 
 	 */
 	ListResult<BbsVM> loadBbsListByCategoryId(Page page, int categoryId);
+	/**
+	 * @author jun
+	 * @return
+	 */
+	BbsVM loadBbsById(Integer id);
 
 	/**
 	 * @author jun
@@ -37,6 +43,14 @@ public interface BbsService {
 	 * @param pid
 	 * @return
 	 */
-	ListResult<BbsVM> loadBbsTree(Page page, Integer pid);
+	ListResult<BbsVM> loadBbsChildren(Page page, Integer pid);
+
+	/**
+	 * （AdAction用到）
+	 * @author jun
+	 * @param map
+	 * @return
+	 */
+	List<BbsVM> loadBbsList(Map<String, Object> map);
 
 }

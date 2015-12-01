@@ -25,8 +25,14 @@ public interface BbsMapper {
 	List<BbsVM> selectByPid(Map<String, Object> map);
 
 	int countByMap(Map<String, Object> map);
+	
+	BbsVM selectBbsByMap(Map<String, Object> map);
 
 	void updateAnswerCount(Integer id);
 
 	void updateAgreeCount(Integer id);
+	
+	void updateShareCount(Integer id);
+
+	void updateBrowseCount(Integer id);
 }

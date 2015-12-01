@@ -31,15 +31,20 @@ public class ItemTagServiceImpl implements ItemTagService{
 	@Override
 	public List<ItemTag> getHomeItemList() {
 		// TODO Auto-generated method stub
-		List<ItemTag> list =itemTagMapper.getTagFromMin(1);
-		list.addAll(itemTagMapper.getTagFromMin(2));
+		List<ItemTag> list =itemTagMapper.getTagByHomeItemList(1);
+		list.addAll(itemTagMapper.getTagByHomeItemList(2));
+		return list;
+	}
+	public List<ItemTag> getMoreItemList() {
+		// TODO Auto-generated method stub
+		List<ItemTag> list =itemTagMapper.getTagByHomeItemList(3);
 		return list;
 	}
 
 	@Override
 	public List<ItemTag> getchildItemTagsByParentId(Integer parentId) {
 		// TODO Auto-generated method stub
-		return itemTagMapper.getchildItemTagsByParentId(parentId);
+		return itemTagMapper.getTagByParentId(parentId);
 	}
 
 	@Override

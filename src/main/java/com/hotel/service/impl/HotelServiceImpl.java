@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hotel.dao.HotelMapper;
+import com.hotel.dao.ItemDetailMapper;
 import com.hotel.dao.ItemTagAssociationMapper;
 import com.hotel.model.Hotel;
+import com.hotel.model.ItemDetail;
 import com.hotel.model.ItemTagAssociation;
+import com.hotel.modelVM.HotelParam;
 import com.hotel.modelVM.HotelVM;
 import com.hotel.service.HotelService;
 
@@ -21,6 +24,8 @@ public class HotelServiceImpl implements HotelService{
 	private HotelMapper hotelMapper;
 	@Autowired
 	private ItemTagAssociationMapper associationMapper;
+	@Autowired 
+	private ItemDetailMapper itemDetailMapper;
 	
 
 	@Override
@@ -93,5 +98,28 @@ public class HotelServiceImpl implements HotelService{
 	public int getPageHotelCountByItemTag(int itemTagId) {
 		// TODO Auto-generated method stub
 		return hotelMapper.getPageHotelCountByItemTag(itemTagId);
+	}
+
+	/**
+	 * @author hzf
+	 */
+	public List<HotelParam> getRecommandHotelList(int num) {
+		
+		List<HotelParam> temp = hotelMapper.getRecommandHotelListOfSQL(num);
+		if(temp ==null||temp.size() ==0){
+			return null;
+		}
+		
+		for(int i = 0;i<temp.size();i++){
+			int itemId = temp.get(i).getId();
+			List<ItemDetail> list = itemDetailMapper.selectByItemId(itemId);
+			String url = null;
+			if(list ==null||list.size() ==0){
+				url = null;
+			}
+			url = list.get(0).getImageUrl();
+			temp.get(i).setImageUrl(url);
+		}
+		return temp;
 	}
 }

@@ -49,4 +49,21 @@ public class SearchController {
 		
 		return new Result<SearchText>(null,true,"插入搜索数据成功").toJson();
 	}
+	@RequestMapping(value = "fullTextSearch.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody  String fullTextSearch(
+			@RequestParam(value = "searchData", required = false) String searchData,
+			HttpServletRequest request)
+	{
+		//先保存查询内容，然后进行全文查询
+		JSONObject jObj = JSONObject.fromObject(searchData);
+		SearchText text = (SearchText) JSONObject.toBean(jObj,SearchText.class);
+		text.setSearchTime(new Date());
+		
+		int temp = searchService.insertSearchText(text);
+		if(temp == -1){
+			return new Result<SearchText>(null,false,"数据搜索失败").toJson();
+		}
+		//全文查询
+		return new Result<SearchText>(null,true,"插入搜索数据成功").toJson();
+	}
 }

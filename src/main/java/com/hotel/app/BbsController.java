@@ -1,9 +1,5 @@
 package com.hotel.app;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
@@ -13,11 +9,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.hotel.common.ListResult;
 import com.hotel.common.Result;
 import com.hotel.common.utils.Constants;
 import com.hotel.common.utils.Page;
+import com.hotel.model.Bbs;
 import com.hotel.model.BbsCategory;
 import com.hotel.modelVM.BbsVM;
 import com.hotel.service.BbsService;
@@ -73,6 +71,32 @@ public class BbsController {
 			return result.toJson();
 		}
 	}
+	
+	/**
+	 * 获取单个帖子信息
+	 * @author jun
+	 * @param bbsParam
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "loadBbs.do", produces = "application/json;charset=UTF-8")
+	public String loadBbs(
+			@RequestParam(value = "bbsParam", required = false) String bbsParam,
+			HttpServletRequest request){
+		JSONObject jObj = JSONObject.fromObject(bbsParam);
+		Bbs bbs = (Bbs) JSONObject.toBean(jObj,Bbs.class);
+		int id = bbs.getId();
+		Result<BbsVM> result = new Result<BbsVM>();
+		try{
+			BbsVM b = bbsService.loadBbsById(id);
+			result = new Result<BbsVM>(b,true,"获取数据成功");
+			return result.toJson();
+		}catch(Exception e){
+			result = new Result<BbsVM>(null,true,"获取数据失败");
+			return result.toJson();
+		}
+	}
 	/**
 	 * 获取社区帖子正文内容ByPid
 	 * @author jun
@@ -81,8 +105,8 @@ public class BbsController {
 	 * @return
 	 */
 	@ResponseBody
-	@RequestMapping(value = "loadBbsTree.do", produces = "application/json;charset=UTF-8")
-	public String loadBbsTree(
+	@RequestMapping(value = "loadBbsChildren.do", produces = "application/json;charset=UTF-8")
+	public String loadBbsChildren(
 			@RequestParam(value = "bbsParam", required = false) String bbsParam,
 			HttpServletRequest request){
 		JSONObject jObj = JSONObject.fromObject(bbsParam);
@@ -93,7 +117,7 @@ public class BbsController {
 			Page page = new Page();
 			page.setPageNo(pageNo);
 			page.setPageSize(Constants.PAGE_SIZE_2);
-			ListResult<BbsVM> result = bbsService.loadBbsTree(page,pid);
+			ListResult<BbsVM> result = bbsService.loadBbsChildren(page,pid);
 			return result.toJson();
 		}catch(Exception e){
 			ListResult<BbsVM> result = new ListResult<BbsVM>(null, false, "获取数据失败");
@@ -123,6 +147,21 @@ public class BbsController {
 			result = new Result<BbsVM>(null, false, "保存失败");
 			return result.toJson();
 		}
+	}
+	
+	@RequestMapping(value = "uploadPhoto.do", produces = "application/json;charset=UTF-8")  
+    public @ResponseBody String upload(
+    		@RequestParam MultipartFile file,
+    		HttpServletRequest request) { 
+        try { 
+        	//String path = request.getSession().getServletContext().getRealPath("washPhoto"); 
+        	String path = getClass().getResource("/").getFile().toString();
+			path = path.substring(0, (path.length() - 16))+"washPhoto";
+        	String fileName1 = file.getOriginalFilename();//接收到的Name是没有格式的
+        	return "";
+        }catch(Exception e){
+        	return "";
+        }
 	}
 	
 }

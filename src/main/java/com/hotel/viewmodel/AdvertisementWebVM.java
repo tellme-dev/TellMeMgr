@@ -7,13 +7,17 @@ import com.hotel.model.Advertisement;
 
 public class AdvertisementWebVM extends Advertisement {
 	
-    private String  createtime;
+    private String  createtime;//时间格式转换
     
     private Integer hotelId;
+    
+    private Integer bbsId;
     
     private String hotelName;
     
     private String targetName;
+    
+    private String bbsName;
     
     private List<Integer> targetIds;
     
@@ -32,6 +36,22 @@ public class AdvertisementWebVM extends Advertisement {
     private String delAdDetailIds;
     
     private List<AdDetail> adDetailList;
+    
+	public Integer getBbsId() {
+		return bbsId;
+	}
+
+	public void setBbsId(Integer bbsId) {
+		this.bbsId = bbsId;
+	}
+
+	public String getBbsName() {
+		return bbsName;
+	}
+
+	public void setBbsName(String bbsName) {
+		this.bbsName = bbsName;
+	}
 
 	public String getDelAdDetailIds() {
 		return delAdDetailIds;

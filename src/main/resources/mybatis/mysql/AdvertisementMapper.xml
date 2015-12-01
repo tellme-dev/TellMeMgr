@@ -200,12 +200,12 @@
   </sql>
   
   <select id="getAdPageList" resultMap="WebVMResultMap" parameterType="java.util.Map" >
-     select <include refid="Base_Column_List" />,h.name as hotelName,t.name as targetName
+     select <include refid="Base_Column_List" />,h.name as hotelName,t.name as targetName,b.title as bbsName
 	 from t_ad a 
   	 left join t_ad_detail ad on a.id = ad.ad_id
   	 left join t_Item_tag t on a.target_id = t.id
   	 left join t_hotle h on a.target_id = h.id
-  	 
+  	 left join t_bbs b on b.id = a.target_id
   	 where 1=1
   	 <if test="isUsed != null" >
         and a.is_used = #{isUsed,jdbcType=BIT}
@@ -236,10 +236,11 @@
   </select>
   <select id="selectAdVMByPrimaryKey" resultMap="WebVMResultMap" parameterType="java.lang.Integer" >
     select 
-    <include refid="Base_Column_List" />,h.name as hotelName,t.name as targetName
+    <include refid="Base_Column_List" />,h.name as hotelName,t.name as targetName,b.title as bbsName
     from t_ad a 
-    left join t_hotle h on h.id = target_id
+    left join t_hotle h on h.id = a.target_id
   	left join t_Item_tag t on a.target_id = t.id
+  	left join t_bbs b on b.id = a.target_id
   	where a.id = #{id,jdbcType=INTEGER}
   </select>
   <update id="updateByIds" parameterType="java.util.Map" >

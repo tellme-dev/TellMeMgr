@@ -79,4 +79,10 @@
       createtime = #{createtime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectByMobile" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_varifycode
+    where mobile = #{mobile,jdbcType=VARCHAR}
+  </select>
 </mapper>
