@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,12 +22,11 @@ import com.hotel.common.utils.EndecryptUtils;
 import com.hotel.common.utils.GeneralUtil;
 import com.hotel.common.utils.StringUtil;
 import com.hotel.model.Customer;
-import com.hotel.model.User;
-
-import com.hotel.model.Varifycode;
-
 import com.hotel.model.CustomerCollection;
+import com.hotel.model.User;
+import com.hotel.model.Varifycode;
 import com.hotel.modelVM.RegisterData;
+import com.hotel.service.CustomerCollectionService;
 import com.hotel.service.CustomerService;
 import com.hotel.service.VarifycodeService;
 
@@ -41,6 +39,7 @@ import com.hotel.service.VarifycodeService;
 @RequestMapping("/app/customer")
 public class CustomerController {
 	@Autowired CustomerService customerService;
+	@Autowired CustomerCollectionService customerCollectionService;
 	@Autowired VarifycodeService varifycodeService;
 	/**
 	 * 判断用户是否注册
@@ -266,7 +265,51 @@ public class CustomerController {
 			@RequestParam(value = "customerInfo", required = false) String customerInfo)
 	{
 		return null;
+	}
+	
+	/**
+	 * 保存用户收藏/关注（包括酒店(服务)、广告(专题)、论坛等）
+	 * @param customerInfo
+	 * @return
+	 */
+	@RequestMapping(value = "/saveCollectionHistory.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<String> saveCollectionHistory(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int ctype = 0;
+		int customerId = 0;
+		int targetId = 0;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("collectionType")){
+				ctype = jsonObject.getInt("collectionType");
+			}
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("targetId")){
+				targetId = jsonObject.getInt("targetId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<String>("", false, "json解析异常");
+		}
+		if(ctype < 1 || customerId < 1 || targetId < 1){
+			return new Result<String>("", false, "请求无效");
+		}
+		CustomerCollection collection = new CustomerCollection();
+		collection.setCollectionType(ctype);
+		collection.setCustomerId(customerId);
+		collection.setTargetId(targetId);
+		collection.setCreateTime(new Date());
+		
+		int count = customerCollectionService.insert(collection);
+		if(count > 0){
+			return new Result<String>("", true, "");
+		}
+		return new Result<String>("", false, "收藏失败");
 	} 
+	
 	/**
 	 * 保存浏览的页面（包括酒店，酒店项目，广告，发现，论坛等）
 	 * @param customerInfo
