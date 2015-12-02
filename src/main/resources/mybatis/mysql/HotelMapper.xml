@@ -182,7 +182,7 @@
      select 
      <include refid="Base_Column_List" />
      from t_hotle 
-     where id in (select distinct hotel_id from t_item where id in (select item_id from t_item_tag_association where item_tag_id in (select id from t_Item_tag where parent_id = #{itemTagId})))
+     where id in (select distinct hotel_id from t_item where id in (select item_id from t_item_tag_association where item_tag_id in (select id from t_Item_tag where parent_id = #{itemTagId})) order by score desc)
      <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
         limit #{pageStart}, #{pageSize}
      </if>

@@ -7,20 +7,29 @@
     <result column="is_used" property="isUsed" jdbcType="BIT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
+  <resultMap id="BaseVMResultMap" type="com.hotel.viewmodel.BannerWebVM" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="position_type" property="positionType" jdbcType="TINYINT" />
+    <result column="is_used" property="isUsed" jdbcType="BIT" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
   <sql id="Base_Column_List" >
-    id, position_type, is_used, create_time
+    b.id, b.position_type, b.is_used, b.create_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
-    from t_banner
-    where id = #{id,jdbcType=INTEGER}
+    from t_banner b
+    where b.id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from t_banner
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.hotel.model.Banner" >
+  <selectKey resultType="INTEGER" keyProperty="id">
+       SELECT LAST_INSERT_ID()
+  </selectKey>
     insert into t_banner (id, position_type, is_used, 
       create_time)
     values (#{id,jdbcType=INTEGER}, #{positionType,jdbcType=TINYINT}, #{isUsed,jdbcType=BIT}, 
@@ -79,4 +88,31 @@
       create_time = #{createTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectByMap" resultMap="BaseVMResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />,
+    CASE b.position_type	
+		when 1 THEN '首页顶部' 
+		when 2 THEN '首页底部'  END as position,
+    (SELECT GROUP_CONCAT(a.name) FROM t_banner_detail bad,t_ad a WHERE bad.banner_id = b.id and a.id = bad.ad_id) as adName
+    from t_banner b
+  </select>
+  <select id="countByMap" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(b.id)
+    from t_banner b
+  </select>
+  <select id="selectObjByMap" resultMap="BaseVMResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />,
+    CASE b.position_type	
+		when 1 THEN '首页顶部' 
+		when 2 THEN '首页底部'  END as position,
+    (SELECT GROUP_CONCAT(bad.ad_id) FROM t_banner_detail bad WHERE bad.banner_id = b.id) as adIds,
+    (SELECT GROUP_CONCAT(a.name) FROM t_banner_detail bad,t_ad a WHERE bad.banner_id = b.id and a.id = bad.ad_id) as adName
+    from t_banner b
+    where 1=1
+    <if test="id != null" >
+        and b.id = #{id,jdbcType=INTEGER}
+    </if>
+  </select>
 </mapper>

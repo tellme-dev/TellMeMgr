@@ -401,7 +401,7 @@
     <include refid="query_sql" />
     order by b.create_time
     <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
-        limit #{pageStart}, #{pageSize}
+        limit 0, #{pageSize*pageNo}
     </if>
   </select>
   <select id="countByMap" resultType="java.lang.Integer" parameterType="java.util.Map" >
@@ -425,7 +425,7 @@
     from t_bbs b
     where b.parent_id = #{parentId,jdbcType=INTEGER}
     <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
-        limit #{pageStart}, #{pageSize}
+        limit 0, #{pageSize*pageNo}
     </if>
   </select>
   <update id="updateAnswerCount" parameterType="java.lang.Integer" >

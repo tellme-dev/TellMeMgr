@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.hotel.common.ListResult;
 import com.hotel.common.Result;
-import com.hotel.common.utils.Constants;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Bbs;
 import com.hotel.model.BbsCategory;
@@ -60,10 +59,11 @@ public class BbsController {
 		//Bbs bbs = (Bbs) JSONObject.toBean(jObj,Bbs.class);
 		int categoryId = jObj.getInt("categoryId");
 		int pageNo = jObj.getInt("pageNo");
+		int pageSize = jObj.getInt("pageSize");
 		try{
 			Page page = new Page();
 			page.setPageNo(pageNo);
-			page.setPageSize(Constants.DEFAULT_PAGE_SIZE);
+			page.setPageSize(pageSize);
 			ListResult<BbsVM> result = bbsService.loadBbsListByCategoryId(page,categoryId);
 			return result.toJson();
 		}catch(Exception e){
@@ -113,10 +113,11 @@ public class BbsController {
 		//BbsVM bbs = (BbsVM) JSONObject.toBean(jObj,BbsVM.class);
 		int pid = jObj.getInt("id");
 		int pageNo = jObj.getInt("pageNo");
+		int pageSize = jObj.getInt("pageSize");
 		try{
 			Page page = new Page();
 			page.setPageNo(pageNo);
-			page.setPageSize(Constants.PAGE_SIZE_2);
+			page.setPageSize(pageSize);
 			ListResult<BbsVM> result = bbsService.loadBbsChildren(page,pid);
 			return result.toJson();
 		}catch(Exception e){
