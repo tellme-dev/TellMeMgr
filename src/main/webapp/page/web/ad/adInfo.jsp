@@ -499,7 +499,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="bbsWindow" class="easyui-window" title="关联社区" style="width:560px;height:480px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
+	<div id="bbsWindow" class="easyui-window" title="关联社区" style="width:560px;height:480px;overflow:scrollbars;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
 	   <table id="tab2" class="yw-cm-table font16">
 	     <c:forEach var="item" items="${bbsList}"> 
 	      <tr>

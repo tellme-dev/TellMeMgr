@@ -83,7 +83,16 @@ public class BannerServiceImpl implements BannerService {
 			}
 		}else{
 			bannerMapper.updateByPrimaryKeySelective(banner);
-			//badMapper.deleteByBannerId(banner.getId());
+			badMapper.deleteByBannerId(banner.getId());
+			int i = 1;
+			for(int adId: adIds){
+				BannerDetail bad = new BannerDetail();
+				bad.setId(0);
+				bad.setAdId(adId);
+				bad.setBannerId(banner.getId());
+				bad.setSort(i++);
+				badMapper.insert(bad);
+			}
 		}
 		
 	}

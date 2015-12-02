@@ -77,7 +77,7 @@ function gotoEdit(){
 								<%-- <input type="text" name="searchName" class="yw-input wid170"
 									placeholder="搜索" value="${banner.searchName}" />
 								<span class="yw-btn bg-orange ml30 cur" onclick="search();">开始查找</span> --%>
-								<span class="yw-btn bg-green ml20 cur" onclick="gotoAdd();">新建广告</span>
+								<!-- <span class="yw-btn bg-green ml20 cur" onclick="gotoAdd();">新建广告</span> -->
 								<span class="yw-btn bg-blue ml20 cur" onclick="gotoEdit();">编辑广告</span>
 								<!-- <span class="yw-btn bg-orange ml20 cur" onclick="deleteBanner()">删除广告</span> -->
 							</div>
@@ -102,7 +102,7 @@ function gotoEdit(){
 							<td style="display:none" align="left">${item.id}</td>
 							<td width="5%"><input name="checkbox" type="checkbox"/></td>
 							<td>${item.position}</td> 
-							<td></td>
+							<td>${item.adName}</td>
 							<c:if test="${item.isUsed == true}">
 							<td>是</td>
 							</c:if>

@@ -19,4 +19,6 @@ public interface BannerDetailMapper {
     int updateByPrimaryKey(BannerDetail record);
 
 	List<BannerDetail> getAdIdList(int banner);
+
+	void deleteByBannerId(Integer id);
 }

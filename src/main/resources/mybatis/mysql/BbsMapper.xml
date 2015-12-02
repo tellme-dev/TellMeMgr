@@ -400,8 +400,8 @@
     where 1=1 
     <include refid="query_sql" />
     order by b.create_time
-    <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
-        limit 0, #{pageSize*pageNo}
+    <if test="pageEnd != null and pageSize != null and pageStart>-1 and pageSize>-1">
+        limit 0, #{pageEnd}
     </if>
   </select>
   <select id="countByMap" resultType="java.lang.Integer" parameterType="java.util.Map" >
@@ -424,8 +424,8 @@
     (select count(cc.id) from t_customer_collection cc where cc.target_id = b.id and cc.collection_type = 3) as collectionCount
     from t_bbs b
     where b.parent_id = #{parentId,jdbcType=INTEGER}
-    <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
-        limit 0, #{pageSize*pageNo}
+    <if test="pageEnd != null and pageSize != null and pageStart>-1 and pageSize>-1">
+        limit 0, #{pageEnd}
     </if>
   </select>
   <update id="updateAnswerCount" parameterType="java.lang.Integer" >
