@@ -504,4 +504,20 @@ public class HotelController {
 		}
 		return new ListResult<HotelParam>(temp,true,"获取推荐酒店成功").toJson();
 	}
+	@RequestMapping(value = "fullTextSearchOfHotel.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody  String fullTextSearchOfHotel(
+			@RequestParam(value = "searchData", required = false) String searchData,
+			HttpServletRequest request)
+	{
+		//先保存查询内容，然后进行全文查询
+		JSONObject jObj = JSONObject.fromObject(searchData);
+		SearchText text = (SearchText) JSONObject.toBean(jObj,SearchText.class);
+		text.setSearchTime(new Date());
+		//全文查询:查询酒店、BBS
+		List<HotelParam> list = hotelService.fullTextSearchOfHotel(text.getText());
+		if(list ==null||list.size() ==0){
+			return new ListResult<HotelParam>(null,false,"全文搜索酒店失败").toJson();
+		}
+		return new ListResult<HotelParam>(list,true,"获取推荐酒店成功").toJson();
+	}
 }

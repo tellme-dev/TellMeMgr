@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.hotel.common.ListResult;
 import com.hotel.common.Result;
 import com.hotel.model.SearchText;
+import com.hotel.service.HotelService;
 import com.hotel.service.SearchService;
 
 /**
@@ -49,8 +51,8 @@ public class SearchController {
 		
 		return new Result<SearchText>(null,true,"插入搜索数据成功").toJson();
 	}
-	@RequestMapping(value = "fullTextSearch.do", produces = "application/json;charset=UTF-8")
-	public @ResponseBody  String fullTextSearch(
+	@RequestMapping(value = "fullTextSearchOfHotel.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody  String fullTextSearchOfHotel(
 			@RequestParam(value = "searchData", required = false) String searchData,
 			HttpServletRequest request)
 	{
@@ -61,9 +63,10 @@ public class SearchController {
 		
 		int temp = searchService.insertSearchText(text);
 		if(temp == -1){
-			return new Result<SearchText>(null,false,"数据搜索失败").toJson();
+			return new ListResult<SearchText>(null,false,"数据搜索失败").toJson();
 		}
-		//全文查询
-		return new Result<SearchText>(null,true,"插入搜索数据成功").toJson();
+		//全文查询:查询酒店、BBS
+		
+		return new ListResult<SearchText>(null,true,"插入搜索数据成功").toJson();
 	}
 }
