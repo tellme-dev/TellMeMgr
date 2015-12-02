@@ -40,4 +40,5 @@ public interface HotelMapper {
 	HotelVM getHotelVMByMap(Map<String, Object> map);
 	
 	List<HotelParam> getRecommandHotelListOfSQL(int num);
+	List<HotelParam> fullTextSearchOfHotel(String text);
 }

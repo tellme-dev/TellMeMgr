@@ -122,4 +122,10 @@ public class HotelServiceImpl implements HotelService{
 		}
 		return temp;
 	}
+
+	@Override
+	public List<HotelParam> fullTextSearchOfHotel(String text) {
+		// TODO Auto-generated method stub
+		return hotelMapper.fullTextSearchOfHotel(text);
+	}
 }

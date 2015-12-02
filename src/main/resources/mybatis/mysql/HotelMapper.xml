@@ -202,4 +202,9 @@
 		ORDER BY a.score DESC
 		LIMIT 0,#{0};
   </select>
+  <select id="fullTextSearchOfHotel" resultMap="resultHotelParamMap" parameterType="java.lang.String"> (
+	SELECT * FROM t_hotle
+	WHERE MATCH(name) AGAINST ('#{0}' in BOOLEAN MODE)
+	limit 0,5;
+  </select>
 </mapper>
