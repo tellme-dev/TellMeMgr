@@ -18,10 +18,20 @@
     	type = ${type};
     	//setShowStates();
     	if(type==1){//编辑
+    		var adIds = "${bannerinfo.adIds}"
+    	    var str = adIds.split(",");
+    		$("#tab2 :checkbox").each(function(i){
+    			var adId = $(this).parents("tr").find("td").first().text();
+    			var checkbox = $(this).parents("tr").find("td")[1].childNodes[0];
+    			for(var j=0;j<str.length;j++){
+    				if(adId == str[j]){
+    					checkbox.checked = true;
+    				}
+    			}
+    		}); 
     	}
     	
     });
-    
 	function setShowStates(){
 		$("#txtTagContent").attr("readonly","readonly");
 		$("#itemTagSelect").combotree("disable",true);
@@ -70,7 +80,7 @@
 				adNames += adName;
 			}else{
 				adIds += ","+adId; 
-				adNames += "，"+adName;
+				adNames += ","+adName;
 			}
 		}); 
 		document.getElementById("adShow").value = adNames;
@@ -105,26 +115,51 @@
 						<tr>
 							<td width="10%" align="center">位置：</td>
 							<td colspan="2">
+							   <input type="hidden" name="id" value="${bannerinfo.id }"/>
 							   <select id="positionSelect" name="positionType" style="width:250px;height:30px;" class="easyui-combobox" data-options="editable:false">
-							     <!-- <option value="1">首页顶部</option>
-							     <option value="2">首页底部</option> -->
-							     <c:forEach var="item" items="${bannerlist }">
+							     <c:choose>  
+                                    <c:when test="${bannerinfo.positionType == 1}">
+                                         <option value="1" selected="selected">首页顶部</option>
+							             <option value="2">首页底部</option>
+                                    </c:when>  
+                                    <c:when test="${bannerinfo.positionType == 2}">
+                                         <option value="2" selected="selected">首页底部</option>
+							             <option value="1">首页顶部</option>
+                                    </c:when>
+                                    <c:otherwise>  
+                                         <option value="1">首页顶部</option>
+							             <option value="2">首页底部</option>
+                                    </c:otherwise>  
+                                 </c:choose>  
+							     <%-- <c:forEach var="item" items="${bannerlist }">
 							       <option value="${item.positionType }">${item.position}</option>
-							     </c:forEach>
+							     </c:forEach> --%>
 							  </select>
 							</td>
 						</tr>
 						<tr>
 						   <td width="10%" align="center"></td>
-						   <td><input type="checkbox" name="isUsed" value="true" id="is_used">是否使用</label></td>
+						   <td>
+						   <c:choose>  
+                                    <c:when test="${bannerinfo.isUsed == true}">
+                                         <label><input type="checkbox" name="isUsed" id="is_used" checked>是否使用</label>
+                                    </c:when>  
+                                    <c:when test="${bannerinfo.isUsed == false}">
+                                         <label><input type="checkbox" name="isUsed" id="is_used">是否使用</label>
+                                    </c:when>
+                                    <c:otherwise>  
+                                         <label><input type="checkbox" name="isUsed" id="is_used" checked>是否使用</label>
+                                    </c:otherwise>  
+                           </c:choose> 
+						   </td>
 						</tr>
 						<tr>
 							<td width="10%" align="center">广告：</td>
-							<%-- <td colspan="2">
+							<td colspan="2">
 							   <input id="adShow" class="easyui-validatebox" value="${bannerinfo.adName}" readonly="readonly" placeholder="请选择广告" style="width:500px;height:30px;"/>
 							   <input type="hidden" id="adSelect" name="adIds" value="${bannerinfo.adIds}" class="easyui-validatebox" style="width:500px;height:30px;"/>
 							   <span id="select_ad" class="yw-btn bg-blue mt12" style="cursor: pointer;" onclick="showdialog()">选择广告</span>
-							</td> --%>
+							</td>
 						</tr>
 						<tr>
 						  <th style="display:none">序号</th>
@@ -142,7 +177,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="adWindow" class="easyui-window" title="选择广告" style="width:560px;height:480px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
+	<div id="adWindow" class="easyui-window" title="选择广告" style="width:560px;height:480px;overflow:scrollbars;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
 	   <table id="tab2" class="yw-cm-table font16">
 	     <c:forEach var="item" items="${adList}"> 
 	      <tr>
