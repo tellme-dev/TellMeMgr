@@ -35,4 +35,6 @@ public interface BbsMapper {
 	void updateShareCount(Integer id);
 
 	void updateBrowseCount(Integer id);
+
+	List<BbsVM> fullTextSearchOfBbs(String text);
 }

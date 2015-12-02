@@ -8,10 +8,17 @@ import java.math.BigDecimal;
  */
 public class HotelParam {
 	private int id;
+	private int hotelId;
 	private String name;
 	private BigDecimal score;
 	private String imageUrl;
 	
+	public int getHotelId() {
+		return hotelId;
+	}
+	public void setHotelId(int hotelId) {
+		this.hotelId = hotelId;
+	}
 	public String getImageUrl() {
 		return imageUrl;
 	}

@@ -513,7 +513,7 @@ public class HotelController {
 		JSONObject jObj = JSONObject.fromObject(searchData);
 		SearchText text = (SearchText) JSONObject.toBean(jObj,SearchText.class);
 		text.setSearchTime(new Date());
-		//全文查询:查询酒店、BBS
+		//全文查询:查询酒店
 		List<HotelParam> list = hotelService.fullTextSearchOfHotel(text.getText());
 		if(list ==null||list.size() ==0){
 			return new ListResult<HotelParam>(null,false,"全文搜索酒店失败").toJson();

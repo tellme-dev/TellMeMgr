@@ -143,4 +143,10 @@ public class BbsServiceImpl implements BbsService {
 		return bbsMapper.selectByMap(map);
 	}
 
+	@Override
+	public List<BbsVM> fullTextSearchOfBbs(String text) {
+		// TODO Auto-generated method stub
+		return bbsMapper.fullTextSearchOfBbs(text);
+	}
+
 }

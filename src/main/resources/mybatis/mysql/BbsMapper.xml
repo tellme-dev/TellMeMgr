@@ -452,4 +452,10 @@
     browse_count = browse_count+1
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="fullTextSearchOfBbs" resultMap="BaseVMResultMap" parameterType="java.lang.String">
+  	SELECT * FROM t_bbs a
+	where instr(a.text,#{0})>0 or instr(a.title,#{0})>0
+	ORDER BY a.create_time DESC
+	LIMIT 0,4;
+  </select>
 </mapper>
