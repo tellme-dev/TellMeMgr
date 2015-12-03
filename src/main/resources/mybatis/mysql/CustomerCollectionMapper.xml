@@ -109,4 +109,10 @@
     target_id = #{itemId,jdbcType=INTEGER}
   </select>
   
+  <select id="countByCustomerCollection" resultType="java.lang.Integer" parameterType="com.hotel.model.CustomerCollection" >
+    select count(id) 
+    from t_customer_collection
+    where customer_id = #{customerId,jdbcType=INTEGER} and collection_type = #{collectionType,jdbcType=INTEGER} and target_id = #{targetId,jdbcType=INTEGER}
+  </select>
+  
 </mapper>

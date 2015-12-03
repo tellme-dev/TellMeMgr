@@ -25,4 +25,10 @@ public class CustomerCollectionServiceImpl implements CustomerCollectionService{
 		// TODO Auto-generated method stub
 		return customerCollectionMapper.countByItemId(itemId);
 	}
+
+	@Override
+	public int countByCustomerCollection(CustomerCollection record) {
+		// TODO Auto-generated method stub
+		return customerCollectionMapper.countByCustomerCollection(record);
+	}
 }
