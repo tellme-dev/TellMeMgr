@@ -269,6 +269,7 @@ public class CustomerController {
 	
 	/**
 	 * 保存用户收藏/关注（包括酒店(服务)、广告(专题)、论坛等）
+	 * @author LiuTaiXiong
 	 * @param customerInfo
 	 * @return
 	 */
@@ -308,7 +309,118 @@ public class CustomerController {
 			return new Result<String>("", true, "");
 		}
 		return new Result<String>("", false, "收藏失败");
+	}
+	
+	/**
+	 * 用户修改密码
+	 * @author LiuTaiXiong
+	 * @param customerInfo
+	 * @return
+	 */
+	@RequestMapping(value = "/updatePassword.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<String> updatePassword(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		String password = "";
+		String oldPassword = "";
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("password")){
+				password = jsonObject.getString("password");
+			}
+			if(jsonObject.containsKey("oldPassword")){
+				oldPassword = jsonObject.getString("oldPassword");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<String>("", false, "json解析异常");
+		}
+		if(customerId < 1 || password.trim().equals("") || oldPassword.trim().equals("")){
+			return new Result<String>("", false, "请求无效");
+		}
+		
+		Customer customer = customerService.selectByPrimaryKey(customerId);
+		
+		//设置密码
+		User nu = EndecryptUtils.md5Password(customer.getMobile(), password);
+		User ou = EndecryptUtils.md5Password(customer.getMobile(), oldPassword);
+		
+		Customer record = new Customer();
+		record.setId(customerId);
+		record.setName(nu.getPsd());
+		record.setPsd(ou.getPsd());
+		
+		int count = customerService.updatePassword(record);
+		if(count > 0){
+			return new Result<String>("", true, "");
+		}
+		return new Result<String>("", false, "修改密码失败");
 	} 
+	
+	/**
+	 * 用户找回密码
+	 * @author LiuTaiXiong
+	 * @param customerInfo
+	 * @return
+	 */
+	@RequestMapping(value = "/setPassword.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<String> setPassword(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		String phoneNumber = "";
+		String validateCode = "";
+		String password = "";
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("phoneNumber")){
+				phoneNumber = jsonObject.getString("phoneNumber");
+			}
+			if(jsonObject.containsKey("password")){
+				password = jsonObject.getString("password");
+			}
+			if(jsonObject.containsKey("validateCode")){
+				validateCode = jsonObject.getString("validateCode");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<String>("", false, "json解析异常");
+		}
+		if(phoneNumber.trim().equals("") || password.trim().equals("") || validateCode.trim().equals("")){
+			return new Result<String>("", false, "请求无效");
+		}
+		
+		Customer record = customerService.getCustomerByMobile(phoneNumber);
+		if(record == null){
+			return new Result<String>("", false, "该手机号尚未注册");
+		}
+		
+		Varifycode varifycode = varifycodeService.selectByMobile(phoneNumber);
+		long oldTime = varifycode.getCreatetime().getTime();
+		long newTime = new Date().getTime();
+		//验证码时间验证--2分钟
+		if(newTime - oldTime > 120000){
+			return new Result<String>("", false, "验证码已失效");
+		}
+		//验证码错误
+		if(!varifycode.getVarifyCode().equals(validateCode)){
+			return new Result<String>("", false, "验证码错误");
+		}
+		
+		
+		//设置密码
+		User u = EndecryptUtils.md5Password(phoneNumber, password);
+		int count = customerService.setPassword(record.getId(), u.getPsd());
+		if(count > 0){
+			return new Result<String>("", true, "");
+		}
+		return new Result<String>("", false, "找回密码失败");
+	}
+	
+	
 	
 	/**
 	 * 保存浏览的页面（包括酒店，酒店项目，广告，发现，论坛等）

@@ -155,4 +155,9 @@
       salt = #{salt,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <update id="updatePassword" parameterType="com.hotel.model.Customer" >
+    update t_customer set psd = #{name,jdbcType=VARCHAR} where id = #{id,jdbcType=INTEGER} and psd = #{psd,jdbcType=VARCHAR}
+  </update>
+  
 </mapper>
