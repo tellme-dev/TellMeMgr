@@ -21,11 +21,13 @@ import com.hotel.common.Result;
 import com.hotel.common.utils.EndecryptUtils;
 import com.hotel.common.utils.GeneralUtil;
 import com.hotel.common.utils.StringUtil;
+import com.hotel.model.Bbs;
 import com.hotel.model.Customer;
 import com.hotel.model.CustomerCollection;
 import com.hotel.model.User;
 import com.hotel.model.Varifycode;
 import com.hotel.modelVM.RegisterData;
+import com.hotel.service.BbsService;
 import com.hotel.service.CustomerCollectionService;
 import com.hotel.service.CustomerService;
 import com.hotel.service.VarifycodeService;
@@ -44,6 +46,7 @@ public class CustomerController {
 	@Autowired CustomerService customerService;
 	@Autowired CustomerCollectionService customerCollectionService;
 	@Autowired VarifycodeService varifycodeService;
+	@Autowired BbsService bbsService;
 	/**
 	 * 判断用户是否注册
 	 * @param autoInfo
@@ -301,17 +304,85 @@ public class CustomerController {
 		if(ctype < 1 || customerId < 1 || targetId < 1){
 			return new Result<String>("", false, "请求无效");
 		}
+		
 		CustomerCollection collection = new CustomerCollection();
 		collection.setCollectionType(ctype);
 		collection.setCustomerId(customerId);
 		collection.setTargetId(targetId);
 		collection.setCreateTime(new Date());
 		
+		//查询是否存在相同的记录
+		int collectionTimes = customerCollectionService.countByCustomerCollection(collection);
+		//已收藏
+		if(collectionTimes > 0){
+			new Result<String>("", false, "您已收藏");
+		}
+		
 		int count = customerCollectionService.insert(collection);
 		if(count > 0){
-			return new Result<String>("", true, "");
+			return new Result<String>("", true, "收藏成功");
 		}
 		return new Result<String>("", false, "收藏失败");
+	}
+	
+	/**
+	 * 保存用户点赞（包括酒店(服务)、广告(专题)、论坛等）
+	 * @author LiuTaiXiong
+	 * @param customerInfo
+	 * @return
+	 */
+	@RequestMapping(value = "/savePraiseHistory.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<String> saveAgreeHistory(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int praiseType = -1;
+		int customerId = 0;
+		int targetId = 0;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("praiseType")){
+				praiseType = jsonObject.getInt("praiseType");
+			}
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("targetId")){
+				targetId = jsonObject.getInt("targetId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<String>("", false, "json解析异常");
+		}
+		if(praiseType < 0 || customerId < 1 || targetId < 1){
+			return new Result<String>("", false, "请求无效");
+		}
+		
+		Bbs bbs = new Bbs();
+		bbs.setCustomerId(customerId);
+		bbs.setBbsType(3);
+		bbs.setCategoryId(0);
+		bbs.setPostType(2);
+		bbs.setTargetType(praiseType);
+		bbs.setTargetId(targetId);
+		bbs.setParentId(0);
+		bbs.setLevel(0);
+		bbs.setCreateTime(new Date());
+		
+		//相同数据检查
+		int bbsCount = bbsService.countByBbs(bbs);
+		//已点赞
+		if(bbsCount > 0){
+			new Result<String>("", false, "您已点赞");
+		}
+		
+		int count = bbsService.insert(bbs);
+		if(count > 0){
+			if(praiseType == 0){
+				bbsService.updateAgreeCount(targetId);
+			}
+			return new Result<String>("", true, "");
+		}
+		return new Result<String>("", false, "点赞失败");
 	}
 	
 	/**
@@ -405,7 +476,7 @@ public class CustomerController {
 		long oldTime = varifycode.getCreatetime().getTime();
 		long newTime = new Date().getTime();
 		//验证码时间验证--2分钟
-		if(newTime - oldTime > 120000){
+		if(newTime - oldTime > DEFAULT_VARIFY_TIME*1000){
 			return new Result<String>("", false, "验证码已失效");
 		}
 		//验证码错误
