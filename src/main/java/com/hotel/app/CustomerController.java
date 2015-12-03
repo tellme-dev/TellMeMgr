@@ -38,6 +38,9 @@ import com.hotel.service.VarifycodeService;
 @Controller
 @RequestMapping("/app/customer")
 public class CustomerController {
+	
+	private final static int DEFAULT_VARIFY_TIME = 2*60;//秒
+	
 	@Autowired CustomerService customerService;
 	@Autowired CustomerCollectionService customerCollectionService;
 	@Autowired VarifycodeService varifycodeService;
@@ -154,7 +157,7 @@ public class CustomerController {
 			return new Result<Customer>(null,false,"验证码输入不正确").toJson();
 		}
 		long seconds = this.getBetweenDate(v.getCreatetime(), new Date());
-		if(seconds==0&&seconds>=30*60){
+		if(seconds==0&&seconds>=DEFAULT_VARIFY_TIME){
 			return new Result<Customer>(null,false,"验证码已过期").toJson();
 		}
 		
