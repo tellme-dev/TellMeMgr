@@ -123,9 +123,26 @@ public class HotelServiceImpl implements HotelService{
 		return temp;
 	}
 
-	@Override
+	/**
+	 * @author hzf
+	 */
 	public List<HotelParam> fullTextSearchOfHotel(String text) {
 		// TODO Auto-generated method stub
-		return hotelMapper.fullTextSearchOfHotel(text);
+		List<HotelParam> temp =hotelMapper.fullTextSearchOfHotel(text);
+		if(temp ==null||temp.size() ==0){
+			return null;
+		}
+		
+		for(int i = 0;i<temp.size();i++){
+			int itemId = temp.get(i).getId();
+			List<ItemDetail> list = itemDetailMapper.selectByItemId(itemId);
+			String url = null;
+			if(list ==null||list.size() ==0){
+				url = null;
+			}
+			url = list.get(0).getImageUrl();
+			temp.get(i).setImageUrl(url);
+		}
+		return temp;
 	}
 }

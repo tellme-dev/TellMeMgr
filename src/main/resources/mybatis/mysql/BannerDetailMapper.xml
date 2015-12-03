@@ -88,5 +88,9 @@
       banner_id = #{bannerId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <delete id="deleteByBannerId" parameterType="java.lang.Integer" >
+    delete from t_banner_detail
+    where banner_id = #{bannerId,jdbcType=INTEGER}
+  </delete>
 
 </mapper>

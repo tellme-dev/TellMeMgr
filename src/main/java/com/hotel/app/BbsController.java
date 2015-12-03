@@ -1,5 +1,8 @@
 package com.hotel.app;
 
+import java.util.Date;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
@@ -16,7 +19,9 @@ import com.hotel.common.Result;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Bbs;
 import com.hotel.model.BbsCategory;
+import com.hotel.model.SearchText;
 import com.hotel.modelVM.BbsVM;
+import com.hotel.modelVM.HotelParam;
 import com.hotel.service.BbsService;
 
 @Controller
@@ -165,4 +170,20 @@ public class BbsController {
         }
 	}
 	
+	@RequestMapping(value = "fullTextSearchOfBbs.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody  String fullTextSearchOfBbs(
+			@RequestParam(value = "searchData", required = false) String searchData,
+			HttpServletRequest request)
+	{
+		//先保存查询内容，然后进行全文查询
+		JSONObject jObj = JSONObject.fromObject(searchData);
+		SearchText text = (SearchText) JSONObject.toBean(jObj,SearchText.class);
+		text.setSearchTime(new Date());
+		//全文查询:查询酒店
+		List<BbsVM> list = bbsService.fullTextSearchOfBbs(text.getText());
+		if(list ==null||list.size() ==0){
+			return new ListResult<BbsVM>(null,false,"全文搜索帖子失败").toJson();
+		}
+		return new ListResult<BbsVM>(list,true,"获取推荐帖子成功").toJson();
+	}
 }

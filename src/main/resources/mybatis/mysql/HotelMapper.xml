@@ -20,6 +20,7 @@
   </resultMap>
   <resultMap id="resultHotelParamMap" type="com.hotel.modelVM.HotelParam">
   <id column="id" property="id" jdbcType="INTEGER" />
+  <result column="hotel_id" property="hotelId" jdbcType="INTEGER" />
   <result column="name" property="name" jdbcType="VARCHAR" />
   <result column="score" property="score" jdbcType="DECIMAL" />
   </resultMap>
@@ -192,7 +193,7 @@
   </select>
   
   <select id="getRecommandHotelListOfSQL" resultMap="resultHotelParamMap" parameterType="java.lang.Integer">
-  	SELECT a.id as id ,e.`name` as name, a.score as score from t_item a
+  	SELECT a.id as id ,e.id as hotel_id,e.`name` as name, a.score as score from t_item a
 		LEFT JOIN t_item_tag_association b ON a.id = b.item_id
 		LEFT JOIN t_Item_tag c ON b.item_tag_id = c.id
 		LEFT JOIN t_item_detail d on a.id = d.item_id
@@ -202,9 +203,13 @@
 		ORDER BY a.score DESC
 		LIMIT 0,#{0};
   </select>
-  <select id="fullTextSearchOfHotel" resultMap="resultHotelParamMap" parameterType="java.lang.String"> (
-	SELECT * FROM t_hotle
-	WHERE MATCH(name) AGAINST ('#{0}' in BOOLEAN MODE)
-	limit 0,5;
+  <select id="fullTextSearchOfHotel" resultMap="resultHotelParamMap" parameterType="java.lang.String">
+  SELECT a.id as hotel_id,b.id as id,a.name as name,b.score as score from t_hotle a
+	LEFT JOIN t_item b on a.id = b.hotel_id
+	LEFT JOIN t_item_tag_association c on b.id = c.item_id
+	LEFT JOIN t_Item_tag d on  c.item_tag_id = d.id
+	WHERE instr(a.name,#{0})>0 or instr(a.text,#{0})>0 and d.id = 1
+	ORDER BY b.score DESC
+	LIMIT 0,5;
   </select>
 </mapper>

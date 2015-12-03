@@ -87,10 +87,6 @@ public class BannerAction {
 			request.setAttribute("bannerinfo", banner);
 			request.setAttribute("type", Constants.EDIT_TYPE);
 		}else{
-			Map<String,Object> map = new HashMap<String,Object>();
-			//map.put("isUsed", true);
-			List<BannerWebVM> lc = bannerService.getBannerPageList(map);
-			request.setAttribute("bannerlist", lc);
 			request.setAttribute("type", Constants.ADD_TYPE);
 		}
 		/*查询广告列表*/
@@ -114,6 +110,9 @@ public class BannerAction {
 			/*新增时没有传id值*/
 			if(banner.getId()==null){
 				banner.setId(0);
+			}
+			if(banner.getIsUsed() == null){
+				banner.setIsUsed(false);
 			}
 			bannerService.saveorUpdateAd(banner);
 			json.setCode(new Integer(1));

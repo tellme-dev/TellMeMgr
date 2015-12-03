@@ -40,7 +40,8 @@ public class BbsServiceImpl implements BbsService {
 		// TODO Auto-generated method stub
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("pageNo", page.getPageNo());
-		map.put("pageSize",page.getPageSize());
+		map.put("pageSize", page.getPageSize());
+		map.put("pageEnd",page.getPageSize()*page.getPageNo());
 		map.put("parentId", 0);//加载主贴
 		map.put("categoryId", categoryId);
 		List<BbsVM> list = bbsMapper.selectByMap(map);
@@ -90,6 +91,7 @@ public class BbsServiceImpl implements BbsService {
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("pageNo", page.getPageNo());
 		map.put("pageSize", page.getPageSize());
+		map.put("pageEnd",page.getPageSize()*page.getPageNo());
 		map.put("parentId", pid);
 		List<BbsVM> ls = bbsMapper.selectByPid(map);
 		int count = bbsMapper.countByMap(map);
@@ -141,6 +143,12 @@ public class BbsServiceImpl implements BbsService {
 	public List<BbsVM> loadBbsList(Map<String, Object> map) {
 		// TODO Auto-generated method stub
 		return bbsMapper.selectByMap(map);
+	}
+
+	@Override
+	public List<BbsVM> fullTextSearchOfBbs(String text) {
+		// TODO Auto-generated method stub
+		return bbsMapper.fullTextSearchOfBbs(text);
 	}
 
 }
