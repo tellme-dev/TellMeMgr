@@ -164,7 +164,7 @@ public class CustomerController {
 		//插入数据
 		
 		
-		User u = EndecryptUtils.md5Password(registerInfo.getMobile(), "111111");
+		User u = EndecryptUtils.md5Password(registerInfo.getMobile(), registerInfo.getPsd());
 		Customer customer = new Customer();
 		customer.setMobile(u.getName());
 		customer.setPsd(u.getPsd());
