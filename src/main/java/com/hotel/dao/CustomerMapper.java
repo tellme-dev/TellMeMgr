@@ -17,4 +17,6 @@ public interface CustomerMapper {
     int updateByPrimaryKey(Customer record);
 
 	Customer getCustomerByMobile(String mobile);
+	
+	int updatePassword(Customer record);
 }

@@ -60,5 +60,23 @@ public class CustomerServiceImpl implements CustomerService{
 		// TODO Auto-generated method stub
 		customerCollectionMapper.insertSelective(cc);
 	}
+	@Override
+	public int updatePassword(Customer record) {
+		// TODO Auto-generated method stub
+		return customerMapper.updatePassword(record);
+	}
+	@Override
+	public int setPassword(int id, String password) {
+		// TODO Auto-generated method stub
+		Customer record = new Customer();
+		record.setId(id);
+		record.setPsd(password);
+		return customerMapper.updateByPrimaryKeySelective(record);
+	}
+	@Override
+	public Customer selectByPrimaryKey(Integer id) {
+		// TODO Auto-generated method stub
+		return customerMapper.selectByPrimaryKey(id);
+	}
 
 }

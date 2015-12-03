@@ -7,4 +7,6 @@ public interface CustomerCollectionService {
 	int insert(CustomerCollection record);
 	
 	int countByItemId(int itemId);
+	
+	int countByCustomerCollection(CustomerCollection record);
 }

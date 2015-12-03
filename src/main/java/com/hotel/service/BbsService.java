@@ -61,5 +61,28 @@ public interface BbsService {
 	 * @return
 	 */
 	List<BbsVM> fullTextSearchOfBbs(String text);
+	
+	/**
+	 * 添加一条bbs记录
+	 * @author LiuTaiXiong
+	 * @param record
+	 * @return
+	 */
+	int insert(Bbs record);
+	
+	/**
+	 * 查询是否存在相同类型ID和关联的用户ID
+	 * @author LiuTaiXiong
+	 * @param bbs
+	 * @return
+	 */
+	int countByBbs(Bbs bbs);
+	
+	/**
+	 * 更新点赞数量
+	 * @author LiuTaiXiong
+	 * @param id
+	 */
+	void updateAgreeCount(Integer id);
 
 }
