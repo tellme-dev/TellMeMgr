@@ -1,5 +1,9 @@
 package com.hotel.app;
 
+import java.util.Date;
+import java.io.File;
+import java.lang.Math;
+
 import javax.servlet.http.HttpServletRequest;
 
 import net.sf.json.JSONObject;
@@ -57,14 +61,14 @@ public class BbsController {
 			HttpServletRequest request){
 		JSONObject jObj = JSONObject.fromObject(bbsParam);
 		//Bbs bbs = (Bbs) JSONObject.toBean(jObj,Bbs.class);
-		int categoryId = jObj.getInt("categoryId");
+		int type = jObj.getInt("type");// 最新活动： type=1 ，热门话题：type=2 ,吐槽专区：type=3，达人推荐：type=4
 		int pageNo = jObj.getInt("pageNo");
 		int pageSize = jObj.getInt("pageSize");
 		try{
 			Page page = new Page();
 			page.setPageNo(pageNo);
 			page.setPageSize(pageSize);
-			ListResult<BbsVM> result = bbsService.loadBbsListByCategoryId(page,categoryId);
+			ListResult<BbsVM> result = bbsService.loadBbsListByType(page,type);
 			return result.toJson();
 		}catch(Exception e){
 			ListResult<BbsVM> result = new ListResult<BbsVM>(null, false, "获取数据失败");
@@ -152,13 +156,21 @@ public class BbsController {
 	
 	@RequestMapping(value = "uploadPhoto.do", produces = "application/json;charset=UTF-8")  
     public @ResponseBody String upload(
-    		@RequestParam MultipartFile file,
+    		@RequestParam MultipartFile bbsPhoto,
     		HttpServletRequest request) { 
         try { 
         	//String path = request.getSession().getServletContext().getRealPath("washPhoto"); 
-        	String path = getClass().getResource("/").getFile().toString();
-			path = path.substring(0, (path.length() - 16))+"washPhoto";
-        	String fileName1 = file.getOriginalFilename();//接收到的Name是没有格式的
+        	String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
+//        	String path = getClass().getResource("/").getFile().toString();
+//			path = path.substring(0, (path.length() - 16))+"washPhoto";
+        	String fileName1 = bbsPhoto.getOriginalFilename();//接收到的Name是没有格式的
+        	String fileName = new Date().toString() + Math.random()+"jpg";//日期加随机数作为图片名
+        	
+        	File uploadFile = new File(path,fileName);
+        	if(!uploadFile.exists()){  
+        		uploadFile.mkdirs();  
+            }  
+        	bbsPhoto.transferTo(uploadFile); //保存
         	return "";
         }catch(Exception e){
         	return "";

@@ -66,13 +66,13 @@ public class FileUtil {
 	}
 	
 	/**
-	 * 单文件上�?
+	 * 单文件上传
 	 * @param request
 	 * @param path
 	 * @throws IOException
 	 */
 	public static String uploadSingleFile(HttpServletRequest request,String saveName,String path,int pathType) throws IOException{
-		System.out.println("�?��上传");
+		System.out.println("单文件上传");
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		CommonsMultipartFile file = (CommonsMultipartFile) multipartRequest  
         .getFile("file");  
@@ -95,6 +95,11 @@ public class FileUtil {
 		FileCopyUtils.copy(file.getBytes(), uploadFile);  
 		request.setAttribute("files", loadFiles(request,path)); 
 		return saveName;
+	}
+	
+	public static String uploadSingleFile2(HttpServletRequest request,String saveName,String path,int pathType) throws IOException{
+		
+		return "";
 	}
 	
 	/**

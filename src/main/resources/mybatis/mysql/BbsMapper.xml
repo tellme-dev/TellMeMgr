@@ -393,13 +393,14 @@
       </if>
   </sql>
   <select id="selectByMap" resultMap="BaseVMResultMap" parameterType="java.util.Map" >
-    select <include refid="Base_Column_List" />,bc.name as categoryName,
+    select <include refid="Base_Column_List" />,
     (select count(cc.id) from t_customer_collection cc where cc.target_id = b.id and cc.collection_type = 3) as collectionCount
     from t_bbs b
-    left join t_bbs_category bc on bc.id = b.category_id
     where 1=1 
     <include refid="query_sql" />
-    order by b.create_time
+    <if test="type == 1 or type == 3">
+      order by b.create_time
+    </if>
     <if test="pageEnd != null and pageSize != null and pageStart>-1 and pageSize>-1">
         limit 0, #{pageEnd}
     </if>
@@ -411,10 +412,9 @@
     <include refid="query_sql" />
   </select>
   <select id="selectBbsByMap" resultMap="BaseVMResultMap" parameterType="java.util.Map" >
-    select <include refid="Base_Column_List" />,bc.name as categoryName, count(cc.id) as collectionCount
+    select <include refid="Base_Column_List" />,count(cc.id) as collectionCount
     from t_bbs b
     left join t_customer_collection cc on cc.target_id = b.id and cc.collection_type = 3
-    left join t_bbs_category bc on bc.id = b.category_id
     where 1=1 
     <include refid="query_sql" />
     group By b.id

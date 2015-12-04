@@ -299,7 +299,7 @@
 	function add_img(){
 	    var html = "";
 	    i = j;
-		html +='<tr id="tr_'+i+'"><td width="15%"><span class="yw-window-btn bg-blue mr26" style="cursor: pointer;" onclick="del_f('+i+')">删除</span></td><td><img id="image_'+i+'" src=""/></td><td><input name="imagetext" placeholder="图片描述" style="width:200px;height:30px" required/></td><td><input name="file'+i+'" id="file_'+i+'" type="file" onchange="fileChange('+i+')" style="width:200px;height:30px"/></td></tr>';
+		html +='<tr id="tr_'+i+'"><td width="15%"><span class="yw-window-btn bg-blue mr26" style="cursor: pointer;" onclick="del_f('+i+')">删除</span></td><td><img id="image_'+i+'" src=""/></td><td><textarea name="imagetext" placeholder="图片描述" rows="5" cols="30" required></textarea></td><td><input name="file'+i+'" id="file_'+i+'" type="file" onchange="fileChange('+i+')" style="width:200px;height:30px"/></td></tr>';
     	//document.getElementById("upload1").innerHTML+='<div id="div_'+i+'"><input id="file_'+i+'" type="file" style="width:200px;height:30px"/><input name="imagetext" value="" placeholder="图片描述" style="width:200px;height:30px"/><span class="yw-btn bg-blue mr26" style="cursor: pointer;" onclick="del_f('+i+')">删除</span></div>'; 
         //document.getElementById("upload2").innerHTML+='<div id="img_'+i+'" style="display:none"><input id="image_'+i+'" name="file_'+i+'" type="file" class="easyui-validatebox" style="width:200px;height:30px"/></div>'; 
           j++;
@@ -419,20 +419,20 @@
 					<table id="tab1" class="yw-cm-table font16">
 						<tr>
 							<td width="10%" align="center">名称：</td>
-							<td colspan="2">
+							<td colspan="4">
 								<input id="txtname" name="name" type="text" value="${adinfo.name}" class="easyui-validatebox" required="true" style="width:254px;height:30px;" /> 
 								<input name="id" type="hidden" value="${adinfo.id}" /> 
 							</td>
 						</tr>
 						<tr>
 							<td width="10%" align="center">关键字：</td>
-							<td colspan="2">
+							<td colspan="4">
 							    <input id="txtkey" name="keyWord" type="text" value="${adinfo.keyWord}" placeholder="关键字之间用逗号隔开" class="easyui-validatebox" style="width:500px;height:30px;" />
 							</td>
 						</tr>
 						<tr>
 							<td align="center">类型：</td>
-							<td colspan="2">
+							<td colspan="4">
 							        <input type="radio" name="targetType" onclick="tagChange(1)" value="1">酒店　　
 							        <input type="radio" name="targetType" onclick="tagChange(2)" value="2">标签　　
         	                        <input type="radio" name="targetType" onclick="tagChange(3)" value="3">社区　　
@@ -442,19 +442,19 @@
 						</tr> 
 						<tr id="hotel">
 							<td width="10%" align="center">关联酒店：</td>
-							<td colspan="2">
+							<td colspan="4">
 							   <input id="hotelSelect" name="hotelId" class="easyui-combobox" data-options="editable:false" style="width:254px;height:30px;"/>
 							</td>
 						</tr>
 						<tr id="itemTag">
 							<td width="10%" align="center">关联标签：</td>
-							<td colspan="2">
+							<td colspan="4">
 							   <input id="itemTagSelect" name="targetId" class="easyui-combotree" data-options="editable:false" style="width:254px;height:30px;"/>
 							</td>
 						</tr>
 						<tr id="bbs">
 							<td width="10%" align="center">关联社区：</td>
-							<td colspan="2">
+							<td colspan="4">
 							   <input id="bbsShow" class="easyui-validatebox" value="${adinfo.bbsName}" readonly="readonly" placeholder="选择社区类型才能编辑此项" style="width:500px;height:30px;"/>
 							   <input type="hidden" id="bbsSelect" name="bbsId" value="${adinfo.bbsId}" class="easyui-validatebox" style="width:500px;height:30px;"/>
 							   <span id="select_bbs" class="yw-btn bg-blue mt12" style="cursor: pointer;" onclick="showdialog()">选择社区</span>
@@ -462,7 +462,7 @@
 						</tr>
 						<tr id="tagContent">
 							<td width="10%" align="center">关联内容：</td>
-							<td colspan="2">
+							<td colspan="4">
 							    <input id="txtTagContent" name="targetContent" type="text" value="${adinfo.targetContent}" placeholder="url/html内容" class="easyui-validatebox" style="width:254px;height:30px;"/>
 							</td>
 						</tr>
@@ -478,7 +478,7 @@
 						    </td>
 					    </tr>
 					    <tr id="imageGrid" class="ts15">
-				           <td width="15%"></td>
+				           <td></td>
 				           <td>图片</td>
 				           <td>描述</td>
 				           <td>选择</td>
@@ -487,9 +487,9 @@
 		                 <c:forEach var="item" items="${adinfo.adDetailList}">
 		                   <tr>
 		                   <td style="display:none"><input name="adDetailId" value="${item.id}" /></td>
-		                   <td width="15%"><span class="yw-window-btn bg-blue mr26" style="cursor: pointer;" onclick="del_p(this)">删除</span></td>
-		                   <td><img id="image" src="<%=basePath%>${item.imageUrl}" style="width:50px;height:50px"/></td>
-		                   <td><input name="imagetext" value="${item.text}" style="width:200px;height:30px" required/></td>
+		                   <td><span class="yw-window-btn bg-blue mr26" style="cursor: pointer;" onclick="del_p(this)">删除</span></td>
+		                   <td><img id="image" src="<%=basePath%>${item.imageUrl}" style="width:100px;height:100px"/></td>
+		                   <td><textarea name="imagetext" rows="5" cols="30" required>${item.text}</textarea></td>
 		                   <td>修改图片请先删除后重新添加</td>
 		                   </tr>
 		                 </c:forEach>
