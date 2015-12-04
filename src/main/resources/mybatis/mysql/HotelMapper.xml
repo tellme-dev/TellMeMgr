@@ -192,6 +192,16 @@
     select count(id) from t_hotle where id in (select distinct hotel_id from t_item where id in (select item_id from t_item_tag_association where item_tag_id in (select id from t_Item_tag where parent_id = #{itemTagId})))
   </select>
   
+  <select id="getPageHotelByCustomer" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_hotle 
+    where id in (select distinct hotel_id from t_room_check where customer_id = #{customerId,jdbcType=INTEGER}) 
+    <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+        limit #{pageStart}, #{pageSize}
+     </if>
+  </select>
+  
   <select id="getRecommandHotelListOfSQL" resultMap="resultHotelParamMap" parameterType="java.lang.Integer">
   	SELECT a.id as id ,e.id as hotel_id,e.`name` as name, a.score as score from t_item a
 		LEFT JOIN t_item_tag_association b ON a.id = b.item_id

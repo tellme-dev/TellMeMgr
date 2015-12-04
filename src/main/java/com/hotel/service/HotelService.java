@@ -34,6 +34,8 @@ public interface HotelService {
 
 	HotelVM getHotelVMByAdId(Integer adId);
 	
+	List<Hotel> getPageHotelByCustomer(Map<String, Object> map);
+	
 	List<HotelParam> getRecommandHotelList(int num);
 
 	List<HotelParam> fullTextSearchOfHotel(String text);
