@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.hotel.common.ListResult;
 import com.hotel.common.utils.Page;
+import com.hotel.model.Bbs;
 import com.hotel.model.BbsCategory;
 import com.hotel.modelVM.BbsVM;
 
@@ -53,5 +54,36 @@ public interface BbsService {
 	 * @return
 	 */
 	List<BbsVM> loadBbsList(Map<String, Object> map);
+
+	/**
+	 * 全文检索bbs
+	 * @author hzf
+	 * @param text
+	 * @return
+	 */
+	List<BbsVM> fullTextSearchOfBbs(String text);
+	
+	/**
+	 * 添加一条bbs记录
+	 * @author LiuTaiXiong
+	 * @param record
+	 * @return
+	 */
+	int insert(Bbs record);
+	
+	/**
+	 * 查询是否存在相同类型ID和关联的用户ID
+	 * @author LiuTaiXiong
+	 * @param bbs
+	 * @return
+	 */
+	int countByBbs(Bbs bbs);
+	
+	/**
+	 * 更新点赞数量
+	 * @author LiuTaiXiong
+	 * @param id
+	 */
+	void updateAgreeCount(Integer id);
 
 }

@@ -145,4 +145,28 @@ public class BbsServiceImpl implements BbsService {
 		return bbsMapper.selectByMap(map);
 	}
 
+	@Override
+	public List<BbsVM> fullTextSearchOfBbs(String text) {
+		// TODO Auto-generated method stub
+		return bbsMapper.fullTextSearchOfBbs(text);
+	}
+
+	@Override
+	public int insert(Bbs record) {
+		// TODO Auto-generated method stub
+		return bbsMapper.insert(record);
+	}
+
+	@Override
+	public int countByBbs(Bbs bbs) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countByBbs(bbs);
+	}
+
+	@Override
+	public void updateAgreeCount(Integer id) {
+		// TODO Auto-generated method stub
+		bbsMapper.updateAgreeCount(id);
+	}
+
 }

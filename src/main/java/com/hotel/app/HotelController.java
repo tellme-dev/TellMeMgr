@@ -347,7 +347,7 @@ public class HotelController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/hotelInfo.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
-	public ListResult<HotelInfoVM> getHotelInfo(String json, HttpServletRequest request, HttpServletResponse response) {
+	public Result<HotelInfoVM> getHotelInfo(String json, HttpServletRequest request, HttpServletResponse response) {
 		int hotelId = 0;
 		int customerId = 0;
 		//参数过滤处理
@@ -363,16 +363,15 @@ public class HotelController {
 		}
 		
 		//数据返回对象
-		ListResult<HotelInfoVM> result = new ListResult<HotelInfoVM>();
+		Result<HotelInfoVM> result = new Result<HotelInfoVM>();
 		
 		//数据存储器
-		List<HotelInfoVM> list = new ArrayList<HotelInfoVM>();
+		HotelInfoVM data = new HotelInfoVM();
 		//请求参数无效
 		if(hotelId < 1){
 			result.setIsSuccess(false);
-			result.setTotal(0);
 			result.setMsg("请求参数无效");
-			result.setRows(list);
+			result.setData(data);
 			return result;
 		}
 		
@@ -381,18 +380,17 @@ public class HotelController {
 		//没有找到请求的数据
 		if(hotel == null){
 			result.setIsSuccess(false);
-			result.setTotal(0);
 			result.setMsg("没有找到请求的数据");
-			result.setRows(list);
+			result.setData(data);
 			return result;
 		}
 		//转存返回对象
-		HotelInfoVM vm = new HotelInfoVM();
-		vm.setId(hotel.getId());
-		vm.setName(hotel.getName());
-		vm.setText(hotel.getText());
-		vm.setLatitude(hotel.getLatitude());
-		vm.setLongitude(hotel.getLongitude());
+		//HotelInfoVM vm = new HotelInfoVM();
+		data.setId(hotel.getId());
+		data.setName(hotel.getName());
+		data.setText(hotel.getText());
+		data.setLatitude(hotel.getLatitude());
+		data.setLongitude(hotel.getLongitude());
 		
 		//查询所有酒店类型的项目
 		List<ItemTagAssociation> associations =  itemTagAssociationService.getTagTypeItem(TAG_TYPE_HOTEL);
@@ -419,11 +417,11 @@ public class HotelController {
 			//判断是否找到该酒店的项目
 			if(temp != null){
 				//设置联系方式
-				vm.setTel(temp.getTel());
+				data.setTel(temp.getTel());
 				//设置评分
-				vm.setScore(temp.getScore());
+				data.setScore(temp.getScore());
 				//设置位置描述
-				vm.setAddress(temp.getPosition());
+				data.setAddress(temp.getPosition());
 				//查找该项目的详细信息
 				List<ItemDetail> details = itemDetailService.selectByItemId(temp.getId());
 				//图片对象转存
@@ -438,15 +436,15 @@ public class HotelController {
 					}
 				}
 				//设置项目的图文信息
-				vm.setImgUrl(images);
+				data.setImgUrl(images);
 				
 				//设置数量统计
 				//查询浏览次数
 				int countBrowse = customerBrowseService.countByItemId(temp.getId());
 				//查询收藏次数
 				int countCollectiono = customerCollectionService.countByItemId(temp.getId());
-				vm.setCountBrowse(countBrowse);
-				vm.setCountCollection(countCollectiono);
+				data.setCountBrowse(countBrowse);
+				data.setCountCollection(countCollectiono);
 				
 				//添加一次浏览记录
 				CustomerBrowse record = new CustomerBrowse();
@@ -460,26 +458,16 @@ public class HotelController {
 		}
 		
 		//设置位置
-		Region area = baseDataService.getRegionById(hotel.getRegionId());
-		String path = area.getPath();
-		String[] arr = path.split("\\.");
-		Region province = baseDataService.getRegionById(new Integer(arr[0]));
-		Region city = baseDataService.getRegionById(new Integer(arr[1]));
-		
-		String address = province.getName()+city.getName()+area.getName();
-		//检查是否有位置描述
-		if(vm.getAddress() != null){
-			vm.setAddress(address+vm.getAddress());
-		}else{
-			vm.setAddress(address);
-		}
-		list.add(vm);
+		//Region area = baseDataService.getRegionById(hotel.getRegionId());
+		//String path = area.getPath();
+		//String[] arr = path.split("\\.");
+		//Region province = baseDataService.getRegionById(new Integer(arr[0]));
+		//Region city = baseDataService.getRegionById(new Integer(arr[1]));
 		
 		//处理成功的结果返回
 		result.setIsSuccess(true);
-		result.setTotal(1);
 		result.setMsg("");
-		result.setRows(list);
+		result.setData(data);
 		return result;
 	}
 
@@ -513,7 +501,7 @@ public class HotelController {
 		JSONObject jObj = JSONObject.fromObject(searchData);
 		SearchText text = (SearchText) JSONObject.toBean(jObj,SearchText.class);
 		text.setSearchTime(new Date());
-		//全文查询:查询酒店、BBS
+		//全文查询:查询酒店
 		List<HotelParam> list = hotelService.fullTextSearchOfHotel(text.getText());
 		if(list ==null||list.size() ==0){
 			return new ListResult<HotelParam>(null,false,"全文搜索酒店失败").toJson();
