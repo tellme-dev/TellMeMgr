@@ -341,7 +341,7 @@ public class CustomerController {
 		vm.setCountDynamic(bbsService.countDynamicByCustomer(customerId));
 		
 		
-		return new Result<CustomerVM>(vm, false, "收藏失败");
+		return new Result<CustomerVM>(vm, true, "");
 	}
 	
 	/**
