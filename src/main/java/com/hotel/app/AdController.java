@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hotel.common.ListResult;
 import com.hotel.common.Result;
+import com.hotel.common.utils.Page;
 import com.hotel.model.Hotel;
 import com.hotel.modelVM.AdParam;
 import com.hotel.modelVM.AdvertisementVM;
+import com.hotel.modelVM.BbsVM;
 import com.hotel.modelVM.HotelVM;
 import com.hotel.service.AdvertisementService;
 import com.hotel.service.HotelService;
@@ -75,6 +77,33 @@ public class AdController {
 		
 		return result.toJson();
 	}
+	
+	/**
+	 * 发现页面广告列表查询
+	 * @author jun
+	 * @param adParam
+	 * @param request
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "loadAdList.do", produces = "application/json;charset=UTF-8")
+	public String loadAdList(
+			@RequestParam(value = "adParam", required = false) String adParam,
+			HttpServletRequest request){
+		JSONObject jObj = JSONObject.fromObject(adParam);
+		int pageNo = jObj.getInt("pageNo");
+		int pageSize = jObj.getInt("pageSize");
+		try{
+			Page page = new Page();
+			page.setPageNo(pageNo);
+			page.setPageSize(pageSize);
+			ListResult<AdvertisementVM> result = adService.loadAdList(page);
+			return result.toJson();
+		}catch(Exception e){
+			ListResult<AdvertisementVM> result = new ListResult<AdvertisementVM>(null, false, "获取数据失败");
+			return result.toJson();
+		}
+	}
 	/**
 	 * 对酒店打广告，根据广告对应的的hotelId查询各种信息
 	 * @author jun
@@ -82,7 +111,7 @@ public class AdController {
 	 * @param request
 	 * @return
 	 */
-	@ResponseBody
+	/*@ResponseBody
 	@RequestMapping(value = "getHotelInfo.do", produces = "application/json;charset=UTF-8")
 	public String getHotelInfo(
 			@RequestParam(value = "hotelParam", required = false) String hotelParam,
@@ -99,6 +128,6 @@ public class AdController {
 			result = new Result<HotelVM>(null,false,"获取数据失败");
 			return result.toJson();
 		}
-	}
+	}*/
 
 }

@@ -19,12 +19,13 @@ public interface BbsService {
 
 	/**
 	 * 获取社区帖子列表 
+	 *  最新活动： type=1 ，热门话题：type=2 ,吐槽专区：type=3，达人推荐：type=4
 	 * @author jun
 	 * @param page 
 	 * @param categoryId
 	 * @return 
 	 */
-	ListResult<BbsVM> loadBbsListByCategoryId(Page page, int categoryId);
+	ListResult<BbsVM> loadBbsListByType(Page page, int type);
 	/**
 	 * @author jun
 	 * @return

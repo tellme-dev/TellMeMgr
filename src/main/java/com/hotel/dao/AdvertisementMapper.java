@@ -32,4 +32,8 @@ public interface AdvertisementMapper {
 	AdvertisementWebVM selectAdVMByPrimaryKey(Integer adId);
 
 	void updateByIds(Map<String, Object> map);
+
+	List<AdvertisementVM> selectWithPage(Map<String, Object> map);
+
+	int countByMap(Map<String, Object> map);
 }

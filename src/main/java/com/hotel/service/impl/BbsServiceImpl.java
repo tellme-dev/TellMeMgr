@@ -36,14 +36,14 @@ public class BbsServiceImpl implements BbsService {
 	}
 
 	@Override
-	public ListResult<BbsVM> loadBbsListByCategoryId(Page page,int categoryId) {
+	public ListResult<BbsVM> loadBbsListByType(Page page,int type) {
 		// TODO Auto-generated method stub
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("pageNo", page.getPageNo());
 		map.put("pageSize", page.getPageSize());
 		map.put("pageEnd",page.getPageSize()*page.getPageNo());
 		map.put("parentId", 0);//加载主贴
-		map.put("categoryId", categoryId);
+		map.put("type", type);
 		List<BbsVM> list = bbsMapper.selectByMap(map);
 		int total = bbsMapper.countByMap(map);
 		ListResult<BbsVM> result = new ListResult<BbsVM>(total,list);

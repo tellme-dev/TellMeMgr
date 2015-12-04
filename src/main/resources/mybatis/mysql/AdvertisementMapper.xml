@@ -236,7 +236,7 @@
   </select>
   <select id="selectAdVMByPrimaryKey" resultMap="WebVMResultMap" parameterType="java.lang.Integer" >
     select 
-    <include refid="Base_Column_List" />,h.name as hotelName,t.name as targetName,b.title as bbsName
+    <include refid="Base_Column_List" />,h.name as hotelName,t.name as targetName,b.id as bbsId,b.title as bbsName
     from t_ad a 
     left join t_hotle h on h.id = a.target_id
   	left join t_Item_tag t on a.target_id = t.id
@@ -252,4 +252,17 @@
 				#{item}
 		</foreach>
   </update>
+  <select id="selectWithPage" resultMap="resultAdvertisementMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_ad a
+  	order by a.create_time
+  	<if test="pageEnd != null and pageSize != null and pageStart>-1 and pageSize>-1">
+        limit 0, #{pageEnd}
+    </if>
+  </select>
+  <select id="countByMap" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(a.id)
+    from t_ad a
+  </select>
 </mapper>
