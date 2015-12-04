@@ -157,26 +157,35 @@ public class BbsController {
 		}
 	}
 	
+	/**
+	 * 发帖上传图片
+	 * @author jun
+	 * @param bbsPhoto
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "uploadPhoto.do", produces = "application/json;charset=UTF-8")  
     public @ResponseBody String upload(
     		@RequestParam MultipartFile bbsPhoto,
     		HttpServletRequest request) { 
+		Result<Bbs> result = null;
         try { 
         	//String path = request.getSession().getServletContext().getRealPath("washPhoto"); 
         	String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
 //        	String path = getClass().getResource("/").getFile().toString();
 //			path = path.substring(0, (path.length() - 16))+"washPhoto";
-        	String fileName1 = bbsPhoto.getOriginalFilename();//接收到的Name是没有格式的
-        	String fileName = new Date().toString() + Math.random()+"jpg";//日期加随机数作为图片名
+        	String fileName = bbsPhoto.getOriginalFilename()+".jpg";//接收到的Name是没有格式的
         	
         	File uploadFile = new File(path,fileName);
         	if(!uploadFile.exists()){  
         		uploadFile.mkdirs();  
             }  
         	bbsPhoto.transferTo(uploadFile); //保存
-        	return "";
+        	result = new Result<Bbs>(null, true, "上传成功");
+        	return result.toJson();
         }catch(Exception e){
-        	return "";
+        	result = new Result<Bbs>(null, false, "上传失败");
+        	return result.toJson();
         }
 	}
 	
