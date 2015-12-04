@@ -169,4 +169,16 @@ public class BbsServiceImpl implements BbsService {
 		bbsMapper.updateAgreeCount(id);
 	}
 
+	@Override
+	public int countPostByCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countPostByCustomer(customerId);
+	}
+
+	@Override
+	public int countDynamicByCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countDynamicByCustomer(customerId);
+	}
+
 }

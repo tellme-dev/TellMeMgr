@@ -26,10 +26,13 @@ import com.hotel.model.Customer;
 import com.hotel.model.CustomerCollection;
 import com.hotel.model.User;
 import com.hotel.model.Varifycode;
+import com.hotel.modelVM.CustomerVM;
 import com.hotel.modelVM.RegisterData;
 import com.hotel.service.BbsService;
+import com.hotel.service.CustomerBrowseService;
 import com.hotel.service.CustomerCollectionService;
 import com.hotel.service.CustomerService;
+import com.hotel.service.RoomCheckService;
 import com.hotel.service.VarifycodeService;
 
 /**
@@ -47,6 +50,10 @@ public class CustomerController {
 	@Autowired CustomerCollectionService customerCollectionService;
 	@Autowired VarifycodeService varifycodeService;
 	@Autowired BbsService bbsService;
+	
+	@Autowired RoomCheckService roomCheckService;
+	@Autowired CustomerBrowseService customerBrowseService;
+	
 	/**
 	 * 判断用户是否注册
 	 * @param autoInfo
@@ -274,9 +281,51 @@ public class CustomerController {
 	}
 	
 	/**
+	 * 获取用户个人中心基本信息
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerInfo.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<CustomerVM> getCustomerInfo(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<CustomerVM>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new Result<CustomerVM>(null, false, "请求无效");
+		}
+		
+		Customer customer = customerService.selectByPrimaryKey(customerId);
+		
+		if(customer == null){
+			new Result<CustomerVM>(null, false, "没有找到对应的用户信息");
+		}
+		
+		CustomerVM vm = new CustomerVM();
+		vm.setCustomer(customer);
+		vm.setCountAlways(roomCheckService.countHotelByCustomer(customerId));
+		vm.setCountBrowse(customerBrowseService.countByCustomer(customerId));
+		vm.setCountCollection(customerCollectionService.countByCustomer(customerId));
+		vm.setCountTopic(bbsService.countPostByCustomer(customerId));
+		vm.setCountDynamic(bbsService.countDynamicByCustomer(customerId));
+		
+		
+		return new Result<CustomerVM>(vm, false, "收藏失败");
+	}
+	
+	/**
 	 * 保存用户收藏/关注（包括酒店(服务)、广告(专题)、论坛等）
 	 * @author LiuTaiXiong
-	 * @param customerInfo
+	 * @param json
 	 * @return
 	 */
 	@RequestMapping(value = "/saveCollectionHistory.do", produces = "application/json;charset=UTF-8")
@@ -328,7 +377,7 @@ public class CustomerController {
 	/**
 	 * 保存用户点赞（包括酒店(服务)、广告(专题)、论坛等）
 	 * @author LiuTaiXiong
-	 * @param customerInfo
+	 * @param json
 	 * @return
 	 */
 	@RequestMapping(value = "/savePraiseHistory.do", produces = "application/json;charset=UTF-8")
@@ -388,7 +437,7 @@ public class CustomerController {
 	/**
 	 * 用户修改密码
 	 * @author LiuTaiXiong
-	 * @param customerInfo
+	 * @param json
 	 * @return
 	 */
 	@RequestMapping(value = "/updatePassword.do", produces = "application/json;charset=UTF-8")

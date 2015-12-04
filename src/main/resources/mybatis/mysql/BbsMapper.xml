@@ -463,4 +463,12 @@
     select count(id) from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and target_type = #{targetType,jdbcType=INTEGER} and target_id = #{targetId,jdbcType=INTEGER}
   </select>
   
+  <select id="countPostByCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+    select count(id) from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and post_type = 0
+  </select>
+  
+  <select id="countDynamicByCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+    select count(id) from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and (post_type = 1 or post_type = 2 or post_type = 3)
+  </select>
+  
 </mapper>

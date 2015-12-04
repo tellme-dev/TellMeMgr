@@ -26,5 +26,11 @@ public class CustomerBrowseServiceImpl implements CustomerBrowseService{
 		return customerBrowseMapper.countByItemId(itemId);
 	}
 
+	@Override
+	public int countByCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return customerBrowseMapper.countByCustomer(customerId);
+	}
+
 
 }

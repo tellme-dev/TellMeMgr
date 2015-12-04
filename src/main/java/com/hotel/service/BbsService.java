@@ -84,5 +84,19 @@ public interface BbsService {
 	 * @param id
 	 */
 	void updateAgreeCount(Integer id);
+	
+	/**
+	 * 获取主贴数量
+	 * @author LiuTaiXiong
+	 * @param customerId
+	 */
+	int countPostByCustomer(int customerId);
+	
+	/**
+	 * 获取动态数量（回复、评价、分享、点赞）
+	 * @author LiuTaiXiong
+	 * @param customerId
+	 */
+	int countDynamicByCustomer(int customerId);
 
 }

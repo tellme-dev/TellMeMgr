@@ -96,4 +96,8 @@
     target_id = #{itemId,jdbcType=INTEGER}
   </select>
   
+  <select id="countByCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+    select count(id) from t_customer_browse where customer_id = #{customerId,jdbcType=INTEGER}
+  </select>
+  
 </mapper>

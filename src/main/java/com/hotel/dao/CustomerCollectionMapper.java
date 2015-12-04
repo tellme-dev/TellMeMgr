@@ -19,4 +19,6 @@ public interface CustomerCollectionMapper {
     int countByItemId(int itemId);
     
     int countByCustomerCollection(CustomerCollection record);
+    
+    int countByCustomer(int customerId);
 }

@@ -115,4 +115,10 @@
     where customer_id = #{customerId,jdbcType=INTEGER} and collection_type = #{collectionType,jdbcType=INTEGER} and target_id = #{targetId,jdbcType=INTEGER}
   </select>
   
+  <select id="countByCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+    select count(id) 
+    from t_customer_collection
+    where customer_id = #{customerId,jdbcType=INTEGER}
+  </select>
+  
 </mapper>
