@@ -181,4 +181,16 @@ public class BbsServiceImpl implements BbsService {
 		return bbsMapper.countDynamicByCustomer(customerId);
 	}
 
+	@Override
+	public List<Bbs> getPagePostByCustomer(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return bbsMapper.getPagePostByCustomer(map);
+	}
+
+	@Override
+	public List<Bbs> getPageDynamicByCustomer(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return bbsMapper.getPageDynamicByCustomer(map);
+	}
+
 }

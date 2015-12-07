@@ -99,5 +99,13 @@
   <select id="countByCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
     select count(id) from t_customer_browse where customer_id = #{customerId,jdbcType=INTEGER}
   </select>
+  <select id="getPageByCustomer" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+	<include refid="Base_Column_List" /> 
+	from t_customer_browse where customer_id = #{customerId,jdbcType=INTEGER} order by visit_time desc 
+	<if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+    	limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
   
 </mapper>

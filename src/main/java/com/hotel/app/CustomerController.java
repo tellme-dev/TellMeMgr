@@ -27,6 +27,7 @@ import com.hotel.common.utils.GeneralUtil;
 import com.hotel.common.utils.StringUtil;
 import com.hotel.model.Bbs;
 import com.hotel.model.Customer;
+import com.hotel.model.CustomerBrowse;
 import com.hotel.model.CustomerCollection;
 import com.hotel.model.Hotel;
 import com.hotel.model.Item;
@@ -481,6 +482,225 @@ public class CustomerController {
 		result.setRows(list);
 		
 		return result;
+	}
+	
+	/**
+	 * 获取用户最近浏览
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerBrowse.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody ListResult<HotelListInfoVM> getCustomerBrowse(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		int pageNumber = 1;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("pageNumber")){
+				pageNumber = jsonObject.getInt("pageNumber");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new ListResult<HotelListInfoVM>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new ListResult<HotelListInfoVM>(null, false, "请求无效");
+		}
+		if(pageNumber < 1){
+			return new ListResult<HotelListInfoVM>(null, false, "请求无效");
+		}
+		
+		//获取数据
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
+		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("customerId", customerId);
+		
+		//浏览记录数据获取
+		List<CustomerBrowse> browses = customerBrowseService.getPageByCustomer(map);
+		int count = customerBrowseService.countByCustomer(customerId);
+		
+		int pageCount = count/DEFAULT_PAGE_SIZE;
+		if(count%DEFAULT_PAGE_SIZE != 0){
+			pageCount ++;
+		}
+		
+		//返回结果处理
+		//*********************************************
+		// 根据类型做相应的数据处理
+		//*********************************************
+		
+		return null;
+	}
+	
+	/**
+	 * 获取用户收藏
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerCollection.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody ListResult<HotelListInfoVM> getCustomerCollection(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		int pageNumber = 1;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("pageNumber")){
+				pageNumber = jsonObject.getInt("pageNumber");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new ListResult<HotelListInfoVM>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new ListResult<HotelListInfoVM>(null, false, "请求无效");
+		}
+		if(pageNumber < 1){
+			return new ListResult<HotelListInfoVM>(null, false, "请求无效");
+		}
+		
+		//获取数据
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
+		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("customerId", customerId);
+		
+		//浏览记录数据获取
+		List<CustomerCollection> collections = customerCollectionService.getPageCollectionByCustomer(map);
+		int count = customerCollectionService.countByCustomer(customerId); 
+		
+		int pageCount = count/DEFAULT_PAGE_SIZE;
+		if(count%DEFAULT_PAGE_SIZE != 0){
+			pageCount ++;
+		}
+		
+		//返回结果处理
+		
+		//*********************************************
+		// 根据类型做相应的数据处理
+		//*********************************************
+		
+		return null;
+	}
+	
+	/**
+	 * 获取用户话题
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerTopic.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody ListResult<Bbs> getCustomerTopic(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		int pageNumber = 1;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("pageNumber")){
+				pageNumber = jsonObject.getInt("pageNumber");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new ListResult<Bbs>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new ListResult<Bbs>(null, false, "请求无效");
+		}
+		if(pageNumber < 1){
+			return new ListResult<Bbs>(null, false, "请求无效");
+		}
+		
+		//获取数据
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
+		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("customerId", customerId);
+		
+		//浏览记录数据获取
+		List<Bbs> bbs = bbsService.getPagePostByCustomer(map);
+		int count = bbsService.countPostByCustomer(customerId);
+		
+		int pageCount = count/DEFAULT_PAGE_SIZE;
+		if(count%DEFAULT_PAGE_SIZE != 0){
+			pageCount ++;
+		}
+		
+		//返回对象处理
+		ListResult<Bbs> result = new ListResult<Bbs>();
+		result.setIsSuccess(true);
+		result.setTotal(pageCount);
+		result.setMsg("");
+		result.setRows(bbs);
+		return result;
+	}
+	
+	/**
+	 * 获取用户动态
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerDynamic.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody ListResult<Bbs> getCustomerDynamic(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		int pageNumber = 1;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("pageNumber")){
+				pageNumber = jsonObject.getInt("pageNumber");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new ListResult<Bbs>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new ListResult<Bbs>(null, false, "请求无效");
+		}
+		if(pageNumber < 1){
+			return new ListResult<Bbs>(null, false, "请求无效");
+		}
+		
+		//获取数据
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
+		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("customerId", customerId);
+		
+		//浏览记录数据获取
+		List<Bbs> bbs = bbsService.getPageDynamicByCustomer(map);
+		int count = bbsService.countDynamicByCustomer(customerId);
+		
+		int pageCount = count/DEFAULT_PAGE_SIZE;
+		if(count%DEFAULT_PAGE_SIZE != 0){
+			pageCount ++;
+		}
+		
+		//返回对象处理
+		
+		//*********************************************
+		// 根据类型做相应的数据处理
+		//*********************************************
+		
+		return null;
 	}
 	
 	/**

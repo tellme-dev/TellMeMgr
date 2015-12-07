@@ -467,8 +467,28 @@
     select count(id) from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and post_type = 0
   </select>
   
+   <select id="getPagePostByCustomer" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_bbs b 
+    where b.customer_id = #{customerId,jdbcType=INTEGER} and b.bbs_type = 1 and b.post_type = 0 order by b.create_time desc 
+    <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+    	limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+  
   <select id="countDynamicByCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
     select count(id) from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and (post_type = 1 or post_type = 2 or post_type = 3)
+  </select>
+  
+  <select id="getPageDynamicByCustomer" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_bbs b 
+    where b.customer_id = #{customerId,jdbcType=INTEGER} and (b.post_type = 1 or b.post_type = 2 or b.post_type = 3) order by b.create_time desc 
+    <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+    	limit #{pageStart}, #{pageSize}
+    </if>
   </select>
   
 </mapper>

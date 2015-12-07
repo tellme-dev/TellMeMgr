@@ -1,5 +1,8 @@
 package com.hotel.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.hotel.model.CustomerCollection;
 
 @MyBatisRepository
@@ -21,4 +24,6 @@ public interface CustomerCollectionMapper {
     int countByCustomerCollection(CustomerCollection record);
     
     int countByCustomer(int customerId);
+    
+    List<CustomerCollection> getPageCollectionByCustomer(Map<String, Object> map);
 }

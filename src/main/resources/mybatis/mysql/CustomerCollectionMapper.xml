@@ -120,5 +120,14 @@
     from t_customer_collection
     where customer_id = #{customerId,jdbcType=INTEGER}
   </select>
+  <select id="getPageCollectionByCustomer" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_customer_collection
+    where customer_id = #{customerId,jdbcType=INTEGER} order by create_time desc 
+    <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+    	limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
   
 </mapper>
