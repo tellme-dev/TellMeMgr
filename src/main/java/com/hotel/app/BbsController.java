@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.hotel.common.ListResult;
 import com.hotel.common.Result;
+import com.hotel.common.utils.FileUtil;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Bbs;
 import com.hotel.model.BbsCategory;
@@ -204,5 +205,24 @@ public class BbsController {
 			return new ListResult<BbsVM>(null,false,"全文搜索帖子失败").toJson();
 		}
 		return new ListResult<BbsVM>(list,true,"获取推荐帖子成功").toJson();
+	}
+	
+	
+	@RequestMapping(value = "test.do", produces = "application/json;charset=UTF-8")
+	@ResponseBody 
+	public String test(
+			HttpServletRequest request)
+	{
+		Result<Bbs> result = null;
+		try{
+			String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
+			String toPath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/bbs-id";
+			FileUtil.copyToOtherPath2(path, toPath,1);
+			result = new Result<Bbs>(null, true, "yes");
+			return result.toJson();
+		}catch(Exception e){
+			result = new Result<Bbs>(null, true, "no");
+			return result.toJson();
+		}
 	}
 }
