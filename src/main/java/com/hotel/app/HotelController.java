@@ -79,6 +79,175 @@ public class HotelController {
 	 * @return
 	 */
 	@ResponseBody
+	@RequestMapping(value = "/hotelListByItemChild.do", produces = "application/json;charset=UTF-8")
+	public ListResult<HotelListInfoVM> hotelListByItemChild(@RequestParam(value = "json", required = false)String json, HttpServletRequest request, HttpServletResponse response) {
+		//初始化分页数据
+		int pageNumber = DEFAULT_PAGE_NUM;
+		int itemTagId = 0;
+		
+		
+		JSONObject jsonObject = JSONObject.fromObject(json);
+		if(jsonObject.containsKey("pageNumber")){
+			pageNumber = new Integer(jsonObject.getString("pageNumber"));
+		}
+		if(jsonObject.containsKey("itemTagId")){
+			itemTagId = new Integer(jsonObject.getString("itemTagId"));
+		}
+		
+		if(itemTagId < 1){
+			ListResult<HotelListInfoVM> result = new ListResult<HotelListInfoVM>();
+			result.setIsSuccess(false);
+			result.setTotal(0);
+			result.setMsg("请求参数无效");
+			result.setRows(new ArrayList<HotelListInfoVM>());
+			return result;
+		}
+		
+		List<Item> itemsByTags = itemService.selectByItemTagChildOrderByScore(itemTagId);
+		if(itemsByTags.size() < 1){
+			ListResult<HotelListInfoVM> result = new ListResult<HotelListInfoVM>();
+			result.setIsSuccess(true);
+			result.setTotal(0);
+			result.setMsg("");
+			result.setRows(new ArrayList<HotelListInfoVM>());
+			return result;
+		}
+		
+		List<HashMap<String, Integer>> ids = new ArrayList<HashMap<String,Integer>>();
+		for(Item it : itemsByTags){
+			HashMap<String, Integer> temp = new HashMap<String, Integer>();
+			temp.put("id", new Integer(it.getHotelId()));
+			ids.add(temp);
+		}
+		
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
+		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("idList", ids);
+		
+		
+		//获取指定酒店对象集
+		List<Hotel> lh = hotelService.getPageHotelByItemTag(map);
+		//获取数据的总量
+		int count = hotelService.getPageHotelCountByItemTag(itemTagId);
+		//返回结果对象集
+		List<HotelListInfoVM> list = new ArrayList<HotelListInfoVM>();
+		if(lh != null && lh.size() > 0){
+			//逐一转存
+			for(Hotel hotel : lh){
+				//转存酒店基本数据
+				HotelListInfoVM vm = new HotelListInfoVM();
+				vm.setId(hotel.getId());
+				vm.setName(hotel.getName());
+				vm.setText(hotel.getText());
+				vm.setLatitude(hotel.getLatitude());
+				vm.setLongitude(hotel.getLongitude());
+				
+				//查询所有酒店类型的项目
+				List<ItemTagAssociation> associations =  itemTagAssociationService.getTagTypeItem(TAG_TYPE_HOTEL);
+				//查询所有酒店所有的项目
+				List<Item> items = itemService.getItemByHotel(hotel.getId());
+				
+				//酒店非自身项目缓存
+				List<Item> notSelfItems = new ArrayList<Item>();
+				
+				//如果单方没有数据则没有交集
+				if(associations != null && items != null && items.size() > 0 && associations.size() > 0){
+					Item temp = null;
+					boolean isFind = false;
+					//找出属于酒店自身的项目（求交集）
+					for(ItemTagAssociation association : associations){
+						for(Item item : items){
+							if(association.getItemId() == item.getId()){
+								temp = item;
+								isFind = true;
+								break;
+							}
+						}
+						if(isFind){
+							break;
+						}
+					}
+					//判断是否找到该酒店的项目
+					if(temp != null){
+						//设置联系方式
+						vm.setTel(temp.getTel());
+						vm.setAddress(temp.getPosition());
+						vm.setScore(temp.getScore());
+						//查找该项目的详细信息
+						List<ItemDetail> details = itemDetailService.selectByItemId(temp.getId());
+						if(details != null && details.size() > 0){
+							//仅获取第一张图片
+							vm.setImgUrl(details.get(0).getImageUrl());
+						}
+						//设置数量统计
+						//查询浏览次数
+						//int countBrowse = customerBrowseService.countByItemId(temp.getId());
+						//查询收藏次数
+						//int countCollectiono = customerCollectionService.countByItemId(temp.getId());
+						//vm.setCountBrowse(countBrowse);
+						//vm.setCountCollection(countCollectiono);
+						
+						//设置非自身的项目数据
+						for(Item tempItem : items){
+							if(!tempItem.getId().equals(temp.getId())){
+								notSelfItems.add(tempItem);
+							}
+						}
+					}else{
+						notSelfItems = items;
+					}
+				}
+				if(hotel.getRegionId() != null){
+					//设置位置
+					Region area = baseDataService.getRegionById(hotel.getRegionId());
+					String path = area.getPath();
+					String[] arr = path.split("\\.");
+					//Region province = baseDataService.getRegionById(new Integer(arr[0]));
+					Region city = baseDataService.getRegionById(new Integer(arr[1]));
+					vm.setCity(city.getName());
+					//String address = province.getName()+city.getName()+area.getName();
+					//检查是否有位置描述
+					//if(vm.getAddress() != null){
+					//	vm.setAddress(address+vm.getAddress());
+					//}else{
+					//	vm.setAddress(address);
+					//}
+				}
+				vm.setProjects(notSelfItems);
+				
+				//空数据清理
+				vm.clear();
+				//添加到数据集
+				list.add(vm);
+			}
+		}
+		
+		int pageCount = count/DEFAULT_PAGE_SIZE;
+		if(count % DEFAULT_PAGE_SIZE != 0){
+			pageCount ++;
+		}
+		
+		//返回对象处理
+		ListResult<HotelListInfoVM> result = new ListResult<HotelListInfoVM>();
+		result.setIsSuccess(true);
+		result.setTotal(pageCount);
+		result.setMsg("");
+		result.setRows(list);
+		
+		return result;
+	}
+	
+	/**
+	 * APP获取酒店列表接口
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
 	@RequestMapping(value = "/hotelListByItem.do", produces = "application/json;charset=UTF-8")
 	public ListResult<HotelListInfoVM> hotelListByItem(@RequestParam(value = "json", required = false)String json, HttpServletRequest request, HttpServletResponse response) {
 		//初始化分页数据
@@ -96,7 +265,7 @@ public class HotelController {
 		
 		if(itemTagId < 1){
 			ListResult<HotelListInfoVM> result = new ListResult<HotelListInfoVM>();
-			result.setIsSuccess(true);
+			result.setIsSuccess(false);
 			result.setTotal(0);
 			result.setMsg("请求参数无效");
 			result.setRows(new ArrayList<HotelListInfoVM>());

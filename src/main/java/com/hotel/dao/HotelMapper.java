@@ -41,6 +41,8 @@ public interface HotelMapper {
 	
 	List<Hotel> getPageHotelByCustomer(Map<String, Object> map);
 	
+	List<Hotel> selectPageHotelOrderInId(Map<String, Object> idMap);
+	
 	List<HotelParam> getRecommandHotelListOfSQL(int num);
 	List<HotelParam> fullTextSearchOfHotel(String text);
 }

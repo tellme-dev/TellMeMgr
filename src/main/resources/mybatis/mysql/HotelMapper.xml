@@ -202,6 +202,22 @@
      </if>
   </select>
   
+  <select id="selectPageHotelOrderInId" parameterType="java.util.HashMap" >
+    delete from t_hotle
+    where id in 
+    <foreach item="item" collection="idList" open="(" separator="," close=")">  
+    	#{item.id}  
+    </foreach>
+    order by FIND_IN_SET(id, 
+    <foreach item="item" collection="idList" open="'" separator="," close="'">  
+    	#{item.id}  
+    </foreach>
+    )
+    <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+        limit #{pageStart}, #{pageSize}
+     </if>
+  </select>
+  
   <select id="getRecommandHotelListOfSQL" resultMap="resultHotelParamMap" parameterType="java.lang.Integer">
   	SELECT a.id as id ,e.id as hotel_id,e.`name` as name, a.score as score from t_item a
 		LEFT JOIN t_item_tag_association b ON a.id = b.item_id

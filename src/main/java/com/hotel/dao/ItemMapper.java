@@ -31,4 +31,6 @@ public interface ItemMapper {
     int deleteByItemId(Map<String, Object> idMap);
     
     List<Item> selectItemByItemTagId(int itemTagId);
+    
+    List<Item> selectByItemTagChildOrderByScore(int tagId);
 }

@@ -151,4 +151,10 @@ public class HotelServiceImpl implements HotelService{
 		// TODO Auto-generated method stub
 		return hotelMapper.getPageHotelByCustomer(map);
 	}
+
+	@Override
+	public List<Hotel> selectPageHotelOrderInId(Map<String, Object> idMap) {
+		// TODO Auto-generated method stub
+		return hotelMapper.selectPageHotelOrderInId(idMap);
+	}
 }

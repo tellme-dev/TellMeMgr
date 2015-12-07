@@ -17,4 +17,6 @@ public interface ItemService {
 	Item getItemById(Integer itemId);
 
 	ItemVM getItemVMById(Integer itemId);
+	
+	List<Item> selectByItemTagChildOrderByScore(int tagId);
 }
