@@ -34,6 +34,7 @@ $(document).ready(function(){
 			setTag(n);
 		}
 	});
+	initItemTagTree();
 
 	tempImgArr = new ObjectImgItemList();
 });
@@ -125,6 +126,7 @@ function requestGet(url, data, success){
 	
 }
 
+/**
 function setTag(val){
 	var url = "${pageContext.request.contextPath}/web/base/jsonLoadItemTagComboList.do?itemId="+val;
 	requestGet(url, {}, function(data){
@@ -151,6 +153,7 @@ function setTag(val){
 		}
 	});
 }
+*/
 
 function returnBack(){
 	window.history.back();
@@ -161,7 +164,6 @@ function refresh(){
 
 //保存一个项目
 function saveItem(obj){
-	
 	var proName = document.getElementById("project_name").value;
 	if(proName.trim() == ""){
 		myAlert("请输入项目名称");
@@ -179,9 +181,14 @@ function saveItem(obj){
 		return ;
 	}
 	
-	var classification = $("#project_classification").combobox("getValue");
-	if(classification == 0){
-		myAlert("请选择项目分类");
+	//var classification = $("#project_classification").combobox("getValue");
+	//if(classification == 0){
+	//	myAlert("请选择项目分类");
+	//	return ;
+	//}
+	var type = $('#itemTagSelect').combotree("getValue");
+	if(type == ""){
+		myAlert("请选择项目类型");
 		return ;
 	}
 	
@@ -197,10 +204,10 @@ function saveItem(obj){
 		return ;
 	}
 	
-	var type = classification;
-	if($("#project_type").combobox("getValue") != 0){
-		type = $("#project_type").combobox("getValue");
-	}
+	//var type = classification;
+	//if($("#project_type").combobox("getValue") != 0){
+	//	type = $("#project_type").combobox("getValue");
+	//}
 	
 	document.getElementById("project_type_item").value = type;
 	
@@ -232,8 +239,8 @@ function resetWindow(){
 	document.getElementById("project_tel").value = "";
 	document.getElementById("project_text").value = "";
 	document.getElementById("project_position").value = "";
-	$("#project_classification").combobox("setValue", 0);
-	$("#project_type").combobox("setValue", 0);
+	//$("#project_classification").combobox("setValue", 0);
+	//$("#project_type").combobox("setValue", 0);
 	document.getElementById("item_info").value = "";
 	document.getElementById("item_file").value = "";
 	document.getElementById("project_file_count").value="0";
@@ -338,6 +345,21 @@ function addImgItem(file, url){
 	
 	tempImgArr.add(objectImgItem);
 }
+
+function initItemTagTree(){
+	    $('#itemTagSelect').combotree( {  
+          url : '${pageContext.request.contextPath}/web/ad/jsonLoadItemTagTree.do?pid=0',
+          onSelect : function(node) {  
+            var tree = $(this).tree;  
+            //选中的节点是否为叶子节点,如果不是叶子节点,清除选中  
+            var isLeaf = tree('isLeaf', node.target);  
+            if (!isLeaf) {  
+                //清除选中  
+                $('#itemTagSelect').combotree('clear');  
+            }  
+         }  
+       });  
+	}
 
 //电话号码验证
 function checkTel(value){
@@ -476,6 +498,13 @@ var ObjectImgItemList = function(){
 .wid600{
 	width: 600px;
 }
+.wid300{
+	width: 300px;
+}
+
+.wid528{
+	width: 428px;
+}
 
 .ht160{
 	height: 160px;
@@ -591,14 +620,18 @@ var ObjectImgItemList = function(){
 	</div>
 	<div class="cl"></div>
 	
-	<div id="tagInfoWindow" class="easyui-window" title="项目设置" style="width:520px;height:560px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
+	<div id="tagInfoWindow" class="easyui-window" title="项目设置" style="width:520px;height:640px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
 		<form name="projectForm" id="projectForm" action="saveOrupdateHotelProject.do" method="post">
 			<div>
-				<span class="txt ts14">项目名称：</span><input id="project_name" name="projectName" type="text" class="yw-input wid170 ts14" />
-				<span class="txt ts14 ml10">联系电话：</span><input id="project_tel" name="projectTel" type="text" class="yw-input wid170 ts14" />
+				<span class="txt ts14">项目名称：</span><input id="project_name" name="projectName" type="text" class="yw-input wid528 ts14" />
+			</div>
+			<div class="mt10">
+				<span class="txt ts14">联系电话：</span><input id="project_tel" name="projectTel" type="text" class="yw-input wid528 ts14" />
 			</div>
 			<div class="mt10">
 				<span class="txt ts14">项目类型：</span>
+				<input id="itemTagSelect" name="targetId" class="easyui-combotree" data-options="editable:false" style="width:420px;height:30px;"/>
+				<!--
 				<select id="project_classification" style="width:160px;height:30px;" class="easyui-combobox">
 			 	 	<option  value="0" selected="selected">=请选择项目分类=</option>
 			 	 	<c:forEach var="item" items="${tagList}">
@@ -608,10 +641,13 @@ var ObjectImgItemList = function(){
 				<select id="project_type" style="width:160px;height:30px;" class="easyui-combobox ml10">
 			 	 	<option  value="0" selected="selected">=请选择项目类型=</option>
 				</select>
+				-->
 			</div>
 			<div class="mt10">
-				<span class="txt ts14">项目描述：</span><input id="project_text" name="projectText" type="text" class="yw-input wid170 ts14" />
-				<span class="txt ts14 ml10">位置描述：</span><input id="project_position" name="projectPosition" type="text" class="yw-input wid170 ts14" />
+				<span class="txt ts14">项目描述：</span><input id="project_text" name="projectText" type="text" class="yw-input wid528 ts14" />
+			</div>
+			<div class="mt10">
+				<span class="txt ts14">位置描述：</span><input id="project_position" name="projectPosition" type="text" class="yw-input wid528 ts14" />
 			</div>
 			<input id="project_id" name="projectId" type="hidden" value="0"/>
 			<input name="hotelId" type="hidden" value="${hotelId}"/>
@@ -637,7 +673,7 @@ var ObjectImgItemList = function(){
 					<span class="txt ts14">文件：</span><input id="item_file" type="file"/>
 				</div>
 				<div class="ml10 mt10">
-					<span class="txt ts14">描述：</span><input id="item_info" type="text" class="yw-input ts14 wid200"/>
+					<span class="txt ts14">描述：</span><input id="item_info" type="text" class="yw-input ts14 wid300"/>
 				</div>
 			</div>
 			<div class="fr">
