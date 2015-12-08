@@ -1,9 +1,13 @@
 package com.hotel.service.impl;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +18,7 @@ import com.hotel.dao.BbsAttachMapper;
 import com.hotel.dao.BbsCategoryMapper;
 import com.hotel.dao.BbsMapper;
 import com.hotel.model.Bbs;
+import com.hotel.model.BbsAttach;
 import com.hotel.model.BbsCategory;
 import com.hotel.modelVM.BbsVM;
 import com.hotel.service.BbsService;
@@ -51,7 +56,7 @@ public class BbsServiceImpl implements BbsService {
 	}
 
 	@Override
-	public void saveBbs(BbsVM bbs) {
+	public void saveBbs(HttpServletRequest request, BbsVM bbs) {
 		// TODO Auto-generated method stub
 		if(bbs.getBbsType()==1){//论坛
 			//bbs.setId(0);
@@ -61,7 +66,32 @@ public class BbsServiceImpl implements BbsService {
 				bbs.setCreateTime(new Date());
 				bbs.setTimeStamp(new Date());
 				bbsMapper.insertSelective(bbs);
-				//bbsAttachMapper.insertSelective(record);
+				/*将临时文件中的图片移动到目标文件夹*/
+				List<String> fileUrls = new ArrayList<String>();//存放图片Url
+				String sourcePath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
+				String toPath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/"+bbs.getId();
+				File sourcefile = new File(sourcePath);
+				File dirPath = new File(toPath);
+				if(!dirPath.exists()){
+					dirPath.mkdirs();
+				}
+				File[] files = sourcefile.listFiles();
+				for(File file:files){
+					String name = file.getName();
+					if(name.startsWith(bbs.getCustomerId()+"_")){
+						file.renameTo(new File(toPath,file.getName()));
+						fileUrls.add("app/bbs/"+bbs.getId()+"/"+name);
+					}
+				}
+				/*遍历 insert图片*/
+				for(String url:fileUrls){
+					BbsAttach ba = new BbsAttach();
+					ba.setBbsId(bbs.getId());
+					ba.setAttachType(1);
+					ba.setAttachUrl(url);
+					ba.setTimeStamp(new Date());
+					bbsAttachMapper.insertSelective(ba);
+				}
 			}
 			else if(bbs.getPostType() == 1){//回贴回复
 				Bbs b = bbsMapper.selectByPrimaryKey(bbs.getParentId());

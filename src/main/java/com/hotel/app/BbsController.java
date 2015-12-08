@@ -1,8 +1,7 @@
 package com.hotel.app;
 
-import java.util.Date;
 import java.io.File;
-import java.lang.Math;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,7 +23,6 @@ import com.hotel.model.Bbs;
 import com.hotel.model.BbsCategory;
 import com.hotel.model.SearchText;
 import com.hotel.modelVM.BbsVM;
-import com.hotel.modelVM.HotelParam;
 import com.hotel.service.BbsService;
 
 @Controller
@@ -149,7 +147,7 @@ public class BbsController {
 		BbsVM bbs = (BbsVM) JSONObject.toBean(jObj,BbsVM.class);
 		Result<BbsVM> result = new Result<BbsVM>();
 		try{
-			bbsService.saveBbs(bbs);
+			bbsService.saveBbs(request,bbs);
 			result = new Result<BbsVM>(null, true, "保存成功");
 			return result.toJson();
 		}catch(Exception e){
@@ -171,11 +169,11 @@ public class BbsController {
     		HttpServletRequest request) { 
 		Result<Bbs> result = null;
         try { 
-        	//String path = request.getSession().getServletContext().getRealPath("washPhoto"); 
+        	//String path = request.getSession().getServletContext().getRealPath("Photo"); 
         	String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
 //        	String path = getClass().getResource("/").getFile().toString();
 //			path = path.substring(0, (path.length() - 16))+"washPhoto";
-        	String fileName = bbsPhoto.getOriginalFilename()+".jpg";//接收到的Name是没有格式的
+        	String fileName = bbsPhoto.getOriginalFilename();//接收到的Name是没有格式的
         	
         	File uploadFile = new File(path,fileName);
         	if(!uploadFile.exists()){  
@@ -188,6 +186,24 @@ public class BbsController {
         	result = new Result<Bbs>(null, false, "上传失败");
         	return result.toJson();
         }
+	}
+	@ResponseBody
+	@RequestMapping(value = "deletePhoto.do", produces = "application/json;charset=UTF-8")
+	public String deletePhoto(
+			@RequestParam(value = "param", required = true) String param,
+			HttpServletRequest request){
+		JSONObject jObj = JSONObject.fromObject(param);
+		String fileName = jObj.getString("fileName");
+		Result<Bbs> result = null;
+		try{
+			String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp/"+fileName;
+			boolean isSuccess = (new File(path)).delete();
+			result = new Result<Bbs>(null, true,"删除成功");
+			return result.toJson();
+		}catch(Exception ex){
+			result = new Result<Bbs>(null, false,"删除失败");
+			return result.toJson();
+		} 
 	}
 	
 	@RequestMapping(value = "fullTextSearchOfBbs.do", produces = "application/json;charset=UTF-8")

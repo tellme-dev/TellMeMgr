@@ -105,6 +105,9 @@
       #{deleteUserId,jdbcType=INTEGER}, #{deleteTime,jdbcType=TIMESTAMP}, #{timeStamp,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.hotel.modelVM.BbsVM" >
+    <selectKey resultType="INTEGER" keyProperty="id">
+       SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into t_bbs
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >

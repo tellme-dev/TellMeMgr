@@ -3,6 +3,8 @@ package com.hotel.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import com.hotel.common.ListResult;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Bbs;
@@ -34,9 +36,10 @@ public interface BbsService {
 
 	/**
 	 * @author jun
+	 * @param request 
 	 * @param bbs
 	 */
-	void saveBbs(BbsVM bbs);
+	void saveBbs(HttpServletRequest request, BbsVM bbs);
 
 	/**
 	 * @author jun

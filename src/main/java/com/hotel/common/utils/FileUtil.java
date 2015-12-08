@@ -302,11 +302,16 @@ public class FileUtil {
 	public static void copyToOtherPath2(String sourcePath,String toPath,Integer customerId){
 		List<String> fileUrls = new ArrayList<String>();
 		File sourcefile = new File(sourcePath);
+		File dirPath = new File(toPath);
+		if(!dirPath.exists()){
+			dirPath.mkdirs();
+		}
 		File[] files = sourcefile.listFiles();
 		for(File file:files){
 			String name = file.getName();
 			if(name.startsWith(customerId+"_")){
-				file.renameTo(new File(toPath,file.getName()));
+				File tarFile = new File(toPath,file.getName());
+				file.renameTo(tarFile);
 				fileUrls.add("app/bbs/"+customerId+"/"+name);
 			}
 			
