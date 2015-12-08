@@ -402,7 +402,7 @@
     where 1=1 
     <include refid="query_sql" />
     <if test="type == 1 or type == 3">
-      order by b.create_time
+      order by b.create_time desc
     </if>
     <if test="pageEnd != null and pageSize != null and pageStart>-1 and pageSize>-1">
         limit 0, #{pageEnd}

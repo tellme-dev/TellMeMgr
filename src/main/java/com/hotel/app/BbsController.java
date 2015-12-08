@@ -173,7 +173,7 @@ public class BbsController {
         	String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
 //        	String path = getClass().getResource("/").getFile().toString();
 //			path = path.substring(0, (path.length() - 16))+"washPhoto";
-        	String fileName = bbsPhoto.getOriginalFilename();//接收到的Name是没有格式的
+        	String fileName = bbsPhoto.getOriginalFilename();
         	
         	File uploadFile = new File(path,fileName);
         	if(!uploadFile.exists()){  
@@ -193,10 +193,10 @@ public class BbsController {
 			@RequestParam(value = "param", required = true) String param,
 			HttpServletRequest request){
 		JSONObject jObj = JSONObject.fromObject(param);
-		String fileName = jObj.getString("fileName");
+		String fileUrl = jObj.getString("fileUrl");
 		Result<Bbs> result = null;
 		try{
-			String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp/"+fileName;
+			String path = request.getSession().getServletContext().getRealPath("/")+fileUrl;
 			boolean isSuccess = (new File(path)).delete();
 			result = new Result<Bbs>(null, true,"删除成功");
 			return result.toJson();
