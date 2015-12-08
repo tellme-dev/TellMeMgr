@@ -10,7 +10,9 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.hotel.common.ListResult;
 import com.hotel.common.utils.GeneralUtil;
+import com.hotel.common.utils.Page;
 import com.hotel.dao.AdDetailMapper;
 import com.hotel.dao.AdvertisementMapper;
 import com.hotel.dao.BannerDetailMapper;
@@ -18,6 +20,7 @@ import com.hotel.model.AdDetail;
 import com.hotel.model.Advertisement;
 import com.hotel.model.BannerDetail;
 import com.hotel.modelVM.AdvertisementVM;
+import com.hotel.modelVM.BbsVM;
 import com.hotel.service.AdvertisementService;
 import com.hotel.viewmodel.AdvertisementWebVM;
 
@@ -195,5 +198,18 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	public Advertisement getAdByPrimaryKey(Integer id) {
 		// TODO Auto-generated method stub
 		return advertisementMapper.selectByPrimaryKey(id);
+	}
+
+	@Override
+	public ListResult<AdvertisementVM> loadAdList(Page page) {
+		// TODO Auto-generated method stub
+		Map<String,Object> map = new HashMap<String, Object>();
+		map.put("pageNo", page.getPageNo());
+		map.put("pageSize", page.getPageSize());
+		map.put("pageEnd",page.getPageSize()*page.getPageNo());
+		List<AdvertisementVM> list = advertisementMapper.selectWithPage(map);
+		int total = advertisementMapper.countByMap(map);
+		ListResult<AdvertisementVM> result = new ListResult<AdvertisementVM>(total,list);
+		return result;
 	}
 }

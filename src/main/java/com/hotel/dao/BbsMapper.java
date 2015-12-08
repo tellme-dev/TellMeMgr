@@ -39,4 +39,12 @@ public interface BbsMapper {
 	List<BbsVM> fullTextSearchOfBbs(String text);
 	
 	int countByBbs(Bbs bbs);
+	
+	int countPostByCustomer(int customerId);
+	
+	int countDynamicByCustomer(int customerId);
+	
+	List<Bbs> getPagePostByCustomer(Map<String, Object> map);
+	
+	List<Bbs> getPageDynamicByCustomer(Map<String, Object> map);
 }

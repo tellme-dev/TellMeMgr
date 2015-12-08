@@ -36,14 +36,14 @@ public class BbsServiceImpl implements BbsService {
 	}
 
 	@Override
-	public ListResult<BbsVM> loadBbsListByCategoryId(Page page,int categoryId) {
+	public ListResult<BbsVM> loadBbsListByType(Page page,int type) {
 		// TODO Auto-generated method stub
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("pageNo", page.getPageNo());
 		map.put("pageSize", page.getPageSize());
 		map.put("pageEnd",page.getPageSize()*page.getPageNo());
 		map.put("parentId", 0);//加载主贴
-		map.put("categoryId", categoryId);
+		map.put("type", type);
 		List<BbsVM> list = bbsMapper.selectByMap(map);
 		int total = bbsMapper.countByMap(map);
 		ListResult<BbsVM> result = new ListResult<BbsVM>(total,list);
@@ -167,6 +167,30 @@ public class BbsServiceImpl implements BbsService {
 	public void updateAgreeCount(Integer id) {
 		// TODO Auto-generated method stub
 		bbsMapper.updateAgreeCount(id);
+	}
+
+	@Override
+	public int countPostByCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countPostByCustomer(customerId);
+	}
+
+	@Override
+	public int countDynamicByCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countDynamicByCustomer(customerId);
+	}
+
+	@Override
+	public List<Bbs> getPagePostByCustomer(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return bbsMapper.getPagePostByCustomer(map);
+	}
+
+	@Override
+	public List<Bbs> getPageDynamicByCustomer(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return bbsMapper.getPageDynamicByCustomer(map);
 	}
 
 }

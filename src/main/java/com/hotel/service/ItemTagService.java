@@ -10,6 +10,8 @@ public interface ItemTagService {
 	
 	List<ItemTag> getTagByParentId(int parentId);
 	
+	ItemTag selectByPrimaryKey(Integer id);
+	
 	/**
 	 * 获取首页的菜单栏项目
 	 * @return

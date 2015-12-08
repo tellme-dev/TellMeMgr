@@ -1,6 +1,8 @@
 package com.hotel.app;
 
 import java.util.Date;
+import java.io.File;
+import java.lang.Math;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.hotel.common.ListResult;
 import com.hotel.common.Result;
+import com.hotel.common.utils.FileUtil;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Bbs;
 import com.hotel.model.BbsCategory;
@@ -62,14 +65,14 @@ public class BbsController {
 			HttpServletRequest request){
 		JSONObject jObj = JSONObject.fromObject(bbsParam);
 		//Bbs bbs = (Bbs) JSONObject.toBean(jObj,Bbs.class);
-		int categoryId = jObj.getInt("categoryId");
+		int type = jObj.getInt("type");// 最新活动： type=1 ，热门话题：type=2 ,吐槽专区：type=3，达人推荐：type=4
 		int pageNo = jObj.getInt("pageNo");
 		int pageSize = jObj.getInt("pageSize");
 		try{
 			Page page = new Page();
 			page.setPageNo(pageNo);
 			page.setPageSize(pageSize);
-			ListResult<BbsVM> result = bbsService.loadBbsListByCategoryId(page,categoryId);
+			ListResult<BbsVM> result = bbsService.loadBbsListByType(page,type);
 			return result.toJson();
 		}catch(Exception e){
 			ListResult<BbsVM> result = new ListResult<BbsVM>(null, false, "获取数据失败");
@@ -155,18 +158,35 @@ public class BbsController {
 		}
 	}
 	
+	/**
+	 * 发帖上传图片
+	 * @author jun
+	 * @param bbsPhoto
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "uploadPhoto.do", produces = "application/json;charset=UTF-8")  
     public @ResponseBody String upload(
-    		@RequestParam MultipartFile file,
+    		@RequestParam MultipartFile bbsPhoto,
     		HttpServletRequest request) { 
+		Result<Bbs> result = null;
         try { 
         	//String path = request.getSession().getServletContext().getRealPath("washPhoto"); 
-        	String path = getClass().getResource("/").getFile().toString();
-			path = path.substring(0, (path.length() - 16))+"washPhoto";
-        	String fileName1 = file.getOriginalFilename();//接收到的Name是没有格式的
-        	return "";
+        	String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
+//        	String path = getClass().getResource("/").getFile().toString();
+//			path = path.substring(0, (path.length() - 16))+"washPhoto";
+        	String fileName = bbsPhoto.getOriginalFilename()+".jpg";//接收到的Name是没有格式的
+        	
+        	File uploadFile = new File(path,fileName);
+        	if(!uploadFile.exists()){  
+        		uploadFile.mkdirs();  
+            }  
+        	bbsPhoto.transferTo(uploadFile); //保存
+        	result = new Result<Bbs>(null, true, "上传成功");
+        	return result.toJson();
         }catch(Exception e){
-        	return "";
+        	result = new Result<Bbs>(null, false, "上传失败");
+        	return result.toJson();
         }
 	}
 	
@@ -185,5 +205,24 @@ public class BbsController {
 			return new ListResult<BbsVM>(null,false,"全文搜索帖子失败").toJson();
 		}
 		return new ListResult<BbsVM>(list,true,"获取推荐帖子成功").toJson();
+	}
+	
+	
+	@RequestMapping(value = "test.do", produces = "application/json;charset=UTF-8")
+	@ResponseBody 
+	public String test(
+			HttpServletRequest request)
+	{
+		Result<Bbs> result = null;
+		try{
+			String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
+			String toPath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/bbs-id";
+			FileUtil.copyToOtherPath2(path, toPath,1);
+			result = new Result<Bbs>(null, true, "yes");
+			return result.toJson();
+		}catch(Exception e){
+			result = new Result<Bbs>(null, true, "no");
+			return result.toJson();
+		}
 	}
 }

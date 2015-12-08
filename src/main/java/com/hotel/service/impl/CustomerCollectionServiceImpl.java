@@ -1,5 +1,8 @@
 package com.hotel.service.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -30,5 +33,18 @@ public class CustomerCollectionServiceImpl implements CustomerCollectionService{
 	public int countByCustomerCollection(CustomerCollection record) {
 		// TODO Auto-generated method stub
 		return customerCollectionMapper.countByCustomerCollection(record);
+	}
+
+	@Override
+	public int countByCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return customerCollectionMapper.countByCustomer(customerId);
+	}
+
+	@Override
+	public List<CustomerCollection> getPageCollectionByCustomer(
+			Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return customerCollectionMapper.getPageCollectionByCustomer(map);
 	}
 }
