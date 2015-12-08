@@ -1,5 +1,8 @@
 package com.hotel.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.hotel.model.CustomerBrowse;
 
 @MyBatisRepository
@@ -17,4 +20,8 @@ public interface CustomerBrowseMapper {
     int updateByPrimaryKey(CustomerBrowse record);
     
     int countByItemId(int itemId);
+    
+    int countByCustomer(int customerId);
+    
+    List<CustomerBrowse> getPageByCustomer(Map<String, Object> map);
 }

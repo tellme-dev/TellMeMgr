@@ -434,7 +434,7 @@ function myAlert(msg){
 									<input name = "longitude" id="hotel_lng" type="hidden" value="${ht.longitude}" />
 									<input name = "latitude" id="hotel_lat" type="hidden" value="${ht.latitude}" />
 									<span class="ts15">经&nbsp;纬&nbsp;度：</span><input id="input_location" name="hotel_location" type="text" readonly="readonly" class="yw-input wid200 ts14" /><img alt="点击标记位置" onclick="showdialog();" class="icon_location" src="${pageContext.request.contextPath}/source/images/location.png">
-									<span class="hint_red">**必填项&nbsp;&nbsp;&nbsp;&nbsp;点击标记图标可设置指定位置的经纬度**</span>
+									<span class="hint_red">**必选项&nbsp;&nbsp;&nbsp;&nbsp;点击标记图标可设置指定位置的经纬度**</span>
 								</div>
 							</div>
 							<div class="fr">

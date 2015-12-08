@@ -2,8 +2,11 @@ package com.hotel.app;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -17,19 +20,35 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cloopen.rest.sdk.CCPRestSmsSDK;
+import com.hotel.common.ListResult;
 import com.hotel.common.Result;
 import com.hotel.common.utils.EndecryptUtils;
 import com.hotel.common.utils.GeneralUtil;
 import com.hotel.common.utils.StringUtil;
 import com.hotel.model.Bbs;
 import com.hotel.model.Customer;
+import com.hotel.model.CustomerBrowse;
 import com.hotel.model.CustomerCollection;
+import com.hotel.model.Hotel;
+import com.hotel.model.Item;
+import com.hotel.model.ItemDetail;
+import com.hotel.model.ItemTagAssociation;
+import com.hotel.model.Region;
 import com.hotel.model.User;
 import com.hotel.model.Varifycode;
+import com.hotel.modelVM.CustomerVM;
+import com.hotel.modelVM.HotelListInfoVM;
 import com.hotel.modelVM.RegisterData;
+import com.hotel.service.BaseDataService;
 import com.hotel.service.BbsService;
+import com.hotel.service.CustomerBrowseService;
 import com.hotel.service.CustomerCollectionService;
 import com.hotel.service.CustomerService;
+import com.hotel.service.HotelService;
+import com.hotel.service.ItemDetailService;
+import com.hotel.service.ItemService;
+import com.hotel.service.ItemTagAssociationService;
+import com.hotel.service.RoomCheckService;
 import com.hotel.service.VarifycodeService;
 
 /**
@@ -40,6 +59,8 @@ import com.hotel.service.VarifycodeService;
 @Controller
 @RequestMapping("/app/customer")
 public class CustomerController {
+	private final static int DEFAULT_PAGE_SIZE = 10;
+	private final static int TAG_TYPE_HOTEL = 1;
 	
 	private final static int DEFAULT_VARIFY_TIME = 2*60;//秒
 	
@@ -47,6 +68,15 @@ public class CustomerController {
 	@Autowired CustomerCollectionService customerCollectionService;
 	@Autowired VarifycodeService varifycodeService;
 	@Autowired BbsService bbsService;
+	
+	@Autowired RoomCheckService roomCheckService;
+	@Autowired CustomerBrowseService customerBrowseService;
+	@Autowired HotelService hotelService;
+	@Autowired ItemTagAssociationService itemTagAssociationService;
+	@Autowired ItemService itemService;
+	@Autowired ItemDetailService itemDetailService;
+	@Autowired BaseDataService baseDataService;
+	
 	/**
 	 * 判断用户是否注册
 	 * @param autoInfo
@@ -274,9 +304,409 @@ public class CustomerController {
 	}
 	
 	/**
+	 * 获取用户个人中心基本信息
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerInfo.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<CustomerVM> getCustomerInfo(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<CustomerVM>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new Result<CustomerVM>(null, false, "请求无效");
+		}
+		
+		Customer customer = customerService.selectByPrimaryKey(customerId);
+		
+		if(customer == null){
+			new Result<CustomerVM>(null, false, "没有找到对应的用户信息");
+		}
+		
+		CustomerVM vm = new CustomerVM();
+		vm.setCustomer(customer);
+		vm.setCountAlways(roomCheckService.countHotelByCustomer(customerId));
+		vm.setCountBrowse(customerBrowseService.countByCustomer(customerId));
+		vm.setCountCollection(customerCollectionService.countByCustomer(customerId));
+		vm.setCountTopic(bbsService.countPostByCustomer(customerId));
+		vm.setCountDynamic(bbsService.countDynamicByCustomer(customerId));
+		
+		
+		return new Result<CustomerVM>(vm, true, "");
+	}
+	
+	/**
+	 * 获取用户常住酒店
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerAlways.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody ListResult<HotelListInfoVM> getCustomerAlways(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		int pageNumber = 1;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("pageNumber")){
+				pageNumber = jsonObject.getInt("pageNumber");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new ListResult<HotelListInfoVM>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new ListResult<HotelListInfoVM>(null, false, "请求无效");
+		}
+		if(pageNumber < 1){
+			return new ListResult<HotelListInfoVM>(null, false, "请求无效");
+		}
+		
+		//获取数据
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
+		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("customerId", customerId);
+		
+		List<Hotel> lh = hotelService.getPageHotelByCustomer(map);
+		int count = roomCheckService.countHotelByCustomer(customerId);
+		
+		List<HotelListInfoVM> list = new ArrayList<HotelListInfoVM>();
+		if(lh != null && lh.size() > 0){
+			//逐一转存
+			for(Hotel hotel : lh){
+				//转存酒店基本数据
+				HotelListInfoVM vm = new HotelListInfoVM();
+				vm.setId(hotel.getId());
+				vm.setName(hotel.getName());
+				vm.setText(hotel.getText());
+				vm.setLatitude(hotel.getLatitude());
+				vm.setLongitude(hotel.getLongitude());
+				
+				//查询所有酒店类型的项目
+				List<ItemTagAssociation> associations =  itemTagAssociationService.getTagTypeItem(TAG_TYPE_HOTEL);
+				//查询所有酒店所有的项目
+				List<Item> items = itemService.getItemByHotel(hotel.getId());
+				
+				//酒店非自身项目缓存
+				List<Item> notSelfItems = new ArrayList<Item>();
+				
+				//如果单方没有数据则没有交集
+				if(associations != null && items != null && items.size() > 0 && associations.size() > 0){
+					Item temp = null;
+					boolean isFind = false;
+					//找出属于酒店自身的项目（求交集）
+					for(ItemTagAssociation association : associations){
+						for(Item item : items){
+							if(association.getItemId() == item.getId()){
+								temp = item;
+								isFind = true;
+								break;
+							}
+						}
+						if(isFind){
+							break;
+						}
+					}
+					//判断是否找到该酒店的项目
+					if(temp != null){
+						//设置联系方式
+						vm.setTel(temp.getTel());
+						vm.setAddress(temp.getPosition());
+						vm.setScore(temp.getScore());
+						//查找该项目的详细信息
+						List<ItemDetail> details = itemDetailService.selectByItemId(temp.getId());
+						if(details != null && details.size() > 0){
+							//仅获取第一张图片
+							vm.setImgUrl(details.get(0).getImageUrl());
+						}
+						//设置数量统计
+						//查询浏览次数
+						//int countBrowse = customerBrowseService.countByItemId(temp.getId());
+						//查询收藏次数
+						//int countCollectiono = customerCollectionService.countByItemId(temp.getId());
+						//vm.setCountBrowse(countBrowse);
+						//vm.setCountCollection(countCollectiono);
+						
+						//设置非自身的项目数据
+						for(Item tempItem : items){
+							if(!tempItem.getId().equals(temp.getId())){
+								notSelfItems.add(tempItem);
+							}
+						}
+					}else{
+						notSelfItems = items;
+					}
+				}
+				if(hotel.getRegionId() != null){
+					//设置位置
+					Region area = baseDataService.getRegionById(hotel.getRegionId());
+					String path = area.getPath();
+					String[] arr = path.split("\\.");
+					Region city = baseDataService.getRegionById(new Integer(arr[1]));
+					vm.setCity(city.getName());
+				}
+				vm.setProjects(notSelfItems);
+				
+				//空数据清理
+				vm.clear();
+				//添加到数据集
+				list.add(vm);
+			}
+		}
+		
+		int pageCount = count/DEFAULT_PAGE_SIZE;
+		if(count%DEFAULT_PAGE_SIZE != 0){
+			pageCount ++;
+		}
+		
+		//返回对象处理
+		ListResult<HotelListInfoVM> result = new ListResult<HotelListInfoVM>();
+		result.setIsSuccess(true);
+		result.setTotal(pageCount);
+		result.setMsg("");
+		result.setRows(list);
+		
+		return result;
+	}
+	
+	/**
+	 * 获取用户最近浏览
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerBrowse.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody ListResult<HotelListInfoVM> getCustomerBrowse(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		int pageNumber = 1;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("pageNumber")){
+				pageNumber = jsonObject.getInt("pageNumber");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new ListResult<HotelListInfoVM>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new ListResult<HotelListInfoVM>(null, false, "请求无效");
+		}
+		if(pageNumber < 1){
+			return new ListResult<HotelListInfoVM>(null, false, "请求无效");
+		}
+		
+		//获取数据
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
+		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("customerId", customerId);
+		
+		//浏览记录数据获取
+		List<CustomerBrowse> browses = customerBrowseService.getPageByCustomer(map);
+		int count = customerBrowseService.countByCustomer(customerId);
+		
+		int pageCount = count/DEFAULT_PAGE_SIZE;
+		if(count%DEFAULT_PAGE_SIZE != 0){
+			pageCount ++;
+		}
+		
+		//返回结果处理
+		//*********************************************
+		// 根据类型做相应的数据处理
+		//*********************************************
+		
+		return null;
+	}
+	
+	/**
+	 * 获取用户收藏
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerCollection.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody ListResult<HotelListInfoVM> getCustomerCollection(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		int pageNumber = 1;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("pageNumber")){
+				pageNumber = jsonObject.getInt("pageNumber");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new ListResult<HotelListInfoVM>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new ListResult<HotelListInfoVM>(null, false, "请求无效");
+		}
+		if(pageNumber < 1){
+			return new ListResult<HotelListInfoVM>(null, false, "请求无效");
+		}
+		
+		//获取数据
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
+		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("customerId", customerId);
+		
+		//浏览记录数据获取
+		List<CustomerCollection> collections = customerCollectionService.getPageCollectionByCustomer(map);
+		int count = customerCollectionService.countByCustomer(customerId); 
+		
+		int pageCount = count/DEFAULT_PAGE_SIZE;
+		if(count%DEFAULT_PAGE_SIZE != 0){
+			pageCount ++;
+		}
+		
+		//返回结果处理
+		
+		//*********************************************
+		// 根据类型做相应的数据处理
+		//*********************************************
+		
+		return null;
+	}
+	
+	/**
+	 * 获取用户话题
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerTopic.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody ListResult<Bbs> getCustomerTopic(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		int pageNumber = 1;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("pageNumber")){
+				pageNumber = jsonObject.getInt("pageNumber");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new ListResult<Bbs>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new ListResult<Bbs>(null, false, "请求无效");
+		}
+		if(pageNumber < 1){
+			return new ListResult<Bbs>(null, false, "请求无效");
+		}
+		
+		//获取数据
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
+		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("customerId", customerId);
+		
+		//浏览记录数据获取
+		List<Bbs> bbs = bbsService.getPagePostByCustomer(map);
+		int count = bbsService.countPostByCustomer(customerId);
+		
+		int pageCount = count/DEFAULT_PAGE_SIZE;
+		if(count%DEFAULT_PAGE_SIZE != 0){
+			pageCount ++;
+		}
+		
+		//返回对象处理
+		ListResult<Bbs> result = new ListResult<Bbs>();
+		result.setIsSuccess(true);
+		result.setTotal(pageCount);
+		result.setMsg("");
+		result.setRows(bbs);
+		return result;
+	}
+	
+	/**
+	 * 获取用户动态
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerDynamic.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody ListResult<Bbs> getCustomerDynamic(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		int pageNumber = 1;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("pageNumber")){
+				pageNumber = jsonObject.getInt("pageNumber");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new ListResult<Bbs>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new ListResult<Bbs>(null, false, "请求无效");
+		}
+		if(pageNumber < 1){
+			return new ListResult<Bbs>(null, false, "请求无效");
+		}
+		
+		//获取数据
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
+		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("customerId", customerId);
+		
+		//浏览记录数据获取
+		List<Bbs> bbs = bbsService.getPageDynamicByCustomer(map);
+		int count = bbsService.countDynamicByCustomer(customerId);
+		
+		int pageCount = count/DEFAULT_PAGE_SIZE;
+		if(count%DEFAULT_PAGE_SIZE != 0){
+			pageCount ++;
+		}
+		
+		//返回对象处理
+		
+		//*********************************************
+		// 根据类型做相应的数据处理
+		//*********************************************
+		
+		return null;
+	}
+	
+	/**
 	 * 保存用户收藏/关注（包括酒店(服务)、广告(专题)、论坛等）
 	 * @author LiuTaiXiong
-	 * @param customerInfo
+	 * @param json
 	 * @return
 	 */
 	@RequestMapping(value = "/saveCollectionHistory.do", produces = "application/json;charset=UTF-8")
@@ -328,7 +758,7 @@ public class CustomerController {
 	/**
 	 * 保存用户点赞（包括酒店(服务)、广告(专题)、论坛等）
 	 * @author LiuTaiXiong
-	 * @param customerInfo
+	 * @param json
 	 * @return
 	 */
 	@RequestMapping(value = "/savePraiseHistory.do", produces = "application/json;charset=UTF-8")
@@ -388,7 +818,7 @@ public class CustomerController {
 	/**
 	 * 用户修改密码
 	 * @author LiuTaiXiong
-	 * @param customerInfo
+	 * @param json
 	 * @return
 	 */
 	@RequestMapping(value = "/updatePassword.do", produces = "application/json;charset=UTF-8")

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hotel.common.ListResult;
+import com.hotel.common.Result;
 import com.hotel.model.Item;
 import com.hotel.model.ItemTag;
 import com.hotel.model.ItemTagAssociation;
@@ -111,6 +112,28 @@ public class ItemTagController {
 		}
 		
 		return new ListResult<HomeItemVM>(homeItemVMList,true,"获取菜单项成功").toJson();
+	}
+	
+	/**
+	 * 获取指定项目类型的基本信息
+	 * @author LiuTaiXiong
+	 * @param customerInfo
+	 * @return
+	 */
+	@RequestMapping(value = "loadItemTag.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody String loadItemTag(@RequestParam(value = "json", required = false) String json, HttpServletRequest request)
+	{
+		JSONObject object = JSONObject.fromObject(json);
+		int itemTagId = 0;
+		if(object.containsKey("itemTagId")){
+			itemTagId = object.getInt("itemTagId");
+		}
+		if(itemTagId < 1){
+			return new ListResult<HomeItemVM>(null,false,"请求参数无效").toJson();
+		}
+		
+		ItemTag itemTag = itemTagService.selectByPrimaryKey(itemTagId);
+		return new Result<ItemTag>(itemTag, true, "").toJson();
 	}
 	
 	/**

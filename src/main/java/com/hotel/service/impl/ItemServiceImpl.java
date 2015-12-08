@@ -48,4 +48,10 @@ public class ItemServiceImpl implements ItemService{
 		return itemMapper.selectByPrimaryKey(itemId);
 	}
 
+	@Override
+	public List<Item> selectByItemTagChildOrderByScore(int tagId) {
+		// TODO Auto-generated method stub
+		return itemMapper.selectByItemTagChildOrderByScore(tagId);
+	}
+
 }

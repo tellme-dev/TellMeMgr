@@ -199,4 +199,28 @@ public class BbsServiceImpl implements BbsService {
 		bbsMapper.updateAgreeCount(id);
 	}
 
+	@Override
+	public int countPostByCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countPostByCustomer(customerId);
+	}
+
+	@Override
+	public int countDynamicByCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countDynamicByCustomer(customerId);
+	}
+
+	@Override
+	public List<Bbs> getPagePostByCustomer(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return bbsMapper.getPagePostByCustomer(map);
+	}
+
+	@Override
+	public List<Bbs> getPageDynamicByCustomer(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return bbsMapper.getPageDynamicByCustomer(map);
+	}
+
 }

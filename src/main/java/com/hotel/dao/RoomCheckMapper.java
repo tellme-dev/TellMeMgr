@@ -15,4 +15,6 @@ public interface RoomCheckMapper {
     int updateByPrimaryKeySelective(RoomCheck record);
 
     int updateByPrimaryKey(RoomCheck record);
+    
+    int countHotelByCustomer(Integer customerId);
 }
