@@ -47,7 +47,7 @@ public class BbsServiceImpl implements BbsService {
 		map.put("pageNo", page.getPageNo());
 		map.put("pageSize", page.getPageSize());
 		map.put("pageEnd",page.getPageSize()*page.getPageNo());
-		map.put("parentId", 0);//加载主贴
+		map.put("postType", 0);//加载主贴
 		map.put("type", type);
 		List<BbsVM> list = bbsMapper.selectByMap(map);
 		int total = bbsMapper.countByMap(map);
@@ -107,9 +107,7 @@ public class BbsServiceImpl implements BbsService {
 				bbs.setTimeStamp(new Date());
 				bbsMapper.insertSelective(bbs);
 			}
-			else if(bbs.getPostType() == 2){//点赞 
-				bbsMapper.updateAgreeCount(bbs.getId());
-			}else{//分享 postType = 3
+			else if(bbs.getPostType() == 3){//分享
 				bbsMapper.updateShareCount(bbs.getId());
 			}
 		}
@@ -184,7 +182,7 @@ public class BbsServiceImpl implements BbsService {
 	@Override
 	public int insert(Bbs record) {
 		// TODO Auto-generated method stub
-		return bbsMapper.insert(record);
+		return bbsMapper.insertSelective1(record);
 	}
 
 	@Override

@@ -173,7 +173,7 @@ public class BbsController {
         	String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
 //        	String path = getClass().getResource("/").getFile().toString();
 //			path = path.substring(0, (path.length() - 16))+"washPhoto";
-        	String fileName = bbsPhoto.getOriginalFilename();
+        	String fileName = bbsPhoto.getOriginalFilename()+".jpg";
         	
         	File uploadFile = new File(path,fileName);
         	if(!uploadFile.exists()){  

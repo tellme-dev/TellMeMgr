@@ -47,4 +47,6 @@ public interface BbsMapper {
 	List<Bbs> getPagePostByCustomer(Map<String, Object> map);
 	
 	List<Bbs> getPageDynamicByCustomer(Map<String, Object> map);
+
+	int insertSelective1(Bbs record);
 }

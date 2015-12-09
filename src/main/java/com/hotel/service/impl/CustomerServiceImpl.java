@@ -56,11 +56,6 @@ public class CustomerServiceImpl implements CustomerService{
 		return customerMapper.insert(c);
 	}
 	@Override
-	public void saveCollection(CustomerCollection cc) {
-		// TODO Auto-generated method stub
-		customerCollectionMapper.insertSelective(cc);
-	}
-	@Override
 	public int updatePassword(Customer record) {
 		// TODO Auto-generated method stub
 		return customerMapper.updatePassword(record);

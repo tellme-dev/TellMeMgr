@@ -14,8 +14,6 @@ public interface CustomerService {
 	Customer selectByPrimaryKey(Integer id);
 
 	int insert(Customer c);
-
-	void saveCollection(CustomerCollection cc);
 	
 	int updatePassword(Customer record);
 	

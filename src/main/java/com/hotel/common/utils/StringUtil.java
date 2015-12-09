@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.junit.Test;
+
 /**
  * 字符串处理类
  * 
@@ -219,7 +221,7 @@ public class StringUtil {
 		if (isEmpty(number)) {
 			return false;
 		}
-		String regEx = "^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$";
+		String regEx = "1([\\d]{10})|((\\+[0-9]{2,4})?\\(?[0-9]+\\)?-?)?[0-9]{7,8}";
 		Pattern pat = Pattern.compile(regEx);
 		Matcher mat = pat.matcher(number);
 		return mat.matches();

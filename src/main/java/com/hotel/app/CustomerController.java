@@ -745,7 +745,7 @@ public class CustomerController {
 		int collectionTimes = customerCollectionService.countByCustomerCollection(collection);
 		//已收藏
 		if(collectionTimes > 0){
-			new Result<String>("", false, "您已收藏");
+			return new Result<String>("", false, "您已收藏");
 		}
 		
 		int count = customerCollectionService.insert(collection);
@@ -797,6 +797,7 @@ public class CustomerController {
 		bbs.setParentId(0);
 		bbs.setLevel(0);
 		bbs.setCreateTime(new Date());
+	    bbs.setTimeStamp(new Date());
 		
 		//相同数据检查
 		int bbsCount = bbsService.countByBbs(bbs);
@@ -935,32 +936,6 @@ public class CustomerController {
 			@RequestParam(value = "browseInfo", required = false) String browseInfo)
 	{
 		return null;
-	} 
-	
-	/**
-	 * 收藏bbs帖子
-	 * @author jun
-	 * @param param
-	 * @param request
-	 * @return
-	 */
-	@ResponseBody
-	@RequestMapping(value = "collectBbs.do", produces = "application/json;charset=UTF-8")
-	public String collectBbs(
-			@RequestParam(value = "param", required = false) String param,
-			HttpServletRequest request){
-		JSONObject jObj = JSONObject.fromObject(param);
-		CustomerCollection cc = (CustomerCollection) JSONObject.toBean(jObj,CustomerCollection.class);
-		Result<CustomerCollection> result = null;
-		try{
-			cc.setCreateTime(new Date());
-			customerService.saveCollection(cc);
-			result = new Result<CustomerCollection>(null, true, "收藏成功");
-			return result.toJson();
-		}catch(Exception e){
-			result = new Result<CustomerCollection>(null, false, "收藏失败");
-			return result.toJson();
-		}
 	}
 	
 }
