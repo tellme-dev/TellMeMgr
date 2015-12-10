@@ -680,7 +680,7 @@ public class CustomerController {
 	 * @return
 	 */
 	@RequestMapping(value = "/getCustomerCollection.do", produces = "application/json;charset=UTF-8")
-	public @ResponseBody ListResult<HotelListInfoVM> getCustomerCollection(
+	public @ResponseBody ListResult<CustomerBrowseVM> getCustomerCollection(
 			@RequestParam(value = "json", required = false) String json)
 	{
 		int customerId = 0;
@@ -699,13 +699,13 @@ public class CustomerController {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			return new ListResult<HotelListInfoVM>(null, false, "json解析异常");
+			return new ListResult<CustomerBrowseVM>(null, false, "json解析异常");
 		}
 		if(customerId < 1){
-			return new ListResult<HotelListInfoVM>(null, false, "请求无效");
+			return new ListResult<CustomerBrowseVM>(null, false, "请求无效");
 		}
 		if(pageNumber < 1){
-			return new ListResult<HotelListInfoVM>(null, false, "请求无效");
+			return new ListResult<CustomerBrowseVM>(null, false, "请求无效");
 		}
 		
 		//获取数据
@@ -728,8 +728,121 @@ public class CustomerController {
 		//*********************************************
 		// 根据类型做相应的数据处理
 		//*********************************************
+		List<CustomerBrowseVM> vms = new ArrayList<CustomerBrowseVM>();
 		
-		return null;
+		for(CustomerCollection collection : collections){
+			switch (collection.getCollectionType()) {
+			case BROWSE_TYPE_HOTEL:
+				Hotel hotel = hotelService.selectByPrimaryKey(collection.getTargetId());
+				//转存酒店基本数据
+				HotelListInfoVM vm = new HotelListInfoVM();
+				vm.setId(hotel.getId());
+				vm.setName(hotel.getName());
+				vm.setText(hotel.getText());
+				vm.setLatitude(hotel.getLatitude());
+				vm.setLongitude(hotel.getLongitude());
+				
+				//查询所有酒店类型的项目
+				List<ItemTagAssociation> associations =  itemTagAssociationService.getTagTypeItem(TAG_TYPE_HOTEL);
+				//查询所有酒店所有的项目
+				List<Item> items = itemService.getItemByHotel(hotel.getId());
+				
+				//酒店非自身项目缓存
+				List<Item> notSelfItems = new ArrayList<Item>();
+				
+				//如果单方没有数据则没有交集
+				if(associations != null && items != null && items.size() > 0 && associations.size() > 0){
+					Item temp = null;
+					boolean isFind = false;
+					//找出属于酒店自身的项目（求交集）
+					for(ItemTagAssociation association : associations){
+						for(Item item : items){
+							if(association.getItemId() == item.getId()){
+								temp = item;
+								isFind = true;
+								break;
+							}
+						}
+						if(isFind){
+							break;
+						}
+					}
+					//判断是否找到该酒店的项目
+					if(temp != null){
+						//设置联系方式
+						vm.setTel(temp.getTel());
+						vm.setAddress(temp.getPosition());
+						vm.setScore(temp.getScore());
+						//查找该项目的详细信息
+						List<ItemDetail> details = itemDetailService.selectByItemId(temp.getId());
+						if(details != null && details.size() > 0){
+							//仅获取第一张图片
+							vm.setImgUrl(details.get(0).getImageUrl());
+						}
+												
+						//设置非自身的项目数据
+						for(Item tempItem : items){
+							if(!tempItem.getId().equals(temp.getId())){
+								notSelfItems.add(tempItem);
+							}
+						}
+					}else{
+						notSelfItems = items;
+					}
+				}
+				if(hotel.getRegionId() != null){
+					//设置位置
+					Region area = baseDataService.getRegionById(hotel.getRegionId());
+					String path = area.getPath();
+					String[] arr = path.split("\\.");
+					Region city = baseDataService.getRegionById(new Integer(arr[1]));
+					vm.setCity(city.getName());
+				}
+				vm.setProjects(notSelfItems);
+				
+				//空数据清理
+				vm.clear();
+				//设置数据对象
+				CustomerBrowseVM browseVM = new CustomerBrowseVM();
+				browseVM.setType(BROWSE_TYPE_HOTEL);
+				browseVM.setHotel(vm);
+				vms.add(browseVM);
+				break;
+			case BROWSE_TYPE_AD:
+				Advertisement advertisement = adService.selectByPrimaryKey(collection.getTargetId());
+				AdvertisementListInfoVM avm = new AdvertisementListInfoVM();
+				avm.setAdvertisement(advertisement);
+				
+				AdDetail detail = adService.getFirstDetail(advertisement.getId());
+				if(detail != null){
+					avm.setImgUrl(detail.getImageUrl());
+					avm.setText(detail.getText());
+				}
+				CustomerBrowseVM abrowseVM = new CustomerBrowseVM();
+				abrowseVM.setType(BROWSE_TYPE_AD);
+				abrowseVM.setAdvertisement(avm);
+				vms.add(abrowseVM);
+				break;
+			case BROWSE_TYPE_BBS:
+				BbsVM bvm = bbsService.loadBbsById(collection.getTargetId());
+				CustomerBrowseVM bbrowseVM = new CustomerBrowseVM();
+				bbrowseVM.setType(BROWSE_TYPE_BBS);
+				bbrowseVM.setBbs(bvm);
+				vms.add(bbrowseVM);
+				break;
+
+			default:
+				break;
+			}
+		}
+		
+		ListResult<CustomerBrowseVM> res = new ListResult<CustomerBrowseVM>();
+		res.setIsSuccess(true);
+		res.setTotal(pageCount);
+		res.setMsg("");
+		res.setRows(vms);
+		
+		return res;
 	}
 	
 	/**
