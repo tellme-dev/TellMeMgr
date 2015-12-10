@@ -372,6 +372,7 @@ public class CustomerController {
 	{
 		int customerId = 0;
 		int pageNumber = 1;
+		int pageSize = DEFAULT_PAGE_SIZE;
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(json);
 			if(jsonObject.containsKey("customerId")){
@@ -379,6 +380,9 @@ public class CustomerController {
 			}
 			if(jsonObject.containsKey("pageNumber")){
 				pageNumber = jsonObject.getInt("pageNumber");
+			}
+			if(jsonObject.containsKey("pageSize")){
+				pageSize = jsonObject.getInt("pageSize");
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -393,8 +397,8 @@ public class CustomerController {
 		
 		//获取数据
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
-		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("pageStart", 0);
+		map.put("pageSize", pageSize * pageNumber);
 		map.put("customerId", customerId);
 		
 		List<Hotel> lh = hotelService.getPageHotelByCustomer(map);
@@ -484,8 +488,8 @@ public class CustomerController {
 			}
 		}
 		
-		int pageCount = count/DEFAULT_PAGE_SIZE;
-		if(count%DEFAULT_PAGE_SIZE != 0){
+		int pageCount = count/pageSize;
+		if(count%pageSize != 0){
 			pageCount ++;
 		}
 		
@@ -511,6 +515,7 @@ public class CustomerController {
 	{
 		int customerId = 0;
 		int pageNumber = 1;
+		int pageSize = DEFAULT_PAGE_SIZE;
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(json);
 			if(jsonObject.containsKey("customerId")){
@@ -518,6 +523,9 @@ public class CustomerController {
 			}
 			if(jsonObject.containsKey("pageNumber")){
 				pageNumber = jsonObject.getInt("pageNumber");
+			}
+			if(jsonObject.containsKey("pageSize")){
+				pageSize = jsonObject.getInt("pageSize");
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -532,16 +540,16 @@ public class CustomerController {
 		
 		//获取数据
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
-		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("pageStart", 0);
+		map.put("pageSize", pageSize * pageNumber);
 		map.put("customerId", customerId);
 		
 		//浏览记录数据获取
 		List<CustomerBrowse> browses = customerBrowseService.getPageByCustomer(map);
 		int count = customerBrowseService.countByCustomer(customerId);
 		
-		int pageCount = count/DEFAULT_PAGE_SIZE;
-		if(count%DEFAULT_PAGE_SIZE != 0){
+		int pageCount = count/pageSize;
+		if(count%pageSize != 0){
 			pageCount ++;
 		}
 		
@@ -677,6 +685,7 @@ public class CustomerController {
 	{
 		int customerId = 0;
 		int pageNumber = 1;
+		int pageSize = DEFAULT_PAGE_SIZE;
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(json);
 			if(jsonObject.containsKey("customerId")){
@@ -684,6 +693,9 @@ public class CustomerController {
 			}
 			if(jsonObject.containsKey("pageNumber")){
 				pageNumber = jsonObject.getInt("pageNumber");
+			}
+			if(jsonObject.containsKey("pageSize")){
+				pageSize = jsonObject.getInt("pageSize");
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -698,16 +710,16 @@ public class CustomerController {
 		
 		//获取数据
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
-		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("pageStart", 0);
+		map.put("pageSize", pageSize * pageNumber);
 		map.put("customerId", customerId);
 		
 		//浏览记录数据获取
 		List<CustomerCollection> collections = customerCollectionService.getPageCollectionByCustomer(map);
 		int count = customerCollectionService.countByCustomer(customerId); 
 		
-		int pageCount = count/DEFAULT_PAGE_SIZE;
-		if(count%DEFAULT_PAGE_SIZE != 0){
+		int pageCount = count/pageSize;
+		if(count%pageSize != 0){
 			pageCount ++;
 		}
 		
@@ -732,6 +744,7 @@ public class CustomerController {
 	{
 		int customerId = 0;
 		int pageNumber = 1;
+		int pageSize = DEFAULT_PAGE_SIZE;
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(json);
 			if(jsonObject.containsKey("customerId")){
@@ -739,6 +752,9 @@ public class CustomerController {
 			}
 			if(jsonObject.containsKey("pageNumber")){
 				pageNumber = jsonObject.getInt("pageNumber");
+			}
+			if(jsonObject.containsKey("pageSize")){
+				pageSize = jsonObject.getInt("pageSize");
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -753,16 +769,16 @@ public class CustomerController {
 		
 		//获取数据
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
-		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("pageStart", 0);
+		map.put("pageSize", pageSize * pageNumber);
 		map.put("customerId", customerId);
 		
 		//浏览记录数据获取
 		List<Bbs> bbs = bbsService.getPagePostByCustomer(map);
 		int count = bbsService.countPostByCustomer(customerId);
 		
-		int pageCount = count/DEFAULT_PAGE_SIZE;
-		if(count%DEFAULT_PAGE_SIZE != 0){
+		int pageCount = count/pageSize;
+		if(count%pageSize != 0){
 			pageCount ++;
 		}
 		
@@ -787,6 +803,7 @@ public class CustomerController {
 	{
 		int customerId = 0;
 		int pageNumber = 1;
+		int pageSize = DEFAULT_PAGE_SIZE;
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(json);
 			if(jsonObject.containsKey("customerId")){
@@ -794,6 +811,9 @@ public class CustomerController {
 			}
 			if(jsonObject.containsKey("pageNumber")){
 				pageNumber = jsonObject.getInt("pageNumber");
+			}
+			if(jsonObject.containsKey("pageSize")){
+				pageSize = jsonObject.getInt("pageSize");
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -808,16 +828,16 @@ public class CustomerController {
 		
 		//获取数据
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
-		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("pageStart", 0);
+		map.put("pageSize", pageSize * pageNumber);
 		map.put("customerId", customerId);
 		
 		//浏览记录数据获取
 		List<Bbs> bbs = bbsService.getPageDynamicByCustomer(map);
 		int count = bbsService.countDynamicByCustomer(customerId);
 		
-		int pageCount = count/DEFAULT_PAGE_SIZE;
-		if(count%DEFAULT_PAGE_SIZE != 0){
+		int pageCount = count/pageSize;
+		if(count%pageSize != 0){
 			pageCount ++;
 		}
 		
