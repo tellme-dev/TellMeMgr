@@ -360,11 +360,12 @@ public class CustomerController {
 		vm.setCountBrowse(customerBrowseService.countByCustomer(customerId));
 		vm.setCountCollection(customerCollectionService.countByCustomer(customerId));
 		vm.setCountTopic(bbsService.countPostByCustomer(customerId));
-		int countPBy = bbsService.countDPraiseByCustomer(customerId);
+		//int countPBy = bbsService.countDPraiseByCustomer(customerId);
 		int countPTo = bbsService.countDPraiseToCustomer(customerId);
-		int countCBy = bbsService.countDCommentByCustomer(customerId);
+		//int countCBy = bbsService.countDCommentByCustomer(customerId);
 		int countCTo = bbsService.countDCommentToCustomer(customerId);
-		vm.setCountDynamic(countPBy + countPTo + countCBy + countCTo);
+		//vm.setCountDynamic(countPBy + countPTo + countCBy + countCTo);
+		vm.setCountDynamic(countPTo + countCTo);
 		
 		
 		return new Result<CustomerVM>(vm, true, "");
@@ -981,13 +982,15 @@ public class CustomerController {
 			return new Result<CountVM>(null, false, "请求无效");
 		}
 		
-		int countDPF = bbsService.countDPraiseByCustomer(customerId);
+		//int countDPF = bbsService.countDPraiseByCustomer(customerId);
 		int countDPT = bbsService.countDPraiseToCustomer(customerId);
-		int countDCF = bbsService.countDCommentByCustomer(customerId);
+		//int countDCF = bbsService.countDCommentByCustomer(customerId);
 		int countDCT = bbsService.countDCommentToCustomer(customerId);
 		CountVM vm = new CountVM();
-		vm.setCountPraise(countDPF + countDPT);
-		vm.setCountComments(countDCF + countDCT);
+//		vm.setCountPraise(countDPF + countDPT);
+//		vm.setCountComments(countDCF + countDCT);
+		vm.setCountPraise(countDPT);
+		vm.setCountComments(countDCT);
 		
 		return new Result<CountVM>(vm, true, "");
 	}
@@ -1036,19 +1039,22 @@ public class CustomerController {
 		map.put("customerId", customerId);
 		
 		//用户点赞数据获取
-		List<Bbs> bbs = bbsService.getPageDPByCustomer(map);
-		int countBy = bbsService.countDPraiseByCustomer(customerId);
+//		List<Bbs> bbs = bbsService.getPageDPByCustomer(map);
+//		int countBy = bbsService.countDPraiseByCustomer(customerId);
 		int countTo = bbsService.countDPraiseToCustomer(customerId);
+//		
+//		List<Bbs> bbsTo = new ArrayList<Bbs>();
+//		if(bbs.size() < total && countTo > 0){
+//			int lastSize = total - bbs.size();
+//			map.put("pageSize", lastSize);
+//			//用户被点赞数据获取
+//			bbsTo = bbsService.getPageDPToCustomer(map);
+//		}
 		
-		List<Bbs> bbsTo = new ArrayList<Bbs>();
-		if(bbs.size() < total && countTo > 0){
-			int lastSize = total - bbs.size();
-			map.put("pageSize", lastSize);
-			//用户被点赞数据获取
-			bbsTo = bbsService.getPageDPToCustomer(map);
-		}
+		List<Bbs> bbs = bbsService.getPageDPToCustomer(map);
 		
-		int count = countBy + countTo;
+//		int count = countBy + countTo;
+		int count =  countTo;
 		int pageCount = count/pageSize;
 		if(count%pageSize != 0){
 			pageCount ++;
@@ -1060,23 +1066,34 @@ public class CustomerController {
 		// 根据类型做相应的数据处理
 		//*********************************************
 		List<BbsDynamicVM> list = new ArrayList<BbsDynamicVM>();
+//		if(bbs.size() > 0){
+//			for(Bbs b : bbs){
+//				BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
+//				bbsDynamicVM.setFrom(b);
+//				Bbs to = bbsService.selectByPrimaryKey(b.getTargetId());
+//				bbsDynamicVM.setTo(to);
+//				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(to.getCustomerId()));
+//				list.add(bbsDynamicVM);
+//			}
+//		}
+//		if(bbsTo.size() > 0){
+//			for(Bbs b : bbsTo){
+//				BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
+//				bbsDynamicVM.setFrom(b);
+//				Bbs to = bbsService.selectByPrimaryKey(b.getTargetId());
+//				bbsDynamicVM.setTo(to);
+//				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(b.getCustomerId()));
+//				list.add(bbsDynamicVM);
+//			}
+//		}
+		
 		if(bbs.size() > 0){
 			for(Bbs b : bbs){
 				BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
 				bbsDynamicVM.setFrom(b);
 				Bbs to = bbsService.selectByPrimaryKey(b.getTargetId());
 				bbsDynamicVM.setTo(to);
-				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(to.getCustomerId()));
-				list.add(bbsDynamicVM);
-			}
-		}
-		if(bbsTo.size() > 0){
-			for(Bbs b : bbsTo){
-				BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
-				bbsDynamicVM.setTo(b);
-				Bbs from = bbsService.selectByPrimaryKey(b.getTargetId());
-				bbsDynamicVM.setFrom(from);
-				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(from.getCustomerId()));
+				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(b.getCustomerId()));
 				list.add(bbsDynamicVM);
 			}
 		}
@@ -1133,19 +1150,21 @@ public class CustomerController {
 		map.put("customerId", customerId);
 		
 		//用户点赞数据获取
-		List<Bbs> bbs = bbsService.getPageDCByCustomer(map);
-		int countBy = bbsService.countDCommentByCustomer(customerId);
+		//List<Bbs> bbs = bbsService.getPageDCByCustomer(map);
+		//int countBy = bbsService.countDCommentByCustomer(customerId);
 		int countTo = bbsService.countDCommentToCustomer(customerId);
+//		
+//		List<Bbs> bbsTo = new ArrayList<Bbs>();
+//		if(bbs.size() < total && countTo > 0){
+//			int lastSize = total - bbs.size();
+//			map.put("pageSize", lastSize);
+//			//用户被点赞数据获取
+//			bbsTo = bbsService.getPageDCToCustomer(map);
+//		}
 		
-		List<Bbs> bbsTo = new ArrayList<Bbs>();
-		if(bbs.size() < total && countTo > 0){
-			int lastSize = total - bbs.size();
-			map.put("pageSize", lastSize);
-			//用户被点赞数据获取
-			bbsTo = bbsService.getPageDCToCustomer(map);
-		}
-		
-		int count = countBy + countTo;
+//		int count = countBy + countTo;
+		List<Bbs> bbs = bbsService.getPageDCToCustomer(map);
+		int count = countTo;
 		int pageCount = count/pageSize;
 		if(count%pageSize != 0){
 			pageCount ++;
@@ -1157,23 +1176,34 @@ public class CustomerController {
 		// 根据类型做相应的数据处理
 		//*********************************************
 		List<BbsDynamicVM> list = new ArrayList<BbsDynamicVM>();
+//		if(bbs.size() > 0){
+//			for(Bbs b : bbs){
+//				BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
+//				bbsDynamicVM.setFrom(b);
+//				Bbs to = bbsService.selectByPrimaryKey(b.getTargetId());
+//				bbsDynamicVM.setTo(to);
+//				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(to.getCustomerId()));
+//				list.add(bbsDynamicVM);
+//			}
+//		}
+//		if(bbsTo.size() > 0){
+//			for(Bbs b : bbsTo){
+//				BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
+//				bbsDynamicVM.setFrom(b);
+//				Bbs to = bbsService.selectByPrimaryKey(b.getTargetId());
+//				bbsDynamicVM.setTo(to);
+//				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(b.getCustomerId()));
+//				list.add(bbsDynamicVM);
+//			}
+//		}
+		
 		if(bbs.size() > 0){
 			for(Bbs b : bbs){
 				BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
 				bbsDynamicVM.setFrom(b);
 				Bbs to = bbsService.selectByPrimaryKey(b.getTargetId());
 				bbsDynamicVM.setTo(to);
-				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(to.getCustomerId()));
-				list.add(bbsDynamicVM);
-			}
-		}
-		if(bbsTo.size() > 0){
-			for(Bbs b : bbsTo){
-				BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
-				bbsDynamicVM.setTo(b);
-				Bbs from = bbsService.selectByPrimaryKey(b.getTargetId());
-				bbsDynamicVM.setFrom(from);
-				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(from.getCustomerId()));
+				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(b.getCustomerId()));
 				list.add(bbsDynamicVM);
 			}
 		}
