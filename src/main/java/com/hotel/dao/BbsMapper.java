@@ -15,6 +15,8 @@ public interface BbsMapper {
     int insertSelective(BbsVM record);
 
     Bbs selectByPrimaryKey(Integer id);
+    
+    int updatePostDeleteInfo(Integer id);
 
     int updateByPrimaryKeySelective(Bbs record);
 
@@ -42,11 +44,17 @@ public interface BbsMapper {
 	
 	int countPostByCustomer(int customerId);
 	
-	int countDynamicByCustomer(int customerId);
+	int countDPraiseByCustomer(int customerId);
+	int countDPraiseToCustomer(int customerId);
+	int countDCommentByCustomer(int customerId);
+	int countDCommentToCustomer(int customerId);
 	
 	List<Bbs> getPagePostByCustomer(Map<String, Object> map);
 	
-	List<Bbs> getPageDynamicByCustomer(Map<String, Object> map);
+	List<Bbs> getPageDPByCustomer(Map<String, Object> map);
+	List<Bbs> getPageDPToCustomer(Map<String, Object> map);
+	List<Bbs> getPageDCByCustomer(Map<String, Object> map);
+	List<Bbs> getPageDCToCustomer(Map<String, Object> map);
 
 	int insertSelective1(Bbs record);
 }

@@ -204,21 +204,69 @@ public class BbsServiceImpl implements BbsService {
 	}
 
 	@Override
-	public int countDynamicByCustomer(int customerId) {
-		// TODO Auto-generated method stub
-		return bbsMapper.countDynamicByCustomer(customerId);
-	}
-
-	@Override
 	public List<Bbs> getPagePostByCustomer(Map<String, Object> map) {
 		// TODO Auto-generated method stub
 		return bbsMapper.getPagePostByCustomer(map);
 	}
 
 	@Override
-	public List<Bbs> getPageDynamicByCustomer(Map<String, Object> map) {
+	public int countDPraiseByCustomer(int customerId) {
 		// TODO Auto-generated method stub
-		return bbsMapper.getPageDynamicByCustomer(map);
+		return bbsMapper.countDPraiseByCustomer(customerId);
+	}
+
+	@Override
+	public int countDPraiseToCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countDPraiseToCustomer(customerId);
+	}
+
+	@Override
+	public int countDCommentByCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countDCommentByCustomer(customerId);
+	}
+
+	@Override
+	public int countDCommentToCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countDCommentToCustomer(customerId);
+	}
+
+	@Override
+	public List<Bbs> getPageDPByCustomer(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return bbsMapper.getPageDPByCustomer(map);
+	}
+
+	@Override
+	public List<Bbs> getPageDPToCustomer(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return bbsMapper.getPageDPToCustomer(map);
+	}
+
+	@Override
+	public List<Bbs> getPageDCByCustomer(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return bbsMapper.getPageDCByCustomer(map);
+	}
+
+	@Override
+	public List<Bbs> getPageDCToCustomer(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return bbsMapper.getPageDCToCustomer(map);
+	}
+
+	@Override
+	public Bbs selectByPrimaryKey(Integer id) {
+		// TODO Auto-generated method stub
+		return bbsMapper.selectByPrimaryKey(id);
+	}
+
+	@Override
+	public int updatePostDeleteInfo(Integer id) {
+		// TODO Auto-generated method stub
+		return bbsMapper.updatePostDeleteInfo(id);
 	}
 
 }

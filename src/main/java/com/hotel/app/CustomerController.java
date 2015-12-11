@@ -39,7 +39,9 @@ import com.hotel.model.Region;
 import com.hotel.model.User;
 import com.hotel.model.Varifycode;
 import com.hotel.modelVM.AdvertisementListInfoVM;
+import com.hotel.modelVM.BbsDynamicVM;
 import com.hotel.modelVM.BbsVM;
+import com.hotel.modelVM.CountVM;
 import com.hotel.modelVM.CustomerBrowseVM;
 import com.hotel.modelVM.CustomerVM;
 import com.hotel.modelVM.HotelListInfoVM;
@@ -354,7 +356,11 @@ public class CustomerController {
 		vm.setCountBrowse(customerBrowseService.countByCustomer(customerId));
 		vm.setCountCollection(customerCollectionService.countByCustomer(customerId));
 		vm.setCountTopic(bbsService.countPostByCustomer(customerId));
-		vm.setCountDynamic(bbsService.countDynamicByCustomer(customerId));
+		int countPBy = bbsService.countDPraiseByCustomer(customerId);
+		int countPTo = bbsService.countDPraiseToCustomer(customerId);
+		int countCBy = bbsService.countDCommentByCustomer(customerId);
+		int countCTo = bbsService.countDCommentToCustomer(customerId);
+		vm.setCountDynamic(countPBy + countPTo + countCBy + countCTo);
 		
 		
 		return new Result<CustomerVM>(vm, true, "");
@@ -905,13 +911,91 @@ public class CustomerController {
 	}
 	
 	/**
-	 * 获取用户动态
+	 * 删除用户话题
 	 * @author LiuTaiXiong
 	 * @param json
 	 * @return
 	 */
-	@RequestMapping(value = "/getCustomerDynamic.do", produces = "application/json;charset=UTF-8")
-	public @ResponseBody ListResult<Bbs> getCustomerDynamic(
+	@RequestMapping(value = "/deleteCustomerTopic.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody ListResult<String> deleteCustomerTopic(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		int bbsId= 0;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("bbsId")){
+				bbsId = jsonObject.getInt("bbsId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new ListResult<String>(null, false, "json解析异常");
+		}
+		if(customerId < 1 || bbsId < 1){
+			return new ListResult<String>(null, false, "请求无效");
+		}
+		
+		Bbs bbs = bbsService.selectByPrimaryKey(bbsId);
+		if(bbs == null){
+			return new ListResult<String>(null, false, "没有找到删除的话题");
+		}
+		
+		if(bbs.getCustomerId() != customerId){
+			return new ListResult<String>(null, false, "不是您的话题无法删除");
+		}
+		
+		int count = bbsService.updatePostDeleteInfo(bbsId);
+		if(count > 0){
+			return new ListResult<String>(null, true, "");
+		}else{
+			return new ListResult<String>(null, false, "删除话题失败");
+		}
+	}
+	
+	/**
+	 * 获取个人中心动态点赞数和评论数
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerDynamicCount.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<CountVM> getCustomerDynamicCount(@RequestParam(value = "json", required = false) String json){
+		int customerId = 0;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<CountVM>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new Result<CountVM>(null, false, "请求无效");
+		}
+		
+		int countDPF = bbsService.countDPraiseByCustomer(customerId);
+		int countDPT = bbsService.countDPraiseToCustomer(customerId);
+		int countDCF = bbsService.countDCommentByCustomer(customerId);
+		int countDCT = bbsService.countDCommentToCustomer(customerId);
+		CountVM vm = new CountVM();
+		vm.setCountPraise(countDPF + countDPT);
+		vm.setCountComments(countDCF + countDCT);
+		
+		return new Result<CountVM>(vm, true, "");
+	}
+	
+	/**
+	 * 获取用户动态-点赞
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerDynamicPraise.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody ListResult<BbsDynamicVM> getCustomerDynamicPraise(
 			@RequestParam(value = "json", required = false) String json)
 	{
 		int customerId = 0;
@@ -930,25 +1014,37 @@ public class CustomerController {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			return new ListResult<Bbs>(null, false, "json解析异常");
+			return new ListResult<BbsDynamicVM>(null, false, "json解析异常");
 		}
 		if(customerId < 1){
-			return new ListResult<Bbs>(null, false, "请求无效");
+			return new ListResult<BbsDynamicVM>(null, false, "请求无效");
 		}
 		if(pageNumber < 1){
-			return new ListResult<Bbs>(null, false, "请求无效");
+			return new ListResult<BbsDynamicVM>(null, false, "请求无效");
 		}
+		
+		int total = pageSize * pageNumber;
 		
 		//获取数据
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("pageStart", 0);
-		map.put("pageSize", pageSize * pageNumber);
+		map.put("pageSize", total);
 		map.put("customerId", customerId);
 		
-		//浏览记录数据获取
-		List<Bbs> bbs = bbsService.getPageDynamicByCustomer(map);
-		int count = bbsService.countDynamicByCustomer(customerId);
+		//用户点赞数据获取
+		List<Bbs> bbs = bbsService.getPageDPByCustomer(map);
+		int countBy = bbsService.countDPraiseByCustomer(customerId);
+		int countTo = bbsService.countDPraiseToCustomer(customerId);
 		
+		List<Bbs> bbsTo = new ArrayList<Bbs>();
+		if(bbs.size() < total && countTo > 0){
+			int lastSize = total - bbs.size();
+			map.put("pageSize", lastSize);
+			//用户被点赞数据获取
+			bbsTo = bbsService.getPageDPToCustomer(map);
+		}
+		
+		int count = countBy + countTo;
 		int pageCount = count/pageSize;
 		if(count%pageSize != 0){
 			pageCount ++;
@@ -959,8 +1055,131 @@ public class CustomerController {
 		//*********************************************
 		// 根据类型做相应的数据处理
 		//*********************************************
+		List<BbsDynamicVM> list = new ArrayList<BbsDynamicVM>();
+		if(bbs.size() > 0){
+			for(Bbs b : bbs){
+				BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
+				bbsDynamicVM.setFrom(b);
+				Bbs to = bbsService.selectByPrimaryKey(b.getTargetId());
+				bbsDynamicVM.setTo(to);
+				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(to.getCustomerId()));
+				list.add(bbsDynamicVM);
+			}
+		}
+		if(bbsTo.size() > 0){
+			for(Bbs b : bbsTo){
+				BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
+				bbsDynamicVM.setTo(b);
+				Bbs from = bbsService.selectByPrimaryKey(b.getTargetId());
+				bbsDynamicVM.setFrom(from);
+				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(from.getCustomerId()));
+				list.add(bbsDynamicVM);
+			}
+		}
 		
-		return null;
+		ListResult<BbsDynamicVM> result = new ListResult<BbsDynamicVM>();
+		result.setIsSuccess(true);
+		result.setTotal(pageCount);
+		result.setMsg("");
+		result.setRows(list);
+		return result;
+	}
+	
+	/**
+	 * 获取用户动态-评论
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerDynamicComments.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody ListResult<BbsDynamicVM> getCustomerDynamicComments(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		int pageNumber = 1;
+		int pageSize = DEFAULT_PAGE_SIZE;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("pageNumber")){
+				pageNumber = jsonObject.getInt("pageNumber");
+			}
+			if(jsonObject.containsKey("pageSize")){
+				pageSize = jsonObject.getInt("pageSize");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new ListResult<BbsDynamicVM>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new ListResult<BbsDynamicVM>(null, false, "请求无效");
+		}
+		if(pageNumber < 1){
+			return new ListResult<BbsDynamicVM>(null, false, "请求无效");
+		}
+		
+		int total = pageSize * pageNumber;
+		
+		//获取数据
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("pageStart", 0);
+		map.put("pageSize", total);
+		map.put("customerId", customerId);
+		
+		//用户点赞数据获取
+		List<Bbs> bbs = bbsService.getPageDCByCustomer(map);
+		int countBy = bbsService.countDCommentByCustomer(customerId);
+		int countTo = bbsService.countDCommentToCustomer(customerId);
+		
+		List<Bbs> bbsTo = new ArrayList<Bbs>();
+		if(bbs.size() < total && countTo > 0){
+			int lastSize = total - bbs.size();
+			map.put("pageSize", lastSize);
+			//用户被点赞数据获取
+			bbsTo = bbsService.getPageDCToCustomer(map);
+		}
+		
+		int count = countBy + countTo;
+		int pageCount = count/pageSize;
+		if(count%pageSize != 0){
+			pageCount ++;
+		}
+		
+		//返回对象处理
+		
+		//*********************************************
+		// 根据类型做相应的数据处理
+		//*********************************************
+		List<BbsDynamicVM> list = new ArrayList<BbsDynamicVM>();
+		if(bbs.size() > 0){
+			for(Bbs b : bbs){
+				BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
+				bbsDynamicVM.setFrom(b);
+				Bbs to = bbsService.selectByPrimaryKey(b.getTargetId());
+				bbsDynamicVM.setTo(to);
+				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(to.getCustomerId()));
+				list.add(bbsDynamicVM);
+			}
+		}
+		if(bbsTo.size() > 0){
+			for(Bbs b : bbsTo){
+				BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
+				bbsDynamicVM.setTo(b);
+				Bbs from = bbsService.selectByPrimaryKey(b.getTargetId());
+				bbsDynamicVM.setFrom(from);
+				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(from.getCustomerId()));
+				list.add(bbsDynamicVM);
+			}
+		}
+		
+		ListResult<BbsDynamicVM> result = new ListResult<BbsDynamicVM>();
+		result.setIsSuccess(true);
+		result.setTotal(pageCount);
+		result.setMsg("");
+		result.setRows(list);
+		return result;
 	}
 	
 	/**
