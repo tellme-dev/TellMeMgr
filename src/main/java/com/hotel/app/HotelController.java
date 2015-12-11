@@ -71,7 +71,7 @@ public class HotelController {
 	private BaseDataService baseDataService;
 	
 	/**
-	 * APP获取酒店列表接口
+	 * APP获取酒店列表接口（专题项目）
 	 * @author LiuTaiXiong
 	 * @param json
 	 * @param request
@@ -83,12 +83,16 @@ public class HotelController {
 	public ListResult<HotelListInfoVM> hotelListByItemChild(@RequestParam(value = "json", required = false)String json, HttpServletRequest request, HttpServletResponse response) {
 		//初始化分页数据
 		int pageNumber = DEFAULT_PAGE_NUM;
+		int pageSize = DEFAULT_PAGE_SIZE;
 		int itemTagId = 0;
 		
 		
 		JSONObject jsonObject = JSONObject.fromObject(json);
 		if(jsonObject.containsKey("pageNumber")){
 			pageNumber = new Integer(jsonObject.getString("pageNumber"));
+		}
+		if(jsonObject.containsKey("pageSize")){
+			pageSize = new Integer(jsonObject.getString("pageSize"));
 		}
 		if(jsonObject.containsKey("itemTagId")){
 			itemTagId = new Integer(jsonObject.getString("itemTagId"));
@@ -122,8 +126,8 @@ public class HotelController {
 		
 		
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
-		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("pageStart", 0);
+		map.put("pageSize", pageNumber * pageSize);
 		map.put("idList", ids);
 		
 		
@@ -224,8 +228,8 @@ public class HotelController {
 			}
 		}
 		
-		int pageCount = count/DEFAULT_PAGE_SIZE;
-		if(count % DEFAULT_PAGE_SIZE != 0){
+		int pageCount = count/pageSize;
+		if(count % pageSize != 0){
 			pageCount ++;
 		}
 		
@@ -252,12 +256,16 @@ public class HotelController {
 	public ListResult<HotelListInfoVM> hotelListByItem(@RequestParam(value = "json", required = false)String json, HttpServletRequest request, HttpServletResponse response) {
 		//初始化分页数据
 		int pageNumber = DEFAULT_PAGE_NUM;
+		int pageSize = DEFAULT_PAGE_SIZE;
 		int itemTagId = 0;
 		
 		
 		JSONObject jsonObject = JSONObject.fromObject(json);
 		if(jsonObject.containsKey("pageNumber")){
 			pageNumber = new Integer(jsonObject.getString("pageNumber"));
+		}
+		if(jsonObject.containsKey("pageSize")){
+			pageSize = new Integer(jsonObject.getString("pageSize"));
 		}
 		if(jsonObject.containsKey("itemTagId")){
 			itemTagId = new Integer(jsonObject.getString("itemTagId"));
@@ -274,8 +282,8 @@ public class HotelController {
 		
 		//获取数据
 		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("pageStart", (pageNumber - 1)*DEFAULT_PAGE_SIZE);
-		map.put("pageSize", DEFAULT_PAGE_SIZE);
+		map.put("pageStart", 0);
+		map.put("pageSize", pageSize * pageNumber);
 		map.put("itemTagId", itemTagId);
 		
 		//获取指定酒店对象集
@@ -375,8 +383,8 @@ public class HotelController {
 			}
 		}
 		
-		int pageCount = count/DEFAULT_PAGE_SIZE;
-		if(count % DEFAULT_PAGE_SIZE != 0){
+		int pageCount = count/pageSize;
+		if(count % pageSize != 0){
 			pageCount ++;
 		}
 		
