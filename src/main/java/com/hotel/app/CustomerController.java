@@ -293,13 +293,29 @@ public class CustomerController {
 	/**
 	 * 保存用户信息
 	 * 保存用户修改后的个人资料
+	 * @author jun
 	 * @param autoInfo
 	 * @return
 	 */
-	public @ResponseBody String saveCustomer(
+	@ResponseBody
+	@RequestMapping(value="saveCustomer.do",produces = "application/json;charset=UTF-8")
+	public Result<Customer> saveCustomer(
 			@RequestParam(value = "customerInfo", required = false) String customerInfo)
 	{
-		return null;
+		JSONObject jObj = JSONObject.fromObject(customerInfo);
+		String birthday = jObj.getString("birthday");
+		Customer customer = (Customer) JSONObject.toBean(jObj,Customer.class);
+		if(customer == null||customer.getId() == null){
+			return new Result<Customer>(null,false,"传入后台参数为空或缺少");
+		}
+		try{
+			Date birthDay = GeneralUtil.strToDate(birthday);//传的是String类型，转换成Date
+			customer.setBirthday(birthDay);
+			customerService.update(customer);
+			return new Result<Customer>(null,true,"保存成功");
+		}catch(Exception e){
+			return new Result<Customer>(null, false, "保存失败");
+		}
 	}
 	/**
 	 * 获取客户基本信息
@@ -349,7 +365,7 @@ public class CustomerController {
 		Customer customer = customerService.selectByPrimaryKey(customerId);
 		
 		if(customer == null){
-			new Result<CustomerVM>(null, false, "没有找到对应的用户信息");
+			return new Result<CustomerVM>(null, false, "没有找到对应的用户信息");
 		}
 		
 		CustomerVM vm = new CustomerVM();
@@ -361,7 +377,7 @@ public class CustomerController {
 		vm.setCountDynamic(bbsService.countDynamicByCustomer(customerId));
 		
 		
-		return new Result<CustomerVM>(vm, true, "");
+		return new Result<CustomerVM>(vm, true, "获取数据成功");
 	}
 	
 	/**
