@@ -1,5 +1,6 @@
 package com.hotel.app;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.cloopen.rest.sdk.CCPRestSmsSDK;
 import com.hotel.common.ListResult;
@@ -87,7 +89,9 @@ public class CustomerController {
 			@RequestParam(value = "mobile", required = false) String mobile,
 			HttpServletRequest request)
 	{
-		Customer c = customerService.getCustomerByMobile(mobile);
+		JSONObject jObj = JSONObject.fromObject(mobile);
+		String phone = jObj.getString("mobile");
+		Customer c = customerService.getCustomerByMobile(phone);
 		if(c !=null){
 			return new Result<Customer>(null,false,"该号码已注册").toJson();
 		}
@@ -936,6 +940,37 @@ public class CustomerController {
 			@RequestParam(value = "browseInfo", required = false) String browseInfo)
 	{
 		return null;
+	}
+	/**
+	 * 上传头像
+	 * @author jun
+	 * @param customerImg
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "uploadHeadImg.do", produces = "application/json;charset=UTF-8")  
+    public @ResponseBody String upload(
+    		@RequestParam MultipartFile customerImg,
+    		HttpServletRequest request) { 
+		Result<Customer> result = null;
+        try { 
+        	//String path = request.getSession().getServletContext().getRealPath("Photo"); 
+        	String path = request.getSession().getServletContext().getRealPath("/")+"app/head";
+//        	String path = getClass().getResource("/").getFile().toString();
+//			path = path.substring(0, (path.length() - 16))+"washPhoto";
+        	String fileName = customerImg.getOriginalFilename();
+        	
+        	File uploadFile = new File(path,fileName);
+        	if(!uploadFile.exists()){  
+        		uploadFile.mkdirs();  
+            }  
+        	customerImg.transferTo(uploadFile); //保存
+        	result = new Result<Customer>(null, true, "上传成功");
+        	return result.toJson();
+        }catch(Exception e){
+        	result = new Result<Customer>(null, false, "上传失败");
+        	return result.toJson();
+        }
 	}
 	
 }
