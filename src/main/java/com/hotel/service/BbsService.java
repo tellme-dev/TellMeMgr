@@ -101,10 +101,41 @@ public interface BbsService {
 	 * @author LiuTaiXiong
 	 * @param customerId
 	 */
-	int countDynamicByCustomer(int customerId);
+	int countDPraiseByCustomer(int customerId);
+	int countDPraiseToCustomer(int customerId);
+	int countDCommentByCustomer(int customerId);
+	int countDCommentToCustomer(int customerId);
 	
+	/**
+	 * 获取主贴数据
+	 * @author LiuTaiXiong
+	 * @param map
+	 */
 	List<Bbs> getPagePostByCustomer(Map<String, Object> map);
 	
-	List<Bbs> getPageDynamicByCustomer(Map<String, Object> map);
+	/**
+	 * 获取动态（回复、评价、分享、点赞）
+	 * @author LiuTaiXiong
+	 * @param map
+	 * @return
+	 */
+	List<Bbs> getPageDPByCustomer(Map<String, Object> map);
+	List<Bbs> getPageDPToCustomer(Map<String, Object> map);
+	List<Bbs> getPageDCByCustomer(Map<String, Object> map);
+	List<Bbs> getPageDCToCustomer(Map<String, Object> map);
+	
+	/**
+	 * 指定获取单条记录
+	 * @author LiuTaiXiong
+	 * @param id
+	 * @return
+	 */
+	Bbs selectByPrimaryKey(Integer id);
 
+	/**
+	 * 删除指定主贴记录
+	 * @param id
+	 * @return
+	 */
+	int updatePostDeleteInfo(Integer id);
 }

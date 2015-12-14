@@ -18,4 +18,6 @@ public interface CustomerService {
 	int updatePassword(Customer record);
 	
 	int setPassword(int id, String password);
+
+	void update(Customer customer);
 }

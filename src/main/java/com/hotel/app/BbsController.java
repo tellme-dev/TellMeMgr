@@ -145,6 +145,10 @@ public class BbsController {
 			HttpServletRequest request){
 		JSONObject jObj = JSONObject.fromObject(bbsParam);
 		BbsVM bbs = (BbsVM) JSONObject.toBean(jObj,BbsVM.class);
+		int id = bbs.getCustomerId();
+		/*if(bbs.getCustomerId()==null||){
+			
+		}*/
 		Result<BbsVM> result = new Result<BbsVM>();
 		try{
 			bbsService.saveBbs(request,bbs);
@@ -173,7 +177,7 @@ public class BbsController {
         	String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
 //        	String path = getClass().getResource("/").getFile().toString();
 //			path = path.substring(0, (path.length() - 16))+"washPhoto";
-        	String fileName = bbsPhoto.getOriginalFilename()+".jpg";
+        	String fileName = bbsPhoto.getOriginalFilename();
         	
         	File uploadFile = new File(path,fileName);
         	if(!uploadFile.exists()){  
