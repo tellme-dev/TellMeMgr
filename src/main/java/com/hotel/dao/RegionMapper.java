@@ -25,4 +25,8 @@ public interface RegionMapper {
 	List<Region> getCityRegion(Integer provinceId);
 	
 	List<Region> getAreaRegion(Integer cityId);
+
+	List<Region> getNearAndHotRegionsByCustomer(int customerId,int defaultRegionNum);
+
+	List<Region> getHistoricRegions(int customerId);
 }
