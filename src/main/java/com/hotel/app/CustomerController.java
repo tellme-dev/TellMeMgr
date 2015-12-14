@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cloopen.rest.sdk.CCPRestSmsSDK;
 import com.hotel.common.ListResult;
 import com.hotel.common.Result;
+import com.hotel.common.utils.BbsContainer;
 import com.hotel.common.utils.EndecryptUtils;
 import com.hotel.common.utils.GeneralUtil;
 import com.hotel.common.utils.StringUtil;
@@ -41,6 +42,7 @@ import com.hotel.model.Region;
 import com.hotel.model.User;
 import com.hotel.model.Varifycode;
 import com.hotel.modelVM.AdvertisementListInfoVM;
+import com.hotel.modelVM.BbsCommentVM;
 import com.hotel.modelVM.BbsDynamicVM;
 import com.hotel.modelVM.BbsVM;
 import com.hotel.modelVM.CountVM;
@@ -1113,7 +1115,7 @@ public class CustomerController {
 	 * @return
 	 */
 	@RequestMapping(value = "/getCustomerDynamicComments.do", produces = "application/json;charset=UTF-8")
-	public @ResponseBody ListResult<BbsDynamicVM> getCustomerDynamicComments(
+	public @ResponseBody ListResult<BbsCommentVM> getCustomerDynamicComments(
 			@RequestParam(value = "json", required = false) String json)
 	{
 		int customerId = 0;
@@ -1132,13 +1134,13 @@ public class CustomerController {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			return new ListResult<BbsDynamicVM>(null, false, "json解析异常");
+			return new ListResult<BbsCommentVM>(null, false, "json解析异常");
 		}
 		if(customerId < 1){
-			return new ListResult<BbsDynamicVM>(null, false, "请求无效");
+			return new ListResult<BbsCommentVM>(null, false, "请求无效");
 		}
 		if(pageNumber < 1){
-			return new ListResult<BbsDynamicVM>(null, false, "请求无效");
+			return new ListResult<BbsCommentVM>(null, false, "请求无效");
 		}
 		
 		int total = pageSize * pageNumber;
@@ -1175,7 +1177,7 @@ public class CustomerController {
 		//*********************************************
 		// 根据类型做相应的数据处理
 		//*********************************************
-		List<BbsDynamicVM> list = new ArrayList<BbsDynamicVM>();
+//		List<BbsDynamicVM> list = new ArrayList<BbsDynamicVM>();
 //		if(bbs.size() > 0){
 //			for(Bbs b : bbs){
 //				BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
@@ -1197,22 +1199,41 @@ public class CustomerController {
 //			}
 //		}
 		
+		List<BbsCommentVM> comments = new ArrayList<BbsCommentVM>();
 		if(bbs.size() > 0){
+			BbsContainer container = new BbsContainer();
 			for(Bbs b : bbs){
-				BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
-				bbsDynamicVM.setFrom(b);
-				Bbs to = bbsService.selectByPrimaryKey(b.getTargetId());
-				bbsDynamicVM.setTo(to);
-				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(b.getCustomerId()));
-				list.add(bbsDynamicVM);
+				if(b.getPath() != null && !b.equals("")){
+					String idstr = b.getPath();
+					if(b.getPath().contains(".")){
+						idstr = b.getPath().split("\\.")[0];
+					}
+					
+					Integer id = new Integer(idstr);
+					BbsDynamicVM bbsDynamicVM = new BbsDynamicVM();
+					bbsDynamicVM.setFrom(b);
+					//Bbs to = bbsService.selectByPrimaryKey(b.getTargetId());
+					//bbsDynamicVM.setTo(to);
+					bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(b.getCustomerId()));
+					//list.add(bbsDynamicVM);
+					container.add(id, bbsDynamicVM);
+				}
+			}
+			if(container.size() > 0){
+				for(Integer id : container.getIds()){
+					BbsCommentVM vm = new BbsCommentVM();
+					vm.setPost(bbsService.loadBbsById(id));
+					vm.setDynamics(container.getValues(id));
+					comments.add(vm);
+				}
 			}
 		}
 		
-		ListResult<BbsDynamicVM> result = new ListResult<BbsDynamicVM>();
+		ListResult<BbsCommentVM> result = new ListResult<BbsCommentVM>();
 		result.setIsSuccess(true);
 		result.setTotal(pageCount);
 		result.setMsg("");
-		result.setRows(list);
+		result.setRows(comments);
 		return result;
 	}
 	
