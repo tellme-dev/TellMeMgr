@@ -269,4 +269,15 @@ public class BbsServiceImpl implements BbsService {
 		return bbsMapper.updatePostDeleteInfo(id);
 	}
 
+	@Override
+	public ListResult<BbsAttach> loadBbsAttachByBbsId(int bbsId) {
+		// TODO Auto-generated method stub
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("bbsId", bbsId);
+		map.put("attachType", 1);
+		int count = bbsAttachMapper.countByMap(map);
+		List<BbsAttach> list = bbsAttachMapper.selectListByMap(map);
+		return new ListResult<BbsAttach>(count,list,true);
+	}
+
 }

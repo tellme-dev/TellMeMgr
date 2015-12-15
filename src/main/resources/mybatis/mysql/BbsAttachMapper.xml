@@ -96,4 +96,27 @@
     from t_bbs_attach
     where bbs_id = #{bbsId,jdbcType=INTEGER}
   </select>
+  <select id="countByMap" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(*)
+    from t_bbs_attach
+    where 1=1
+    <if test="bbsId != null" >
+        and bbs_id = #{bbsId,jdbcType=INTEGER}
+    </if>
+    <if test="attachType != null" >
+        and attach_type = #{attachType,jdbcType=INTEGER}
+    </if>
+  </select>
+  <select id="selectListByMap" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_bbs_attach
+    where 1=1
+    <if test="bbsId != null" >
+        and bbs_id = #{bbsId,jdbcType=INTEGER}
+    </if>
+    <if test="attachType != null" >
+        and attach_type = #{attachType,jdbcType=INTEGER}
+    </if>
+  </select>
 </mapper>
