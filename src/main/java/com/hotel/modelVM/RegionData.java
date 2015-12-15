@@ -14,33 +14,35 @@ public class RegionData {
 	/**
 	 * 常住地域
 	 */
-	private List<Region> historicRegions;
+	private List<RegionVM> historicRegions;
 	/**
 	 * 附近热门地域
 	 */
-	private List<Region> hotAndNearRegions;
+	private List<RegionVM> hotAndNearRegions;
 	/**
 	 * 所有的地域
 	 */
-	private List<Region> allRegions;
-	public List<Region> getHistoricRegions() {
+	private List<RegionVM> allRegions;
+	public List<RegionVM> getHistoricRegions() {
 		return historicRegions;
 	}
-	public void setHistoricRegions(List<Region> historicRegions) {
+	public void setHistoricRegions(List<RegionVM> historicRegions) {
 		this.historicRegions = historicRegions;
 	}
-	public List<Region> getHotAndNearRegions() {
+	public List<RegionVM> getHotAndNearRegions() {
 		return hotAndNearRegions;
 	}
-	public void setHotAndNearRegions(List<Region> hotAndNearRegions) {
+	public void setHotAndNearRegions(List<RegionVM> hotAndNearRegions) {
 		this.hotAndNearRegions = hotAndNearRegions;
 	}
-	public List<Region> getAllRegions() {
+	public List<RegionVM> getAllRegions() {
 		return allRegions;
 	}
-	public void setAllRegions(List<Region> allRegions) {
+	public void setAllRegions(List<RegionVM> allRegions) {
 		this.allRegions = allRegions;
 	}
+	
+	
 	
 
 }
