@@ -1,5 +1,7 @@
 package com.hotel.service.impl;
 
+import java.util.Date;
+
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
@@ -8,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hotel.common.shiro.ShiroUsernamePasswordToken;
+import com.hotel.common.utils.GeneralUtil;
 import com.hotel.dao.CustomerCollectionMapper;
 import com.hotel.dao.CustomerMapper;
 import com.hotel.model.Customer;
-import com.hotel.model.CustomerCollection;
 import com.hotel.service.CustomerService;
 @Service
 public class CustomerServiceImpl implements CustomerService{
@@ -72,6 +74,11 @@ public class CustomerServiceImpl implements CustomerService{
 	public Customer selectByPrimaryKey(Integer id) {
 		// TODO Auto-generated method stub
 		return customerMapper.selectByPrimaryKey(id);
+	}
+	@Override
+	public void update(Customer customer) {
+		// TODO Auto-generated method stub
+		customerMapper.updateByPrimaryKeySelective(customer);
 	}
 
 }

@@ -235,6 +235,61 @@ public class CustomerController {
 		}
 	}
 	/**
+	 * 修改电话号码
+	 * @author jun
+	 * @param registerData
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping(value = "editMobile.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody String editMobile(
+			@RequestParam(value = "registerData", required = false) String registerData,
+			HttpServletRequest request){
+		JSONObject jObj = JSONObject.fromObject(registerData);
+		if(jObj.getString("id")==null||"".equals(jObj.getString("id"))){
+			return new Result<Object>(null, false, "传入后台用户id为空").toJson();
+		}
+		RegisterData registerInfo = new RegisterData();
+		registerInfo.setMobile(jObj.getString("mobile"));
+		registerInfo.setPsd(jObj.getString("psd"));
+		registerInfo.setVerifyCode(jObj.getString("verifyCode"));
+		//判断注册信息是否符合格式		
+		String checkMsg =this.checkRegisterData(registerInfo);
+		
+		if(!StringUtil.isEmpty(checkMsg)){
+			return new Result<Object>(null, false, checkMsg).toJson();
+		}
+		//判断该电话号码是否已经注册
+		Customer c = customerService.getCustomerByMobile(registerInfo.getMobile());
+		if(c !=null){
+			return new Result<Customer>(null,false,"该号码已注册").toJson();
+		}
+		//判断输入的验证码是否正确
+		Varifycode v = varifycodeService.selectByMobile(registerInfo.getMobile());
+		if(!v.getVarifyCode().equals(registerInfo.getVerifyCode())){
+			return new Result<Customer>(null,false,"验证码输入不正确").toJson();
+		}
+		long seconds = this.getBetweenDate(v.getCreatetime(), new Date());
+		if(seconds==0&&seconds>=DEFAULT_VARIFY_TIME){
+			return new Result<Customer>(null,false,"验证码已过期").toJson();
+		}
+		
+		//插入数据
+		User u = EndecryptUtils.md5Password(registerInfo.getMobile(), registerInfo.getPsd());
+		Customer customer = new Customer();
+		customer.setMobile(u.getName());
+		customer.setPsd(u.getPsd());
+		customer.setSalt(u.getSalt());
+		customer.setId(jObj.getInt("id"));
+		
+		try{
+			customerService.update(customer);
+			return new Result<Object>(null, true, "注册成功").toJson();
+		}catch(Exception e){
+			return new Result<Object>(null, false, "注册失败").toJson();
+		}
+	}
+	/**
 	 * 获取两个时间之间的秒差
 	 * @param min
 	 * @param max
@@ -297,13 +352,29 @@ public class CustomerController {
 	/**
 	 * 保存用户信息
 	 * 保存用户修改后的个人资料
+	 * @author jun
 	 * @param autoInfo
 	 * @return
 	 */
-	public @ResponseBody String saveCustomer(
+	@ResponseBody
+	@RequestMapping(value="saveCustomer.do",produces = "application/json;charset=UTF-8")
+	public Result<Customer> saveCustomer(
 			@RequestParam(value = "customerInfo", required = false) String customerInfo)
 	{
-		return null;
+		JSONObject jObj = JSONObject.fromObject(customerInfo);
+		String birthday = jObj.getString("birthday");
+		Customer customer = (Customer) JSONObject.toBean(jObj,Customer.class);
+		if(customer == null||customer.getId() == null){
+			return new Result<Customer>(null,false,"传入后台参数为空或缺少");
+		}
+		try{
+			Date birthDay = GeneralUtil.strToDate(birthday);//传的是String类型，转换成Date
+			customer.setBirthday(birthDay);
+			customerService.update(customer);
+			return new Result<Customer>(null,true,"保存成功");
+		}catch(Exception e){
+			return new Result<Customer>(null, false, "保存失败");
+		}
 	}
 	/**
 	 * 获取客户基本信息
@@ -353,7 +424,7 @@ public class CustomerController {
 		Customer customer = customerService.selectByPrimaryKey(customerId);
 		
 		if(customer == null){
-			new Result<CustomerVM>(null, false, "没有找到对应的用户信息");
+			return new Result<CustomerVM>(null, false, "没有找到对应的用户信息");
 		}
 		
 		CustomerVM vm = new CustomerVM();
@@ -370,7 +441,7 @@ public class CustomerController {
 		vm.setCountDynamic(countPTo + countCTo);
 		
 		
-		return new Result<CustomerVM>(vm, true, "");
+		return new Result<CustomerVM>(vm, true, "获取数据成功");
 	}
 	
 	/**
