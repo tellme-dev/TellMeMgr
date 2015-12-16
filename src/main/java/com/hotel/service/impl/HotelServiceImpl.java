@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hotel.dao.HotelMapper;
 import com.hotel.dao.ItemDetailMapper;
@@ -17,6 +18,7 @@ import com.hotel.modelVM.HotelParam;
 import com.hotel.modelVM.HotelVM;
 import com.hotel.service.HotelService;
 
+@Transactional
 @Service("hotelService")
 public class HotelServiceImpl implements HotelService{
 	

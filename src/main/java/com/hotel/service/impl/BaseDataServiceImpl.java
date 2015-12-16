@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hotel.dao.ItemTagMapper;
 import com.hotel.dao.OrgMapper;
@@ -15,6 +16,7 @@ import com.hotel.model.Region;
 import com.hotel.service.BaseDataService;
 import com.hotel.viewmodel.ItemTagWebVM;
 
+@Transactional
 @Service("baseDataService")
 public class BaseDataServiceImpl implements BaseDataService {
 	

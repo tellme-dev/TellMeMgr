@@ -1,11 +1,11 @@
 /**
-   * Copy Right Info		  : 四川天翼网络服务有限责任公司版权�?�� 
-   * Project                  : 天翼�?��框架
+   * Copy Right Info		  :
+   * Project                  : 
    * File name                : CommonActionException.java
    * Version                  : 
    * Create time     		  : 2013-9-30
    * Modify History           : 
-   * Description   文件描述。�?�?
+   * Description   
    * 
    **/
 package com.hotel.common.exception;

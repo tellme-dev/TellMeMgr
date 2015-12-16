@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hotel.common.ListResult;
 import com.hotel.common.utils.Page;
@@ -55,6 +56,7 @@ public class BbsServiceImpl implements BbsService {
 		return result;
 	}
 
+	@Transactional
 	@Override
 	public void saveBbs(HttpServletRequest request, BbsVM bbs) {
 		// TODO Auto-generated method stub
@@ -267,6 +269,17 @@ public class BbsServiceImpl implements BbsService {
 	public int updatePostDeleteInfo(Integer id) {
 		// TODO Auto-generated method stub
 		return bbsMapper.updatePostDeleteInfo(id);
+	}
+
+	@Override
+	public ListResult<BbsAttach> loadBbsAttachByBbsId(int bbsId) {
+		// TODO Auto-generated method stub
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("bbsId", bbsId);
+		map.put("attachType", 1);
+		int count = bbsAttachMapper.countByMap(map);
+		List<BbsAttach> list = bbsAttachMapper.selectListByMap(map);
+		return new ListResult<BbsAttach>(count,list,true);
 	}
 
 }

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.hotel.common.ListResult;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Bbs;
+import com.hotel.model.BbsAttach;
 import com.hotel.model.BbsCategory;
 import com.hotel.modelVM.BbsVM;
 
@@ -138,4 +139,12 @@ public interface BbsService {
 	 * @return
 	 */
 	int updatePostDeleteInfo(Integer id);
+
+	/**
+	 * 获取bbs图片
+	 * @author jun
+	 * @param bbsId
+	 * @return
+	 */
+	ListResult<BbsAttach> loadBbsAttachByBbsId(int bbsId);
 }

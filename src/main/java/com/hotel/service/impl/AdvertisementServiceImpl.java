@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hotel.common.ListResult;
 import com.hotel.common.utils.GeneralUtil;
@@ -24,6 +25,7 @@ import com.hotel.modelVM.BbsVM;
 import com.hotel.service.AdvertisementService;
 import com.hotel.viewmodel.AdvertisementWebVM;
 
+@Transactional
 @Service("adService")
 public class AdvertisementServiceImpl implements AdvertisementService {
 	
@@ -136,7 +138,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 				String imageUrl = imageUrls.get(i);
 				
 				adDetail.setAdId(ad.getId());
-				adDetail.setId(0);
+				adDetail.setId(1);
 				adDetail.setImageUrl(imageUrl);
 				adDetail.setText(text);
 				adDetailMapper.insert(adDetail);

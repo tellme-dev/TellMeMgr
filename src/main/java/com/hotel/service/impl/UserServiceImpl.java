@@ -14,6 +14,7 @@ import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hotel.common.ReturnResult;
 import com.hotel.common.shiro.ShiroUsernamePasswordToken;
@@ -121,7 +122,6 @@ public class UserServiceImpl implements UserService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 	@Override
 	public void saveorUpdateUser(User user) throws ParseException {

@@ -372,6 +372,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 			<groupId>sms</groupId>
 			<artifactId>CCP_REST_SMS_SDK_JAVA_v2.6.3r</artifactId>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.belerweb</groupId>
+			<artifactId>pinyin4j</artifactId>
+			<version>2.5.0</version>
+		</dependency>
 	</dependencies>
 	
 	<repositories>
@@ -494,7 +500,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 	                    <artifactId>mysql-connector-java</artifactId>  
 	                    <version>${mysql.version}</version>  
 	                </dependency>  
-	          
+	          					
 	            </dependencies>
 	              
 	            <!-- 自动生成mybatis实体类 -->  
@@ -552,5 +558,6 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 				<version>2.6.3</version>
 			</dependency>
 		</dependencies>
+		
 	</dependencyManagement>
 </project>
