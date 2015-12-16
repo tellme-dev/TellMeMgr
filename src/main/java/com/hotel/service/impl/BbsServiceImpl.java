@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hotel.common.ListResult;
 import com.hotel.common.utils.Page;
@@ -55,6 +56,7 @@ public class BbsServiceImpl implements BbsService {
 		return result;
 	}
 
+	@Transactional
 	@Override
 	public void saveBbs(HttpServletRequest request, BbsVM bbs) {
 		// TODO Auto-generated method stub

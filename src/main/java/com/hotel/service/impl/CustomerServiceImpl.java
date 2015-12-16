@@ -15,6 +15,7 @@ import com.hotel.dao.CustomerCollectionMapper;
 import com.hotel.dao.CustomerMapper;
 import com.hotel.model.Customer;
 import com.hotel.service.CustomerService;
+
 @Service
 public class CustomerServiceImpl implements CustomerService{
 	

@@ -23,6 +23,7 @@
 			expression=".dao.*" />
 		<context:include-filter type="regex"
 			expression=".service..*(..)" />
+		<context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
 	</context:component-scan>
 	
   	
@@ -111,6 +112,27 @@
 	<task:scheduler id="scheduler" pool-size="10" />
 	<task:annotation-driven executor="executor"
 		scheduler="scheduler" />
+		
+	<!-- 以 @Transactional 标注来定义事务 -->
+	<!-- <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+        	<tx:method name="save*" propagation="REQUIRED" />  
+            <tx:method name="delete*" propagation="REQUIRED" />  
+            <tx:method name="update*" propagation="REQUIRED" />  
+            <tx:method name="*" propagation="REQUIRED"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <aop:config expose-proxy="true" proxy-target-class="true">
+        只对业务逻辑层实施事务
+        <aop:pointcut id="txPointcut" expression="execution(* com.hotel..service..*+.*(..))"/>
+        <aop:advisor id="txAdvisor" advice-ref="txAdvice" pointcut-ref="txPointcut"/>
+    </aop:config> -->
+	
 
 	
 </beans>
