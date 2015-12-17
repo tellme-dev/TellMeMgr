@@ -11,6 +11,14 @@ public class HomeItemVM {
 	private int itemTagId;
 	private List<String> imageUrls;
 	private String name;
+	private String defaultImageUrl;
+	
+	public String getDefaultImageUrl() {
+		return defaultImageUrl;
+	}
+	public void setDefaultImageUrl(String defaultImageUrl) {
+		this.defaultImageUrl = defaultImageUrl;
+	}
 	public int getItemTagId() {
 		return itemTagId;
 	}
@@ -32,12 +40,14 @@ public class HomeItemVM {
 	public HomeItemVM(String name){
 		this.itemTagId = 0;//0针对是"更多"
 		this.name = name;
+		this.defaultImageUrl = "app/images/b.png";
 		this.imageUrls = new ArrayList<String>();
 	}
 	
 	public HomeItemVM(int itemTagId,String name){
 		this.itemTagId = itemTagId;
 		this.name = name;
+		this.defaultImageUrl = "app/images/b.png";
 		this.imageUrls = new ArrayList<String>();
 	}
 
