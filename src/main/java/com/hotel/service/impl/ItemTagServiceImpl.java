@@ -74,4 +74,16 @@ public class ItemTagServiceImpl implements ItemTagService{
 		// TODO Auto-generated method stub
 		return itemTagMapper.selectByPrimaryKey(id);
 	}
+
+	@Override
+	public List<ItemTag> selectRootItemByHotelId(int hotelId) {
+		// TODO Auto-generated method stub
+		return itemTagMapper.selectRootItemByHotelId(hotelId);
+	}
+
+	@Override
+	public List<ItemTag> selectChildItemByHotelId(int hotelId) {
+		// TODO Auto-generated method stub
+		return itemTagMapper.selectChildItemByHotelId(hotelId);
+	}
 }

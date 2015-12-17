@@ -34,4 +34,7 @@ public interface ItemTagService {
 
 	List<ItemTag> getMoreItemList();
 	
+	List<ItemTag> selectRootItemByHotelId(int hotelId);
+	
+	List<ItemTag> selectChildItemByHotelId(int hotelId);
 }
