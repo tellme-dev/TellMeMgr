@@ -57,7 +57,7 @@ public class ItemServiceImpl implements ItemService{
 	@Override
 	public int countByItemTagChild(int tagId) {
 		// TODO Auto-generated method stub
-		return countByItemTagChild(tagId);
+		return itemMapper.countByItemTagChild(tagId);
 	}
 
 }

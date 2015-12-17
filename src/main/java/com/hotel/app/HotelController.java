@@ -295,7 +295,7 @@ public class HotelController {
 		
 		List<Item> itemsByTags = itemService.selectByItemTagChildOrderByScore(map);
 		int count = itemService.countByItemTagChild(itemTagId);
-		if(itemsByTags.size() < 1){
+		if(itemsByTags != null && itemsByTags.size() < 1){
 			ListResult<ItemHotelVM> result = new ListResult<ItemHotelVM>();
 			result.setIsSuccess(true);
 			result.setTotal(0);
@@ -307,9 +307,13 @@ public class HotelController {
 		List<ItemHotelVM> list = new ArrayList<ItemHotelVM>();
 		for(Item it : itemsByTags){
 			Hotel hotel = hotelService.selectByPrimaryKey(it.getHotelId());
+			List<ItemDetail> details = itemDetailService.selectByItemId(it.getId());
 			ItemHotelVM hotelVM = new ItemHotelVM();
 			hotelVM.setHotel(hotel);
 			hotelVM.setItem(it);
+			if(details.size() > 0){
+				hotelVM.setItemDetail(details.get(0));
+			}
 			list.add(hotelVM);
 		}
 		
