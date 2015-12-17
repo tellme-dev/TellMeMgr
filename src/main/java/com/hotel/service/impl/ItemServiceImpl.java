@@ -49,9 +49,15 @@ public class ItemServiceImpl implements ItemService{
 	}
 
 	@Override
-	public List<Item> selectByItemTagChildOrderByScore(int tagId) {
+	public List<Item> selectByItemTagChildOrderByScore(Map<String, Object> map) {
 		// TODO Auto-generated method stub
-		return itemMapper.selectByItemTagChildOrderByScore(tagId);
+		return itemMapper.selectByItemTagChildOrderByScore(map);
+	}
+
+	@Override
+	public int countByItemTagChild(int tagId) {
+		// TODO Auto-generated method stub
+		return countByItemTagChild(tagId);
 	}
 
 }
