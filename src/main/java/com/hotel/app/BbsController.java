@@ -20,6 +20,7 @@ import com.hotel.common.Result;
 import com.hotel.common.utils.FileUtil;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Bbs;
+import com.hotel.model.BbsAttach;
 import com.hotel.model.BbsCategory;
 import com.hotel.model.SearchText;
 import com.hotel.modelVM.BbsVM;
@@ -226,8 +227,38 @@ public class BbsController {
 		}
 		return new ListResult<BbsVM>(list,true,"获取推荐帖子成功").toJson();
 	}
-	
-	
+	/**
+	 * 获取bbs图片
+	 * @param bbsParam:bbsId
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "loadImageByBbsId.do",produces = "application/json;charset=UTF-8")
+	public String loadImageByBbsId(
+			@RequestParam(value = "bbsParam",required = true) String bbsParam){
+		JSONObject jObj = JSONObject.fromObject(bbsParam);
+		int bbsId = 0;
+		try{
+			if(jObj.containsKey("bbsId")){
+				bbsId = jObj.getInt("bbsId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<String>("", false, "json解析异常").toJson();
+		}
+		try{
+			ListResult<BbsAttach> result = bbsService.loadBbsAttachByBbsId(bbsId);
+			return result.toJson();
+		}catch(Exception e){
+			return new ListResult<BbsAttach>(null,false,"获取数据失败").toJson();
+		}
+	}
+	/**
+	 * test
+	 * @author jun
+	 * @param request
+	 * @return
+	 */
 	@RequestMapping(value = "test.do", produces = "application/json;charset=UTF-8")
 	@ResponseBody 
 	public String test(

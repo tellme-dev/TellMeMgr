@@ -31,6 +31,7 @@ import com.hotel.modelVM.HotelInfoVM;
 import com.hotel.modelVM.HotelListInfoVM;
 import com.hotel.modelVM.HotelParam;
 import com.hotel.modelVM.ImageVM;
+import com.hotel.modelVM.ItemHotelVM;
 import com.hotel.service.BaseDataService;
 import com.hotel.service.CustomerBrowseService;
 import com.hotel.service.CustomerCollectionService;
@@ -106,8 +107,9 @@ public class HotelController {
 			result.setRows(new ArrayList<HotelListInfoVM>());
 			return result;
 		}
-		
-		List<Item> itemsByTags = itemService.selectByItemTagChildOrderByScore(itemTagId);
+		Map<String, Object> idMap = new HashMap<String, Object>();
+		idMap.put("tagId", itemTagId);
+		List<Item> itemsByTags = itemService.selectByItemTagChildOrderByScore(idMap);
 		if(itemsByTags.size() < 1){
 			ListResult<HotelListInfoVM> result = new ListResult<HotelListInfoVM>();
 			result.setIsSuccess(true);
@@ -235,6 +237,84 @@ public class HotelController {
 		
 		//返回对象处理
 		ListResult<HotelListInfoVM> result = new ListResult<HotelListInfoVM>();
+		result.setIsSuccess(true);
+		result.setTotal(pageCount);
+		result.setMsg("");
+		result.setRows(list);
+		
+		return result;
+	}
+	
+	/**
+	 * APP获取指定项目类型的酒店项目列表
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/itemListByTagChild.do", produces = "application/json;charset=UTF-8")
+	public ListResult<ItemHotelVM> itemListByTagChild(@RequestParam(value = "json", required = false)String json, HttpServletRequest request, HttpServletResponse response) {
+		//初始化分页数据
+		int pageNumber = DEFAULT_PAGE_NUM;
+		int pageSize = DEFAULT_PAGE_SIZE;
+		int itemTagId = 0;
+		
+		
+		JSONObject jsonObject = JSONObject.fromObject(json);
+		if(jsonObject.containsKey("pageNumber")){
+			pageNumber = new Integer(jsonObject.getString("pageNumber"));
+		}
+		if(jsonObject.containsKey("pageSize")){
+			pageSize = new Integer(jsonObject.getString("pageSize"));
+		}
+		if(jsonObject.containsKey("itemTagId")){
+			itemTagId = new Integer(jsonObject.getString("itemTagId"));
+		}
+		
+		if(itemTagId < 1){
+			ListResult<ItemHotelVM> result = new ListResult<ItemHotelVM>();
+			result.setIsSuccess(false);
+			result.setTotal(0);
+			result.setMsg("请求参数无效");
+			result.setRows(new ArrayList<ItemHotelVM>());
+			return result;
+		}
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("pageStart", 0);
+		map.put("pageSize", pageNumber * pageSize);
+		map.put("tagId", itemTagId);
+		
+		List<Item> itemsByTags = itemService.selectByItemTagChildOrderByScore(map);
+		int count = itemService.countByItemTagChild(itemTagId);
+		if(itemsByTags.size() < 1){
+			ListResult<ItemHotelVM> result = new ListResult<ItemHotelVM>();
+			result.setIsSuccess(true);
+			result.setTotal(0);
+			result.setMsg("");
+			result.setRows(new ArrayList<ItemHotelVM>());
+			return result;
+		}
+		
+		List<ItemHotelVM> list = new ArrayList<ItemHotelVM>();
+		for(Item it : itemsByTags){
+			Hotel hotel = hotelService.selectByPrimaryKey(it.getHotelId());
+			ItemHotelVM hotelVM = new ItemHotelVM();
+			hotelVM.setHotel(hotel);
+			hotelVM.setItem(it);
+			list.add(hotelVM);
+		}
+		
+		
+		int pageCount = count/pageSize;
+		if(count % pageSize != 0){
+			pageCount ++;
+		}
+		
+		//返回对象处理
+		ListResult<ItemHotelVM> result = new ListResult<ItemHotelVM>();
 		result.setIsSuccess(true);
 		result.setTotal(pageCount);
 		result.setMsg("");

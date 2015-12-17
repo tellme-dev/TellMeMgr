@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hotel.common.utils.GeneralUtil;
 import com.hotel.dao.BannerDetailMapper;
@@ -17,6 +18,7 @@ import com.hotel.model.BannerDetail;
 import com.hotel.service.BannerService;
 import com.hotel.viewmodel.BannerWebVM;
 
+@Transactional
 @Service("bannerService")
 public class BannerServiceImpl implements BannerService {
 	

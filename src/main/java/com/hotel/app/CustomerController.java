@@ -1408,7 +1408,7 @@ public class CustomerController {
 		int bbsCount = bbsService.countByBbs(bbs);
 		//已点赞
 		if(bbsCount > 0){
-			new Result<String>("", false, "您已点赞");
+			return new Result<String>("", false, "您已点赞");
 		}
 		
 		int count = bbsService.insert(bbs);

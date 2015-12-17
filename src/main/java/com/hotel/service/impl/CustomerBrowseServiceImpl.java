@@ -6,11 +6,13 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hotel.dao.CustomerBrowseMapper;
 import com.hotel.model.CustomerBrowse;
 import com.hotel.service.CustomerBrowseService;
 
+@Transactional
 @Service("customerBrowseService")
 public class CustomerBrowseServiceImpl implements CustomerBrowseService{
 	
