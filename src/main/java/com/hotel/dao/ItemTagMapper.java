@@ -1,6 +1,7 @@
 package com.hotel.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hotel.model.ItemTag;
 import com.hotel.viewmodel.ItemTagWebVM;
@@ -46,5 +47,5 @@ public interface ItemTagMapper {
 	
 	List<ItemTag> selectRootItemByHotelId(int hotelId);
 	
-	List<ItemTag> selectChildItemByHotelId(int hotelId);
+	List<ItemTag> selectChildItemByHotelId(Map<String, Object> map);
 }

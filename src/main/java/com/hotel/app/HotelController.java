@@ -380,10 +380,14 @@ public class HotelController {
 	@RequestMapping(value = "/getChildItemTagByHotelId.do", produces = "application/json;charset=UTF-8")
 	public ListResult<ItemTag> getChildItemTagByHotelId(@RequestParam(value = "json", required = false)String json, HttpServletRequest request, HttpServletResponse response) {
 		int hotelId = 0;
+		int rootTagId = 0;
 		
 		JSONObject jsonObject = JSONObject.fromObject(json);
 		if(jsonObject.containsKey("hotelId")){
 			hotelId = new Integer(jsonObject.getString("hotelId"));
+		}
+		if(jsonObject.containsKey("itemTagId")){
+			rootTagId = new Integer(jsonObject.getString("itemTagId"));
 		}
 		
 		if(hotelId < 1){
@@ -395,7 +399,11 @@ public class HotelController {
 			return result;
 		}
 		
-		List<ItemTag> list = itemTagService.selectChildItemByHotelId(hotelId);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("hotelId", hotelId);
+		map.put("itemTagId", rootTagId);
+		
+		List<ItemTag> list = itemTagService.selectChildItemByHotelId(map);
 		
 		//返回对象处理
 		ListResult<ItemTag> result = new ListResult<ItemTag>();

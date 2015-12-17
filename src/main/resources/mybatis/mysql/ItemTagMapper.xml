@@ -204,11 +204,11 @@
     WHERE i.hotel_id = #{hotelId,jdbcType=INTEGER} GROUP BY it.parent_id
   </select>
   
-  <select id="selectChildItemByHotelId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectChildItemByHotelId" parameterType="java.util.Map" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_item i INNER JOIN t_item_tag_association ita on ita.item_id = i.id INNER JOIN t_Item_tag t ON t.id = ita.item_tag_id 
-    WHERE i.hotel_id = #{hotelId,jdbcType=INTEGER}
+    WHERE i.hotel_id = #{hotelId,jdbcType=INTEGER} and t.parent_id = #{itemTagId,jdbcType=INTEGER}
   </select>
   
 </mapper>

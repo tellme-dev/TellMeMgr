@@ -1,6 +1,7 @@
 package com.hotel.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hotel.model.ItemTag;
 
@@ -36,5 +37,5 @@ public interface ItemTagService {
 	
 	List<ItemTag> selectRootItemByHotelId(int hotelId);
 	
-	List<ItemTag> selectChildItemByHotelId(int hotelId);
+	List<ItemTag> selectChildItemByHotelId(Map<String, Object> map);
 }
