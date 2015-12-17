@@ -185,7 +185,7 @@
     left join t_item_tag_association t on a.id = t.item_id 
     where t.item_tag_id = #{0}
   </select>
-  <select id="countByItemTagChild" resultMap="java.lang.Integer" parameterType="java.lang.Integer" >
+  <select id="countByItemTagChild" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
     select count(id) from t_item
     where id in (select item_id from t_item_tag_association where item_tag_id = #{tagId,jdbcType=INTEGER})
   </select>
