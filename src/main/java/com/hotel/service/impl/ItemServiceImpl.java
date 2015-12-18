@@ -60,4 +60,10 @@ public class ItemServiceImpl implements ItemService{
 		return itemMapper.countByItemTagChild(tagId);
 	}
 
+	@Override
+	public List<Item> selectByItemTagRootAndHotel(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return itemMapper.selectByItemTagRootAndHotel(map);
+	}
+
 }

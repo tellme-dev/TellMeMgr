@@ -334,6 +334,76 @@ public class HotelController {
 	}
 	
 	/**
+	 * APP获取指定项目类型的酒店项目列表
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/itemListByTagRootAndHotel.do", produces = "application/json;charset=UTF-8")
+	public ListResult<ItemHotelVM> itemListByTagRootAndHotel(@RequestParam(value = "json", required = false)String json, HttpServletRequest request, HttpServletResponse response) {
+		int itemTagId = 0;
+		int hotelId = 0;
+		
+		
+		JSONObject jsonObject = JSONObject.fromObject(json);
+		if(jsonObject.containsKey("itemTagId")){
+			itemTagId = new Integer(jsonObject.getString("itemTagId"));
+		}
+		if(jsonObject.containsKey("hotelId")){
+			hotelId = new Integer(jsonObject.getString("hotelId"));
+		}
+		
+		if(itemTagId < 1 || hotelId < 1){
+			ListResult<ItemHotelVM> result = new ListResult<ItemHotelVM>();
+			result.setIsSuccess(false);
+			result.setTotal(0);
+			result.setMsg("请求参数无效");
+			result.setRows(new ArrayList<ItemHotelVM>());
+			return result;
+		}
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("itemTagId", itemTagId);
+		map.put("hotelId", hotelId);
+		
+		List<Item> itemsByTags = itemService.selectByItemTagRootAndHotel(map);
+		if(itemsByTags != null && itemsByTags.size() < 1){
+			ListResult<ItemHotelVM> result = new ListResult<ItemHotelVM>();
+			result.setIsSuccess(true);
+			result.setTotal(0);
+			result.setMsg("");
+			result.setRows(new ArrayList<ItemHotelVM>());
+			return result;
+		}
+		
+		List<ItemHotelVM> list = new ArrayList<ItemHotelVM>();
+		for(Item it : itemsByTags){
+			Hotel hotel = hotelService.selectByPrimaryKey(it.getHotelId());
+			List<ItemDetail> details = itemDetailService.selectByItemId(it.getId());
+			ItemHotelVM hotelVM = new ItemHotelVM();
+			hotelVM.setHotel(hotel);
+			hotelVM.setItem(it);
+			if(details.size() > 0){
+				hotelVM.setItemDetail(details.get(0));
+			}
+			hotelVM.setDetails(details);
+			list.add(hotelVM);
+		}
+		
+		//返回对象处理
+		ListResult<ItemHotelVM> result = new ListResult<ItemHotelVM>();
+		result.setIsSuccess(true);
+		result.setTotal(list.size());
+		result.setMsg("");
+		result.setRows(list);
+		
+		return result;
+	}
+	
+	/**
 	 * APP获取指定酒店已添加的酒店项目所属的父级菜单
 	 * @author LiuTaiXiong
 	 * @param json

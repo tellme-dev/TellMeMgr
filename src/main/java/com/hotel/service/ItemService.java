@@ -21,4 +21,6 @@ public interface ItemService {
 	int countByItemTagChild(int tagId);
 	
 	List<Item> selectByItemTagChildOrderByScore(Map<String, Object> map);
+	
+	List<Item> selectByItemTagRootAndHotel(Map<String, Object> map);
 }
