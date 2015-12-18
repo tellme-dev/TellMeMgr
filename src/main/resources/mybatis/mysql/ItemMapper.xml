@@ -202,4 +202,11 @@
         limit #{pageStart}, #{pageSize}
     </if>
   </select>
+  
+  <select id="selectByItemTagRootAndHotel" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    a.id, a.hotel_id, a.name, a.text, a.tel, a.position, a.score, a.is_used
+    from t_item a inner join t_item_tag_association ita on ita.item_id = a.id left join t_Item_tag it on ita.item_tag_id = it.id
+    where it.parent_id = #{itemTagId,jdbcType=INTEGER} and a.hotel_id = #{hotelId,jdbcType=INTEGER}
+  </select>
 </mapper>
