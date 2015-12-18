@@ -1,6 +1,7 @@
 package com.hotel.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,5 +74,17 @@ public class ItemTagServiceImpl implements ItemTagService{
 	public ItemTag selectByPrimaryKey(Integer id) {
 		// TODO Auto-generated method stub
 		return itemTagMapper.selectByPrimaryKey(id);
+	}
+
+	@Override
+	public List<ItemTag> selectRootItemByHotelId(int hotelId) {
+		// TODO Auto-generated method stub
+		return itemTagMapper.selectRootItemByHotelId(hotelId);
+	}
+
+	@Override
+	public List<ItemTag> selectChildItemByHotelId(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return itemTagMapper.selectChildItemByHotelId(map);
 	}
 }

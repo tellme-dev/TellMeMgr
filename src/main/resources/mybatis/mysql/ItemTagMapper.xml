@@ -196,4 +196,19 @@
     left join t_item_tag_association a on t.id = a.item_tag_id 
     where a.item_id = #{0} 
   </select>
+  
+  <select id="selectRootItemByHotelId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    t_item i INNER JOIN t_item_tag_association ita on ita.item_id = i.id INNER JOIN t_Item_tag it ON it.id = ita.item_tag_id LEFT JOIN t_Item_tag t ON t.id = it.parent_id
+    WHERE i.hotel_id = #{hotelId,jdbcType=INTEGER} GROUP BY it.parent_id
+  </select>
+  
+  <select id="selectChildItemByHotelId" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_item i INNER JOIN t_item_tag_association ita on ita.item_id = i.id INNER JOIN t_Item_tag t ON t.id = ita.item_tag_id 
+    WHERE i.hotel_id = #{hotelId,jdbcType=INTEGER} and t.parent_id = #{itemTagId,jdbcType=INTEGER}
+  </select>
+  
 </mapper>

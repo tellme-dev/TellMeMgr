@@ -78,7 +78,7 @@ public class ItemTagController {
 		List<HomeItemVM> homeItemVMList = new ArrayList<HomeItemVM>();
 		List<ItemTag> itemTagList = itemTagService.getTagByParentId(0);
 		for(int index=0;index<itemTagList.size();index++){
-			if(itemTagList.get(index).getTagType() == 2){
+			if(itemTagList.get(index).getTagType() == 2 || itemTagList.get(index).getTagType() == 1){
 				homeItemVMList.add(new HomeItemVM(itemTagList.get(index).getId(),itemTagList.get(index).getName()));
 			}
 		}
@@ -108,7 +108,9 @@ public class ItemTagController {
 		//获取子节点菜单
 		List<ItemTag> itemTagList = itemTagService.getTagByParentId(itemTagId);
 		for(int index=0;index<itemTagList.size();index++){
-			homeItemVMList.add(new HomeItemVM(itemTagList.get(index).getId(),itemTagList.get(index).getImageUrl()));
+			HomeItemVM homeItemVM = new HomeItemVM(itemTagList.get(index).getId(),itemTagList.get(index).getName());
+			homeItemVM.setDefaultImageUrl(itemTagList.get(index).getImageUrl());
+			homeItemVMList.add(homeItemVM);
 		}
 		
 		return new ListResult<HomeItemVM>(homeItemVMList,true,"获取菜单项成功").toJson();

@@ -198,6 +198,11 @@ public class BbsServiceImpl implements BbsService {
 		// TODO Auto-generated method stub
 		bbsMapper.updateAgreeCount(id);
 	}
+	@Override
+	public void updateShareCount(Integer id) {
+		// TODO Auto-generated method stub
+		bbsMapper.updateShareCount(id);
+	}
 
 	@Override
 	public int countPostByCustomer(int customerId) {

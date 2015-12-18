@@ -32,5 +32,7 @@ public interface ItemMapper {
     
     List<Item> selectItemByItemTagId(int itemTagId);
     
-    List<Item> selectByItemTagChildOrderByScore(int tagId);
+    int countByItemTagChild(int tagId);
+    
+    List<Item> selectByItemTagChildOrderByScore(Map<String, Object> map);
 }
