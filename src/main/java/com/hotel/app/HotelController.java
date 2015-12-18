@@ -24,6 +24,7 @@ import com.hotel.model.CustomerBrowse;
 import com.hotel.model.Hotel;
 import com.hotel.model.Item;
 import com.hotel.model.ItemDetail;
+import com.hotel.model.ItemTag;
 import com.hotel.model.ItemTagAssociation;
 import com.hotel.model.Region;
 import com.hotel.model.SearchText;
@@ -260,6 +261,7 @@ public class HotelController {
 		int pageNumber = DEFAULT_PAGE_NUM;
 		int pageSize = DEFAULT_PAGE_SIZE;
 		int itemTagId = 0;
+		int hotelId = 0;
 		
 		
 		JSONObject jsonObject = JSONObject.fromObject(json);
@@ -271,6 +273,9 @@ public class HotelController {
 		}
 		if(jsonObject.containsKey("itemTagId")){
 			itemTagId = new Integer(jsonObject.getString("itemTagId"));
+		}
+		if(jsonObject.containsKey("hotelId")){
+			hotelId = new Integer(jsonObject.getString("hotelId"));
 		}
 		
 		if(itemTagId < 1){
@@ -286,10 +291,11 @@ public class HotelController {
 		map.put("pageStart", 0);
 		map.put("pageSize", pageNumber * pageSize);
 		map.put("tagId", itemTagId);
+		map.put("hotelId", hotelId);
 		
 		List<Item> itemsByTags = itemService.selectByItemTagChildOrderByScore(map);
 		int count = itemService.countByItemTagChild(itemTagId);
-		if(itemsByTags.size() < 1){
+		if(itemsByTags != null && itemsByTags.size() < 1){
 			ListResult<ItemHotelVM> result = new ListResult<ItemHotelVM>();
 			result.setIsSuccess(true);
 			result.setTotal(0);
@@ -301,9 +307,13 @@ public class HotelController {
 		List<ItemHotelVM> list = new ArrayList<ItemHotelVM>();
 		for(Item it : itemsByTags){
 			Hotel hotel = hotelService.selectByPrimaryKey(it.getHotelId());
+			List<ItemDetail> details = itemDetailService.selectByItemId(it.getId());
 			ItemHotelVM hotelVM = new ItemHotelVM();
 			hotelVM.setHotel(hotel);
 			hotelVM.setItem(it);
+			if(details.size() > 0){
+				hotelVM.setItemDetail(details.get(0));
+			}
 			list.add(hotelVM);
 		}
 		
@@ -317,6 +327,92 @@ public class HotelController {
 		ListResult<ItemHotelVM> result = new ListResult<ItemHotelVM>();
 		result.setIsSuccess(true);
 		result.setTotal(pageCount);
+		result.setMsg("");
+		result.setRows(list);
+		
+		return result;
+	}
+	
+	/**
+	 * APP获取指定酒店已添加的酒店项目所属的父级菜单
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getRootItemTagByHotelId.do", produces = "application/json;charset=UTF-8")
+	public ListResult<ItemTag> getRootItemTagByHotelId(@RequestParam(value = "json", required = false)String json, HttpServletRequest request, HttpServletResponse response) {
+		int hotelId = 0;
+		
+		JSONObject jsonObject = JSONObject.fromObject(json);
+		if(jsonObject.containsKey("hotelId")){
+			hotelId = new Integer(jsonObject.getString("hotelId"));
+		}
+		
+		if(hotelId < 1){
+			ListResult<ItemTag> result = new ListResult<ItemTag>();
+			result.setIsSuccess(false);
+			result.setTotal(0);
+			result.setMsg("请求参数无效");
+			result.setRows(new ArrayList<ItemTag>());
+			return result;
+		}
+		
+		List<ItemTag> list = itemTagService.selectRootItemByHotelId(hotelId);
+		
+		//返回对象处理
+		ListResult<ItemTag> result = new ListResult<ItemTag>();
+		result.setIsSuccess(true);
+		result.setTotal(list.size());
+		result.setMsg("");
+		result.setRows(list);
+		
+		return result;
+	}
+	
+	/**
+	 * APP获取指定酒店已添加的酒店项目所属的二级菜单
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/getChildItemTagByHotelId.do", produces = "application/json;charset=UTF-8")
+	public ListResult<ItemTag> getChildItemTagByHotelId(@RequestParam(value = "json", required = false)String json, HttpServletRequest request, HttpServletResponse response) {
+		int hotelId = 0;
+		int rootTagId = 0;
+		
+		JSONObject jsonObject = JSONObject.fromObject(json);
+		if(jsonObject.containsKey("hotelId")){
+			hotelId = new Integer(jsonObject.getString("hotelId"));
+		}
+		if(jsonObject.containsKey("itemTagId")){
+			rootTagId = new Integer(jsonObject.getString("itemTagId"));
+		}
+		
+		if(hotelId < 1){
+			ListResult<ItemTag> result = new ListResult<ItemTag>();
+			result.setIsSuccess(false);
+			result.setTotal(0);
+			result.setMsg("请求参数无效");
+			result.setRows(new ArrayList<ItemTag>());
+			return result;
+		}
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("hotelId", hotelId);
+		map.put("itemTagId", rootTagId);
+		
+		List<ItemTag> list = itemTagService.selectChildItemByHotelId(map);
+		
+		//返回对象处理
+		ListResult<ItemTag> result = new ListResult<ItemTag>();
+		result.setIsSuccess(true);
+		result.setTotal(list.size());
 		result.setMsg("");
 		result.setRows(list);
 		
