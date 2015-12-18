@@ -91,6 +91,13 @@ public interface BbsService {
 	void updateAgreeCount(Integer id);
 	
 	/**
+	 * 更新分享次数
+	 * @author hzf
+	 * @param id
+	 */
+	void updateShareCount(Integer id);
+	
+	/**
 	 * 获取主贴数量
 	 * @author LiuTaiXiong
 	 * @param customerId

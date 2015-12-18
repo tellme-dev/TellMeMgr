@@ -1421,6 +1421,28 @@ public class CustomerController {
 		return new Result<String>("", false, "点赞失败");
 	}
 	
+	@RequestMapping(value = "/saveShare.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<String> saveShare(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int targetId = 0;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			
+			if(jsonObject.containsKey("targetId")){
+				targetId = jsonObject.getInt("targetId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<String>("", false, "json解析异常");
+		}
+		if(targetId < 1){
+			return new Result<String>("", false, "请求无效");
+		}
+		bbsService.updateShareCount(targetId);
+		return new Result<String>("", true, "");
+	}
+	
 	/**
 	 * 用户修改密码
 	 * @author LiuTaiXiong
