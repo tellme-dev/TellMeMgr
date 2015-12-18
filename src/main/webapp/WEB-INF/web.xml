@@ -27,7 +27,7 @@
   </context-param>
   <context-param>
     <param-name>contextConfigLocation</param-name>
-    <param-value>classpath*:spring/applicationContext.xml,classpath*:shiro/spring-shiro-web.xml</param-value>
+    <param-value>classpath*:spring/applicationContext.xml,classpath*:spring/mina-context.xml,classpath*:shiro/spring-shiro-web.xml</param-value>
   </context-param>
   <servlet>
     <servlet-name>dispatcher</servlet-name>
