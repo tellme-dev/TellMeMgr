@@ -9,7 +9,7 @@ import org.apache.mina.core.session.IoSession;
  * @author charo
  *
  */
-public class RcuIoSession {
+public class RcuSession {
 	/**
 	 * 唯一标识符号
 	 */

@@ -13,14 +13,14 @@ public class SocketRouter {
 	/**
 	 * rcu客户端端连接的集合。
 	 */
-	private static Map<String,RcuIoSession> rcuIoSessions=new ConcurrentHashMap<String,RcuIoSession>();
+	private static Map<String,RcuSession> rcuIoSessions=new ConcurrentHashMap<String,RcuSession>();
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
-	public static  RcuIoSession rcuConnection(String message,IoSession ioSession){
+	public static  RcuSession rcuConnection(String message,IoSession ioSession){
 		
 		String sid=null;
-		RcuIoSession rcuIoSession=null;
+		RcuSession rcuIoSession=null;
 		
 		try{
 			String txt=message.toString().trim();
@@ -30,7 +30,7 @@ public class SocketRouter {
 
 			if(jo.containsKey("sid") && jo.containsKey("type") ){
 				sid=jo.getString("sid");
-				rcuIoSession=new RcuIoSession();
+				rcuIoSession=new RcuSession();
 				rcuIoSession.setSid(sid);
 				rcuIoSession.setMessageJson(jo);
 				rcuIoSessions.put(sid, rcuIoSession);
@@ -45,7 +45,7 @@ public class SocketRouter {
 		return rcuIoSession;
 	}
 	
-	public static Map<String,RcuIoSession> getRcuIoSessions() {
+	public static Map<String,RcuSession> getRcuIoSessions() {
 		return rcuIoSessions;
 	}
 
