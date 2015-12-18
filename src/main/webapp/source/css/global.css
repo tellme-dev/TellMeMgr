@@ -29,15 +29,6 @@ a:hover{color:#FF6336;}
 .con-right{padding:20px 25px 0 25px;margin-left:210px;border-top:1px solid #C3C6CB;}
 
 /* ============开关样式============== */
-*,
-*:after,
-*:before {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
 
 .switch {
   margin: 50px auto;

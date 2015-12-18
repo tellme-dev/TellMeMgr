@@ -131,8 +131,11 @@ function saveRcu(obj){
 						<tr>
 							<td width="10%" align="center">sid：</td>
 							<td colspan="5">
-								<input id="sid" name="id" type="text" class="easyui-validatebox" style="width:254px;height:30px;" /> 
+								<input id="sid" name="id" type="text" onkeyup='this.value=this.value.replace(/\D/gi,"")' class="easyui-validatebox" style="width:100px;height:30px;" /> 
 							</td>
+							<td>
+						       <span class="yw-btn bg-green ml20 cur" onclick="send();">发送</span>
+						    </td>
 						</tr>
 						<tr>
 							<td width="10%" align="center">灯光：</td>
@@ -141,31 +144,41 @@ function saveRcu(obj){
 							     <span id="model_2" class="yw-btn bg-gray ml20 cur ts15" onclick="selectModel(2)">模式二</span>
 							     <span id="model_3" class="yw-btn bg-gray ml20 cur ts15" onclick="selectModel(3)">模式三</span>
 							</td>
+							<td>
+						       <span class="yw-btn bg-green ml20 cur" onclick="send();">发送</span>
+						    </td>
 						</tr>
 						<tr>
 							<td width="10%" align="center">空调：</td>
 							<td colspan="5">
-							        <span style="margin-left:50px">风</span><input type="text" name="wind" style="width:254px;height:30px;"/>
-							        <span style="margin-left:50px">温度</span><input type="text" name="temperature" style="width:254px;height:30px;"/>
+							        <span style="margin-left:50px">风：</span><input type="text" name="wind" onkeyup='this.value=this.value.replace(/\D/gi,"")' style="width:100px;height:30px;"/>
+							        <span style="margin-left:50px">温度：</span><input type="text" name="temperature" onkeyup='this.value=this.value.replace(/\D/gi,"")' style="width:100px;height:30px;"/>
                                     <div class="switch demo3">
 					                      <input type="checkbox" checked>
 					                      <label><i></i></label>
 				                    </div>
 							</td>
+							<td>
+						       <span class="yw-btn bg-green ml20 cur" onclick="send();">发送</span>
+						    </td>
 						</tr>
 						<tr>
 							<td width="10%" align="center">窗帘：</td>
 							<td colspan="5">
-							   <input id="curtains" name="curtains" data-options="editable:false" style="width:254px;height:30px;"/>
+							        <div class="switch demo3">
+					                      <input type="checkbox" checked>
+					                      <label><i></i></label>
+				                    </div>
 							</td>
+							<td>
+						       <span class="yw-btn bg-green ml20 cur" onclick="send();">发送</span>
+						    </td>
 						</tr>
 						<tr>
 							<td colspan="6">
-							   <input type="text" placeholder="json格式" style="width:1500px;height:30px;"/>
+							   <input type="text" placeholder="json格式" style="width:1000px;height:30px;"/>
 							</td>
-						</tr>
-						<tr>
-						    <td colspan="6">
+							<td>
 						       <span class="yw-btn bg-green ml20 cur" onclick="send();">发送</span>
 						    </td>
 						</tr>
