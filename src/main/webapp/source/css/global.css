@@ -69,11 +69,6 @@ a:hover{color:#FF6336;}
     *height: 13px; /* 3 */
     *width: 13px; /* 3 */
 }
-.main{
-	width: 90%;
-	margin: 0 auto;
-	position: relative;
-}
 .switch.demo3 {
   margin: 10px;
   float: left;
