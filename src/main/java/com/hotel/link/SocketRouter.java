@@ -1,4 +1,4 @@
-package com.hotel.liink;
+package com.hotel.link;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

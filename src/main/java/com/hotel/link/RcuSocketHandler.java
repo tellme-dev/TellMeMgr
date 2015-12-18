@@ -1,4 +1,4 @@
-package com.hotel.liink;
+package com.hotel.link;
 
 import net.sf.json.JSONObject;
 
