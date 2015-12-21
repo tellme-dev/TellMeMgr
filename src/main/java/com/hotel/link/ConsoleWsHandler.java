@@ -10,6 +10,8 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
 
 /**
@@ -19,27 +21,20 @@ import org.springframework.web.socket.server.standard.SpringConfigurator;
  */
 @ServerEndpoint(value="/console/{consoleId}",configurator = SpringConfigurator.class)
 public class ConsoleWsHandler {
-	private Session session; //websocket 的session
-	private String consoleId; //customerId 作为缓存key。
-	/**
-	 * 客户端请求一个webSocket连接
-	 * @param session
-	 * @param consoleId
-	 */
+	private final Logger logger = LoggerFactory.getLogger(getClass());
+	
 	@OnOpen
-	public void onOpen(Session session,
-			@PathParam(value = "consoleId") String consoleId) {
+	public void onOpen(@PathParam(value = "consoleId") String consoleId,
+			Session session
+			) {
 		try {
-			if (consoleId == null) {
-				session.close();
-			} else {
-				this.session = session;
-				this.consoleId=consoleId;
-				
-				//MessageRouter.getConsoleHandlers().put(consoleId, this);
+			if(consoleId !=null){
+				ConsoleSession consoleSession=new ConsoleSession();
+				consoleSession.setConsoleId(consoleId);
+				SocketRouter.getConsoleSessions().put(consoleId, consoleSession);
 			}
-		} catch (IOException e) {
-
+		} catch (Exception ex) {
+			logger.error(ex.getMessage());
 		}
 
 	}
@@ -51,8 +46,9 @@ public class ConsoleWsHandler {
 	 * @return
 	 */
 	@OnMessage
-	public String onMessage(String msg, Session session) {
-		this.session = session;
+	public String onMessage(@PathParam(value = "consoleId") String consoleId,
+			String msg, 
+			Session session) {
 		return null;
 	}
 
@@ -61,7 +57,11 @@ public class ConsoleWsHandler {
 	 * @param session
 	 */
 	@OnClose
-	public void onClose(Session session) {
+	public void onClose(@PathParam(value = "consoleId") String consoleId,
+			Session session) {
+		if(consoleId !=null){
+			SocketRouter.getConsoleSessions().remove(consoleId);
+		}
 		//MessageRouter.getConsoleHandlers().remove(consoleId);
 	}
 
@@ -72,20 +72,7 @@ public class ConsoleWsHandler {
 	 */
 	@OnError
 	public void onError(Session session, Throwable t) {
-
+		
 	}
 
-	/**
-	 * 发送数据到客户端
-	 * @param msg
-	 */
-	public void sendMessage(String msg){
-		try {
-			session.getBasicRemote().sendText(msg);
-			
-		} catch (IOException e) {
-			
-			e.printStackTrace();
-		}
-	}
 }

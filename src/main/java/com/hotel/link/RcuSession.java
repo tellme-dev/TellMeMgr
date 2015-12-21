@@ -15,10 +15,6 @@ public class RcuSession {
 	 */
 	private String sid;
 	/**
-	 * 类型
-	 */
-
-	/**
 	 * 命令的数据
 	 */
 	private JSONObject messageJson;

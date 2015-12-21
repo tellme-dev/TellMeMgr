@@ -1,6 +1,8 @@
 package com.hotel.link;
 
+import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import net.sf.json.JSONObject;
@@ -14,6 +16,11 @@ public class SocketRouter {
 	 * rcu客户端端连接的集合。
 	 */
 	private static Map<String,RcuSession> rcuIoSessions=new ConcurrentHashMap<String,RcuSession>();
+	
+	/**
+	 * web 控制台 websocket 连接
+	 */
+	private static Map<String,ConsoleSession> consoleSessions=new ConcurrentHashMap<String,ConsoleSession>();
 	
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
@@ -48,6 +55,18 @@ public class SocketRouter {
 	public static Map<String,RcuSession> getRcuIoSessions() {
 		return rcuIoSessions;
 	}
-
 	
+	
+	
+	public static Map<String,ConsoleSession> getConsoleSessions() {
+		return consoleSessions;
+	}
+	
+	private void  notifyToConsole(String msg) throws IOException{
+		
+		for(Entry<String,ConsoleSession> entry:consoleSessions.entrySet()){
+			ConsoleSession  cs=entry.getValue();
+			cs.getSession().getBasicRemote().sendText(msg);
+		}
+	}
 }
