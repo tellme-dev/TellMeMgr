@@ -7,9 +7,10 @@
     <result column="level" property="level" jdbcType="INTEGER" />
     <result column="path" property="path" jdbcType="VARCHAR" />
     <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, parent_id, level, path, name
+    id, parent_id, level, path, name, code
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -23,9 +24,9 @@
   </delete>
   <insert id="insert" parameterType="com.hotel.model.Region" >
     insert into t_region (id, parent_id, level, 
-      path, name)
+      path, name, code)
     values (#{id,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{level,jdbcType=INTEGER}, 
-      #{path,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR})
+      #{path,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.hotel.model.Region" >
     insert into t_region
@@ -45,6 +46,9 @@
       <if test="name != null" >
         name,
       </if>
+      <if test="code != null" >
+        code,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -61,6 +65,9 @@
       </if>
       <if test="name != null" >
         #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null" >
+        #{code,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -79,6 +86,9 @@
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
       </if>
+      <if test="code != null" >
+        code = #{code,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -87,7 +97,8 @@
     set parent_id = #{parentId,jdbcType=INTEGER},
       level = #{level,jdbcType=INTEGER},
       path = #{path,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR}
+      name = #{name,jdbcType=VARCHAR},
+      code = #{code,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
   

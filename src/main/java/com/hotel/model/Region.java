@@ -11,7 +11,17 @@ public class Region {
 
     private String name;
     
-    public Region() {
+    private String code;
+    
+    public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public Region() {
 		// TODO Auto-generated constructor stub
 	}
     
