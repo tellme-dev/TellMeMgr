@@ -214,4 +214,15 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		ListResult<AdvertisementVM> result = new ListResult<AdvertisementVM>(total,list);
 		return result;
 	}
+
+	@Override
+	public ListResult<AdvertisementVM> loadAdListByHotelId(int hotelId) {
+		// TODO Auto-generated method stub
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("targetType", 1);
+		map.put("targetId", hotelId);
+		int total = advertisementMapper.countByMap(map);
+		List<AdvertisementVM> list = advertisementMapper.selectAdListByMap(map);
+		return new ListResult<AdvertisementVM>(total,list);
+	}
 }
