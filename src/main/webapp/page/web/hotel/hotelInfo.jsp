@@ -14,7 +14,7 @@
 	content="width=device-width, initial-scale=1, minimum-scale=1  ,maximum-scale=1, user-scalable=no" />
 	
 <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main.css?v=1.0" />
-<script src="http://webapi.amap.com/maps?v=1.3&key=7794bac5851d466a825637e82e4a7926"></script>
+<script src="http://webapi.amap.com/maps?v=1.3&key=7794bac5851d466a825637e82e4a7926&plugin=AMap.DistrictSearch"></script>
   	
 <script
 	src="${pageContext.request.contextPath}/source/js/pager/jquery.pager.js"></script>
@@ -25,6 +25,9 @@
 var map_show = null;
 var map_edit = null;
 
+//地图省市区数据对象
+var amapAdcode = {};
+
 $(document).ready(function(){
 	
 	$("#province").combobox({
@@ -32,7 +35,7 @@ $(document).ready(function(){
 			if(n == 0){
 				return ;
 			}
-			selectProvince(n);
+			amapAdcode.createCity(n);
 		}
 	});
 	
@@ -41,7 +44,7 @@ $(document).ready(function(){
 			if(n == 0){
 				return ;
 			}
-			selectCity(n);
+			amapAdcode.createDistrict(n);
 		}
 	});
 	
@@ -73,6 +76,86 @@ $(document).ready(function(){
 			map_show.panTo(location);
 		}
 	}
+	
+	//省市区数据对象设置
+	amapAdcode._district = new AMap.DistrictSearch({//高德行政区划查询插件实例
+        subdistrict: 1   //返回下一级行政区
+    });
+    amapAdcode._overlay = [];//行政区划覆盖物
+    amapAdcode.createSelectList = function(selectId, list) {//生成下拉列表
+    	/*
+        var selectList = document.getElementById(selectId);
+        selectList.innerHTML = '';
+        selectList.add(new Option('--请选择--'));
+        for (var i = 0, l = list.length, option; i < l; i++) {
+            option = new Option(list[i].name);
+            option.setAttribute("value", list[i].adcode);
+            selectList.add(option);
+        }
+        */
+        
+        var dat = "[";
+		var fopt = "{\"value\":\"0\",\"text\":\"=请选择城市=\",\"selected\":true},";
+		dat += fopt;
+		
+		var len = list.length;
+		for(var i =0; i < len; i++){
+			var opt;
+			if(i == len - 1){
+				opt = "{\"value\":\""+list[i].adcode+"\",\"text\":\""+list[i].name+"\",\"selected\":false}";
+			}else{
+				opt = "{\"value\":\""+list[i].adcode+"\",\"text\":\""+list[i].name+"\",\"selected\":false},";
+			}
+			
+			dat += opt;
+		}
+		
+		dat += "]";
+		var json = eval(dat);
+		
+		$("#"+selectId).combobox("loadData", json);
+		if(selectId == "province"){
+			$("#city").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
+			$("#district").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
+		}
+		if(selectId == "city"){
+			$("#district").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
+		}
+    };
+    amapAdcode.search = function(adcodeLevel, keyword, selectId) {//查询行政区划列表并生成相应的下拉列表
+        var me = this;
+        if (adcodeLevel == 'district'||adcodeLevel == 'city') {//第三级时查询边界点
+            this._district.setExtensions('all');
+        } else {
+            this._district.setExtensions('base');
+        }
+        this._district.setLevel(adcodeLevel); //行政区级别
+        this._district.search(keyword, function(status, result) {//注意，api返回的格式不统一，在下面用三个条件分别处理
+            var districtData = result.districtList[0];
+            if (districtData.districtList) {
+                me.createSelectList(selectId, districtData.districtList);
+            } else if (districtData.districts) {
+                me.createSelectList(selectId, districtData.districts);
+            } else {
+                document.getElementById(selectId).innerHTML = '';
+            }
+        });
+    };
+    amapAdcode.clear = function(selectId) {//清空下拉列表
+        var selectList = document.getElementById(selectId);
+        selectList.innerHTML = '';
+    };
+    amapAdcode.createProvince = function() {//创建省列表
+        this.search('country', '中国', 'province');
+    };
+    amapAdcode.createCity = function(provinceAdcode) {//创建市列表
+        this.search('province', provinceAdcode, 'city');
+        this.clear('district');
+    };
+    amapAdcode.createDistrict = function(cityAdcode) {//创建区县列表
+        this.search('city', cityAdcode, 'district');
+    };
+    amapAdcode.createProvince();
 });
 
 
@@ -401,10 +484,6 @@ function myAlert(msg){
 											<option selected="selected" value="0">=${provinceRegion.name}=</option>
 										</c:if>
 								 	 	
-								 	 	<c:forEach var="item" items="${regionList}">
-								 	 		<option value="${item.id}">${item.name}</option>
-										</c:forEach>
-								 	 	
 									</select>
 									<select id="city" name="city" style="width:120px;height:30px;" class="easyui-combobox">
 								 	 	<c:if test="${ht.id==0}">
@@ -415,7 +494,7 @@ function myAlert(msg){
 											<option selected="selected" value="0">=${cityRegion.name}=</option>
 										</c:if>
 									</select>
-									<select id="area" name="area" style="width:120px;height:30px;" class="easyui-combobox">
+									<select id="district" name="area" style="width:120px;height:30px;" class="easyui-combobox">
 								 	 	
 								 	 	<c:if test="${ht.id==0}">
 											<option  value="0" selected="selected">=请选择区域=</option>

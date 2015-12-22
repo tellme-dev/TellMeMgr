@@ -2,12 +2,32 @@ package com.hotel.model;
 
 public class Rcu {
     private Integer id;
+    
+    private String name;
 
     private Integer roomId;
 
     private String serialId;
+    
+    private Integer cfgId;
 
-    public Integer getId() {
+    public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Integer getCfgId() {
+		return cfgId;
+	}
+
+	public void setCfgId(Integer cfgId) {
+		this.cfgId = cfgId;
+	}
+
+	public Integer getId() {
         return id;
     }
 

@@ -196,7 +196,6 @@
       <if test="timeStamp != null" >
         and a.time_stamp = #{timeStamp,jdbcType=TIMESTAMP}
       </if>
-  		group by a.id order by a.create_time  
   </sql>
   
   <select id="getAdPageList" resultMap="WebVMResultMap" parameterType="java.util.Map" >
@@ -233,6 +232,7 @@
     left join t_ad_detail ad on a.id = ad.ad_id
   	left join t_Item_tag t on a.target_id = t.id
   	where 1=1 <include refid="query_sql"/>
+  	group by a.id order by a.create_time
   </select>
   <select id="selectAdVMByPrimaryKey" resultMap="WebVMResultMap" parameterType="java.lang.Integer" >
     select 
@@ -264,5 +264,12 @@
   <select id="countByMap" resultType="java.lang.Integer" parameterType="java.util.Map" >
     select count(a.id)
     from t_ad a
+    where 1=1 <include refid="query_sql"/>
+  </select>
+  <select id="selectAdListByMap" resultMap="resultAdvertisementMap" parameterType="java.util.Map" >
+    select * 
+    from t_ad a 
+    where 1=1 <include refid="query_sql"/>
+    order by a.create_time
   </select>
 </mapper>
