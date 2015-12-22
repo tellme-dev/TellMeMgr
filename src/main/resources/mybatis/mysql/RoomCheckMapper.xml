@@ -111,4 +111,11 @@
     where customer_id = #{customerId,jdbcType=INTEGER}
   </select>
   
+  <select id="selectByMap" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select <include refid="Base_Column_List" />
+    from t_room_check
+    where customer_id = #{customerId,jdbcType=INTEGER}
+    order by checkin_time desc
+  </select>
+  
 </mapper>

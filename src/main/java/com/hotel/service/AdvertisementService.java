@@ -32,4 +32,6 @@ public interface AdvertisementService {
 	 */
 	ListResult<AdvertisementVM> loadAdList(Page page);
 
+	ListResult<AdvertisementVM> loadAdListByHotelId(int hotelId);
+
 }

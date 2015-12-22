@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.hotel.common.ListResult;
 import com.hotel.dao.HotelMapper;
 import com.hotel.dao.ItemDetailMapper;
 import com.hotel.dao.ItemTagAssociationMapper;
@@ -158,5 +159,15 @@ public class HotelServiceImpl implements HotelService{
 	public List<Hotel> selectPageHotelOrderInId(Map<String, Object> idMap) {
 		// TODO Auto-generated method stub
 		return hotelMapper.selectPageHotelOrderInId(idMap);
+	}
+
+	@Override
+	public ListResult<HotelVM> getHotelListByRegionId(int regionId) {
+		// TODO Auto-generated method stub
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("regionId", regionId);
+		int total = hotelMapper.countByMap(map);
+		List<HotelVM> list = hotelMapper.selectHotelListByMap(map);
+		return new ListResult<HotelVM>(total,list);
 	}
 }
