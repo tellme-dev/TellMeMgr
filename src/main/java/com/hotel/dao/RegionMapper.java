@@ -29,4 +29,8 @@ public interface RegionMapper {
 	List<Region> getNearAndHotRegionsByCustomer(int customerId,int defaultRegionNum);
 
 	List<Region> getHistoricRegions(int customerId);
+	
+	List<Region> getRegionByCode(String code);
+	
+	int insertAndReturnId(Region record);
 }

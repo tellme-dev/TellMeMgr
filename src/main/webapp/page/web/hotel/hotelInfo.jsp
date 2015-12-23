@@ -93,9 +93,39 @@ $(document).ready(function(){
             selectList.add(option);
         }
         */
+        var provinceName = '${provinceRegion.name}';
+        var cityName = '${cityRegion.name}';
+        var areaName = '${arearRegion.name}';
+        var sName = "区域";
+        var usName = "";
+        if(areaName != ''){
+        	usName = areaName;
+        }
+        if(selectId == "province"){
+			$("#city").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择城市=\",\"selected\":true}]"));
+			$("#district").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
+			sName = "省份";
+			if(provinceName != ''){
+				usName = provinceName;
+				$("#city").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"="+cityName+"=\",\"selected\":true}]"));
+				$("#district").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"="+areaName+"=\",\"selected\":true}]"));
+			}
+		}
+		if(selectId == "city"){
+			$("#district").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
+			sName = "城市";
+			if(cityName != ''){
+				usName = cityName;
+				$("#district").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"="+areaName+"=\",\"selected\":true}]"));
+			}
+		}
+        var titleString = "请选择"+sName;
+        if(usName != ''){
+        	titleString = usName;
+        }
         
         var dat = "[";
-		var fopt = "{\"value\":\"0\",\"text\":\"=请选择城市=\",\"selected\":true},";
+		var fopt = "{\"value\":\"0\",\"text\":\"="+titleString+"=\",\"selected\":true},";
 		dat += fopt;
 		
 		var len = list.length;
@@ -114,13 +144,6 @@ $(document).ready(function(){
 		var json = eval(dat);
 		
 		$("#"+selectId).combobox("loadData", json);
-		if(selectId == "province"){
-			$("#city").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
-			$("#district").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
-		}
-		if(selectId == "city"){
-			$("#district").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
-		}
     };
     amapAdcode.search = function(adcodeLevel, keyword, selectId) {//查询行政区划列表并生成相应的下拉列表
         var me = this;
@@ -281,7 +304,7 @@ function selectProvince(val){
 			dat += "]";
 			var json = eval(dat);
 			$("#city").combobox("loadData", json);
-			$("#area").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
+			$("#district").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
 		}
 	});
 }
@@ -309,7 +332,7 @@ function selectCity(val){
 			
 			dat += "]";
 			var json = eval(dat);
-			$("#area").combobox("loadData", json);
+			$("#district").combobox("loadData", json);
 		}
 	});
 }
@@ -338,13 +361,16 @@ function submitHotel(obj){
 		myAlert("请输入酒店名称");
 		return ;
 	}
-	var region = $("#area").combobox("getValue");
+	var region = $("#district").combobox("getValue");
 	if(region == 0){
 		myAlert("请选择酒店所属区域");
 		return ;
 	}
 	//隐藏控件赋值
 	document.getElementById("hotel_region").value = region;
+	document.getElementById("ht_province").value = $("#province").combobox("getText");
+	document.getElementById("ht_city").value = $("#city").combobox("getText");
+	document.getElementById("ht_area").value = $("#district").combobox("getText");
 	
 	var location = document.getElementById("input_location");
 	if(location.value.trim() == ""){
@@ -510,6 +536,9 @@ function myAlert(msg){
 									<span class="ts15">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述：</span><textarea name="text" id="hotel_text" cols="50" rows="6" style="vertical-align: top; border: 1px #C4C4C4 solid;">${ht.text}</textarea>
 								</div>
 								<div class = "mt20">
+									<input name = "ht_province" id="ht_province" type="hidden" value="" />
+									<input name = "ht_city" id="ht_city" type="hidden" value="" />
+									<input name = "ht_area" id="ht_area" type="hidden" value="" />
 									<input name = "longitude" id="hotel_lng" type="hidden" value="${ht.longitude}" />
 									<input name = "latitude" id="hotel_lat" type="hidden" value="${ht.latitude}" />
 									<span class="ts15">经&nbsp;纬&nbsp;度：</span><input id="input_location" name="hotel_location" type="text" readonly="readonly" class="yw-input wid200 ts14" /><img alt="点击标记位置" onclick="showdialog();" class="icon_location" src="${pageContext.request.contextPath}/source/images/location.png">

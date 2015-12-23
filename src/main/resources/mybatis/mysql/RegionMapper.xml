@@ -108,6 +108,22 @@
   from t_region
   </select>
   
+  <select id="getRegionByCode" resultMap="BaseResultMap" parameterType="java.lang.String">
+  select 
+  <include refid="Base_Column_List" />
+  from t_region where code = #{code,jdbcType=VARCHAR}
+  </select>
+  <insert id="insertAndReturnId" parameterType="com.hotel.model.Region" >
+  	<selectKey resultType="INTEGER" keyProperty="id">
+       SELECT LAST_INSERT_ID()
+  	</selectKey>
+  	
+    insert into t_region (id, parent_id, level, 
+      path, name, code)
+    values (#{id,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{level,jdbcType=INTEGER}, 
+      #{path,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{code,jdbcType=VARCHAR})
+  </insert>
+  
   <select id="getProvinceRegion" resultMap="BaseResultMap" parameterType="com.hotel.model.Region">
   select 
   <include refid="Base_Column_List" />
