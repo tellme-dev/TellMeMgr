@@ -8,6 +8,14 @@
     <result column="serial_id" property="serialId" jdbcType="VARCHAR" />
     <result column="cfg_id" property="cfgId" jdbcType="INTEGER" />
   </resultMap>
+    <resultMap id="ResultVMMap" type="com.hotel.modelVM.RcuVM" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="room_id" property="roomId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="serial_id" property="serialId" jdbcType="VARCHAR" />
+    <result column="cfg_id" property="cfgId" jdbcType="INTEGER" />
+    <collection property="rcuCfgItems" column="cfg_id" select="com.hotel.dao.RcuCfgItemMapper.selectRcuCfgItemBycfgId"></collection>
+  </resultMap>
   <sql id="Base_Column_List" >
     id,name, room_id, serial_id,cfg_id
   </sql>
@@ -91,4 +99,8 @@
       cfg_id = #{cfgId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
+	<select id="getRCUsRoomId" resultMap="ResultVMMap" parameterType="java.lang.Integer">
+	select a.* from t_rcu a
+	where a.room_id = #{0}
+	</select>
 </mapper>

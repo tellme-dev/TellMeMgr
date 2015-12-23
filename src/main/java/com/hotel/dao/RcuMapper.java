@@ -1,6 +1,9 @@
 package com.hotel.dao;
 
+import java.util.List;
+
 import com.hotel.model.Rcu;
+import com.hotel.modelVM.RcuVM;
 
 @MyBatisRepository
 public interface RcuMapper {
@@ -15,4 +18,6 @@ public interface RcuMapper {
     int updateByPrimaryKeySelective(Rcu record);
 
     int updateByPrimaryKey(Rcu record);
+
+	List<RcuVM> getRCUsRoomId(int roomId);
 }
