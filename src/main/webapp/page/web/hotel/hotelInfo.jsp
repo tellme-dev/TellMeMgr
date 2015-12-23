@@ -96,6 +96,7 @@ $(document).ready(function(){
         var provinceName = '${provinceRegion.name}';
         var cityName = '${cityRegion.name}';
         var areaName = '${arearRegion.name}';
+        var areaCode = '${arearRegion.code}';
         var sName = "区域";
         var usName = "";
         if(areaName != ''){
@@ -108,7 +109,7 @@ $(document).ready(function(){
 			if(provinceName != ''){
 				usName = provinceName;
 				$("#city").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"="+cityName+"=\",\"selected\":true}]"));
-				$("#district").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"="+areaName+"=\",\"selected\":true}]"));
+				$("#district").combobox("loadData", eval("[{\"value\":\""+areaCode+"\",\"text\":\"="+areaName+"=\",\"selected\":true}]"));
 			}
 		}
 		if(selectId == "city"){
@@ -116,7 +117,7 @@ $(document).ready(function(){
 			sName = "城市";
 			if(cityName != ''){
 				usName = cityName;
-				$("#district").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"="+areaName+"=\",\"selected\":true}]"));
+				$("#district").combobox("loadData", eval("[{\"value\":\""+areaCode+"\",\"text\":\"="+areaName+"=\",\"selected\":true}]"));
 			}
 		}
         var titleString = "请选择"+sName;
@@ -527,7 +528,7 @@ function myAlert(msg){
 										</c:if>
 										
 										<c:if test="${ht.id!=0}">
-											<option selected="selected" value="${arearRegion.id}">=${arearRegion.name}=</option>
+											<option selected="selected" value="${arearRegion.code}">=${arearRegion.name}=</option>
 										</c:if>
 									</select>
 									<span class="hint_red">**必填项**</span>
