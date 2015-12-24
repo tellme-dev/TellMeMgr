@@ -172,6 +172,9 @@
   </update>
   
   <sql id="query_sql">
+      <if test="id != null" >
+        and a.id = #{id,jdbcType=INTEGER}
+      </if>
   	  <if test="name != null" >
         and a.name = #{name,jdbcType=VARCHAR}
       </if>
@@ -271,5 +274,12 @@
     from t_ad a 
     where 1=1 <include refid="query_sql"/>
     order by a.create_time
+  </select>
+  <select id="selectByMap" resultMap="resultAdvertisementMap" parameterType="java.util.Map" >
+    select <include refid="Base_Column_List" />,
+    (select count(cc.id) from t_customer_collection cc where cc.collection_type = 2 and cc.target_id = #{id,jdbcType=INTEGER}) as collectionCount,
+    (select count(b.id) from t_bbs b where b.target_type = 2 and b.post_type = 2 and b.target_id = #{id,jdbcType=INTEGER}) as agreeCount
+    from t_ad a 
+    where 1=1 <include refid="query_sql"/>
   </select>
 </mapper>

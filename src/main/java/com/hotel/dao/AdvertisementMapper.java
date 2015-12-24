@@ -38,4 +38,6 @@ public interface AdvertisementMapper {
 	int countByMap(Map<String, Object> map);
 
 	List<AdvertisementVM> selectAdListByMap(Map<String, Object> map);
+
+	AdvertisementVM selectByMap(Map<String, Object> map);
 }

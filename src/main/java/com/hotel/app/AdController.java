@@ -1,8 +1,6 @@
 package com.hotel.app;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hotel.common.ListResult;
+import com.hotel.common.Result;
 import com.hotel.common.utils.Page;
 import com.hotel.modelVM.AdParam;
 import com.hotel.modelVM.AdvertisementVM;
-import com.hotel.modelVM.HotelListInfoVM;
 import com.hotel.service.AdvertisementService;
 import com.hotel.service.HotelService;
 import com.hotel.service.ItemTagService;
@@ -126,15 +124,37 @@ public class AdController {
 			return new ListResult<AdvertisementVM>(null, false, "json解析异常").toJson();
 		}
 		
-		Map<String,Object> map = new HashMap<String,Object>();
-		map.put("targetId", hotelId);
-		map.put("targetType", 1);//酒店
         try{
         	ListResult<AdvertisementVM> result = adService.loadAdListByHotelId(hotelId);
         	return result.toJson();
 		}catch(Exception e){
 			
 			return new ListResult<AdvertisementVM>(null,false,"加载数据失败").toJson();
+		}
+	}
+	@ResponseBody
+	@RequestMapping(value = "loadAdById.do", produces = "application/json;charset=UTF-8")
+	public String loadAdById(
+			@RequestParam(value = "adParam", required = true) String adParam,
+			HttpServletRequest request)
+	{
+		JSONObject jObj = JSONObject.fromObject(adParam);
+		int adId = 0;
+		try{
+			if(jObj.containsKey("id")){
+				adId = jObj.getInt("id");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<AdvertisementVM>(null, false, "json解析异常").toJson();
+		}
+		
+        try{
+        	AdvertisementVM ad = adService.loadAdById(adId);
+        	return new Result<AdvertisementVM>(ad,true,"加载数据成功").toJson();
+		}catch(Exception e){
+			
+			return new Result<AdvertisementVM>(null,false,"加载数据失败").toJson();
 		}
 	}
 
