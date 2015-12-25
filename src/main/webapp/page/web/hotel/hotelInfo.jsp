@@ -454,16 +454,6 @@ function submitHotel(obj){
 		document.getElementById("hotel_lat").value = new Number(arr[1]);
 		saveHotel(obj);
 	}
-	//var region = $("#district").combobox("getValue");
-	//if(region == 0){
-	//	myAlert("请选择酒店所属区域");
-	//	return ;
-	//}
-	//隐藏控件赋值
-	//document.getElementById("hotel_region").value = region;
-	//document.getElementById("ht_province").value = $("#province").combobox("getText");
-	//document.getElementById("ht_city").value = $("#city").combobox("getText");
-	//document.getElementById("ht_area").value = $("#district").combobox("getText");
 }
 
 function saveHotel(obj){

@@ -127,14 +127,6 @@ public class HotelAction extends BaseAction {
 			js.setMessage("请选择省份!");
 			return js;
 		}
-		if(city == null || city.trim().equals("")){
-			js.setMessage("请选择城市!");
-			return js;
-		}
-		if(area == null || area.trim().equals("")){
-			js.setMessage("请选择区域!");
-			return js;
-		}
 		String url = null;
 		if(file != null && !file.trim().equals("")){
 			String path = request.getSession().getServletContext().getRealPath("/");
