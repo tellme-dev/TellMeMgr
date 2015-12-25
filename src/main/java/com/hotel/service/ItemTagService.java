@@ -21,7 +21,7 @@ public interface ItemTagService {
 
 	List<ItemTag> getchildItemTagsByParentId(Integer parentId);
 	
-	ItemTag selectByItemId(int itemId);
+	List<ItemTag> selectByItemId(int itemId);
 
 	ItemTag getItemTagById(int tagId);
 	
