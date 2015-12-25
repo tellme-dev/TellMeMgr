@@ -329,18 +329,36 @@ public class HotelAction extends BaseAction {
 			// 项目详情添加部分 end
 			//===============
 			
-			int tid = 0;
-			try {
-				tid = new Integer(proType);
-			} catch (Exception e) {
-				// TODO: handle exception
+			if(proType.contains(",")){
+				String[] types = proType.split(",");
+				for(String type : types){
+					int tid = 0;
+					try {
+						tid = new Integer(type);
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+					ItemTagAssociation tagAssociation = new ItemTagAssociation();
+					tagAssociation.setItemId(itemId);
+					tagAssociation.setItemTagId(tid);
+					itemTagAssociationService.insert(tagAssociation);
+				}
+				js.setCode(new Integer(1));
+				js.setMessage("添加项目成功!");
+			}else{
+				int tid = 0;
+				try {
+					tid = new Integer(proType);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				ItemTagAssociation tagAssociation = new ItemTagAssociation();
+				tagAssociation.setItemId(itemId);
+				tagAssociation.setItemTagId(tid);
+				itemTagAssociationService.insert(tagAssociation);
+				js.setCode(new Integer(1));
+				js.setMessage("添加项目成功!");
 			}
-			ItemTagAssociation tagAssociation = new ItemTagAssociation();
-			tagAssociation.setItemId(itemId);
-			tagAssociation.setItemTagId(tid);
-			itemTagAssociationService.insert(tagAssociation);
-			js.setCode(new Integer(1));
-			js.setMessage("添加项目成功!");
 		}
 		
 		return js;
