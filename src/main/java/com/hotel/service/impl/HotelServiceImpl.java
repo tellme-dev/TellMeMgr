@@ -62,7 +62,7 @@ public class HotelServiceImpl implements HotelService{
 	@Override
 	public int updateByPrimaryKeySelective(Hotel record) {
 		// TODO Auto-generated method stub
-		return hotelMapper.updateByPrimaryKey(record);
+		return hotelMapper.updateByPrimaryKeySelective(record);
 	}
 
 	@Override

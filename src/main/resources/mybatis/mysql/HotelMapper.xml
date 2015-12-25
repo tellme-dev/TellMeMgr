@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.hotel.model.Hotel" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="logo" property="logo" jdbcType="VARCHAR" />
     <result column="text" property="text" jdbcType="VARCHAR" />
     <result column="region_id" property="regionId" jdbcType="INTEGER" />
     <result column="longitude" property="longitude" jdbcType="DECIMAL" />
@@ -26,7 +27,7 @@
   </resultMap>
   
   <sql id="Base_Column_List" >
-    id, name, text, region_id, longitude, latitude
+    id, name, logo, text, region_id, longitude, latitude
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -44,10 +45,10 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.hotel.model.Hotel" >
-    insert into t_hotle (id, name, text, 
+    insert into t_hotle (id, name, logo, text, 
       region_id, longitude, latitude
       )
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR}, 
       #{regionId,jdbcType=INTEGER}, #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL}
       )
   </insert>
@@ -100,6 +101,9 @@
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
       </if>
+      <if test="logo != null" >
+        logo = #{logo,jdbcType=VARCHAR},
+      </if>
       <if test="text != null" >
         text = #{text,jdbcType=VARCHAR},
       </if>
@@ -118,6 +122,7 @@
   <update id="updateByPrimaryKey" parameterType="com.hotel.model.Hotel" >
     update t_hotle
     set name = #{name,jdbcType=VARCHAR},
+      logo = #{logo,jdbcType=VARCHAR},
       text = #{text,jdbcType=VARCHAR},
       region_id = #{regionId,jdbcType=INTEGER},
       longitude = #{longitude,jdbcType=DECIMAL},
