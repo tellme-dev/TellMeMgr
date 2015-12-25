@@ -186,7 +186,7 @@ function saveItem(obj){
 	//	myAlert("请选择项目分类");
 	//	return ;
 	//}
-	var type = $('#itemTagSelect').combotree("getValue");
+	var type = $('#itemTagSelect').combotree("getValues");
 	if(type == ""){
 		myAlert("请选择项目类型");
 		return ;
@@ -630,7 +630,7 @@ var ObjectImgItemList = function(){
 			</div>
 			<div class="mt10">
 				<span class="txt ts14">项目类型：</span>
-				<input id="itemTagSelect" name="targetId" class="easyui-combotree" data-options="editable:false" style="width:420px;height:30px;"/>
+				<input id="itemTagSelect" name="targetId" class="easyui-combotree" data-options="editable:false,multiple:true" style="width:420px;height:30px;"/>
 				<!--
 				<select id="project_classification" style="width:160px;height:30px;" class="easyui-combobox">
 			 	 	<option  value="0" selected="selected">=请选择项目分类=</option>

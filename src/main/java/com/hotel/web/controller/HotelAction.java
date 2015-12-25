@@ -119,6 +119,7 @@ public class HotelAction extends BaseAction {
 		js.setCode(new Integer(0));
 		js.setMessage("保存失败!");
 		
+		String file = request.getParameter("file_logo");
 		String province = request.getParameter("ht_province");
 		String city = request.getParameter("ht_city");
 		String area = request.getParameter("ht_area");
@@ -134,8 +135,26 @@ public class HotelAction extends BaseAction {
 			js.setMessage("请选择区域!");
 			return js;
 		}
+		String url = null;
+		if(file != null && !file.trim().equals("")){
+			String path = request.getSession().getServletContext().getRealPath("/");
+			String savePath = "hotel"+File.separator+"logo"+File.separator;
+			String fileName = new Date().getTime()+"";
+			String filePath = path + savePath;
+			File fl = new File(filePath);
+			if(!fl.exists()){
+				fl.mkdirs();
+			}
+			String[] arr = file.split(",");
+			String suffix = arr[0].split(";")[0].split("\\/")[1];
+			fileName += "."+suffix;
+			//arr[0]
+			ImgBase64.GenerateImage(arr[1], filePath+fileName);
+			url = "hotel/logo/"+fileName;
+		}
+		hotel.setLogo(url);
 		try {
-			/*新增时没有传id值*/
+			//新增时没有传id值
 			if(hotel.getId()==null){
 				hotel.setId(0);
 			}
@@ -284,13 +303,15 @@ public class HotelAction extends BaseAction {
 						
 						String path = request.getSession().getServletContext().getRealPath("/");
 						String savePath = "hotel"+File.separator+"item"+File.separator+"h"+hotelId+File.separator;
-						String fileName = hotelId + "_" + new Date().getTime() + ".png";
+						String fileName = hotelId + "_" + new Date().getTime();
 						String filePath = path + savePath;
 						File fl = new File(filePath);
 						if(!fl.exists()){
 							fl.mkdirs();
 						}
 						String[] arr = file.split(",");
+						String suffix = arr[0].split(";")[0].split("\\/")[1];
+						fileName += "."+suffix;
 						//arr[0]
 						ImgBase64.GenerateImage(arr[1], filePath+fileName);
 						
@@ -308,18 +329,36 @@ public class HotelAction extends BaseAction {
 			// 项目详情添加部分 end
 			//===============
 			
-			int tid = 0;
-			try {
-				tid = new Integer(proType);
-			} catch (Exception e) {
-				// TODO: handle exception
+			if(proType.contains(",")){
+				String[] types = proType.split(",");
+				for(String type : types){
+					int tid = 0;
+					try {
+						tid = new Integer(type);
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+					ItemTagAssociation tagAssociation = new ItemTagAssociation();
+					tagAssociation.setItemId(itemId);
+					tagAssociation.setItemTagId(tid);
+					itemTagAssociationService.insert(tagAssociation);
+				}
+				js.setCode(new Integer(1));
+				js.setMessage("添加项目成功!");
+			}else{
+				int tid = 0;
+				try {
+					tid = new Integer(proType);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				ItemTagAssociation tagAssociation = new ItemTagAssociation();
+				tagAssociation.setItemId(itemId);
+				tagAssociation.setItemTagId(tid);
+				itemTagAssociationService.insert(tagAssociation);
+				js.setCode(new Integer(1));
+				js.setMessage("添加项目成功!");
 			}
-			ItemTagAssociation tagAssociation = new ItemTagAssociation();
-			tagAssociation.setItemId(itemId);
-			tagAssociation.setItemTagId(tid);
-			itemTagAssociationService.insert(tagAssociation);
-			js.setCode(new Integer(1));
-			js.setMessage("添加项目成功!");
 		}
 		
 		return js;

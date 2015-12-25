@@ -6,6 +6,8 @@ public class Hotel {
     private Integer id;
 
     private String name;
+    
+    private String logo;
 
     private String text;
 
@@ -31,7 +33,15 @@ public class Hotel {
         this.name = name;
     }
 
-    public String getText() {
+    public String getLogo() {
+		return logo;
+	}
+
+	public void setLogo(String logo) {
+		this.logo = logo;
+	}
+
+	public String getText() {
         return text;
     }
 
