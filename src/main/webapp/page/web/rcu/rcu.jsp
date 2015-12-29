@@ -18,6 +18,7 @@
 	href="${pageContext.request.contextPath}/source/js/pager/Pager.css"
 	rel="stylesheet" />
 <script type="text/javascript">
+var consoleId;
 		$(document).ready(function(){
 			$("#pager").pager({
 			    pagenumber:'${page.pageNo}',                         /* 表示初始页数 */
@@ -25,6 +26,8 @@
 			    totalCount:'${page.totalCount}',
 			    buttonClickCallback:PageClick                     /* 表示点击分页数按钮调用的方法 */                  
 			});
+			consoleId = createUUID();
+			//consoleId = "{"+createUUID()+"}";
 			/* $("#rcuinfoList tr").each(function(i){
 				if(i>0){
 					$(this).bind("click",function(){
@@ -45,6 +48,35 @@ PageClick = function(pageclickednumber) {
 	$("#pageNumber").val(pageclickednumber);          /* 给pageNumber从新赋值 */
 	/* 执行Action */
 	pagesearch();
+}
+function onConnection(){
+			this.wsClient =new WebSocket('ws:112.74.209.133:8080/tellme/console/' + this.consoleId);
+			
+			this.wsClient.onopen=function(){
+				$("#lblInfo").html('已连接');
+				console.log('open');
+			};
+			
+			this.wsClient.onmessage =function(msg){
+				var obj=JSON.parse(msg.data);
+				//$('#linkGrd').datagrid('appendRow',obj);
+			};
+			
+			this.wsClient.onclose=function(){
+				$("#lblInfo").html('连接被关闭!');
+			};
+			
+			this.wsClient.onerror = function(evt)
+			{
+				$("#lblInfo").html('连接发送错误!' + JSON.stringify(evt));
+			};
+			
+		}
+function createUUID(){
+		function S4() {
+			return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
+	    }
+			return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
 }
 function selectModel(index){
     switch(index){
@@ -123,6 +155,7 @@ function saveRcu(obj){
 			<div class="yw-bi-rows">
 				<div class="yw-bi-tabs mt5" id="ywTabs">
 					<span class="yw-bi-now">控制台</span>
+					<span style="background-color:#75B74B" class="bg-green" onclick="onConnection()">连接</span>
 				</div>
 			</div>
 			<div class="yw-tab">
@@ -130,23 +163,17 @@ function saveRcu(obj){
 					<table id="tab1" class="yw-cm-table font16">
 						<tr>
 							<td width="10%" align="center">sid：</td>
-							<td colspan="5">
+							<td colspan="6">
 								<input id="sid" name="id" type="text" onkeyup='this.value=this.value.replace(/\D/gi,"")' class="easyui-validatebox" style="width:100px;height:30px;" /> 
 							</td>
-							<td>
-						       <span class="yw-btn bg-green ml20 cur" onclick="send();">发送</span>
-						    </td>
 						</tr>
 						<tr>
 							<td width="10%" align="center">灯光：</td>
-							<td colspan="5">
+							<td colspan="6">
 							     <span id="model_1" class="yw-btn bg-gray ml20 cur ts15" onclick="selectModel(1)">模式一</span>
 							     <span id="model_2" class="yw-btn bg-gray ml20 cur ts15" onclick="selectModel(2)">模式二</span>
 							     <span id="model_3" class="yw-btn bg-gray ml20 cur ts15" onclick="selectModel(3)">模式三</span>
 							</td>
-							<td>
-						       <span class="yw-btn bg-green ml20 cur" onclick="send();">发送</span>
-						    </td>
 						</tr>
 						<tr>
 							<td width="10%" align="center">空调：</td>
@@ -164,37 +191,28 @@ function saveRcu(obj){
 						</tr>
 						<tr>
 							<td width="10%" align="center">窗帘：</td>
-							<td colspan="5">
+							<td colspan="6">
 							        <div class="switch demo3">
 					                      <input type="checkbox" checked>
 					                      <label><i></i></label>
 				                    </div>
 							</td>
-							<td>
-						       <span class="yw-btn bg-green ml20 cur" onclick="send();">发送</span>
-						    </td>
 						</tr>
 						<tr>
-							<td colspan="6">
+						    <td width="10%" align="center">json命令：</td>
+							<td colspan="5">
 							   <input type="text" placeholder="json格式" style="width:1000px;height:30px;"/>
 							</td>
 							<td>
-						       <span class="yw-btn bg-green ml20 cur" onclick="send();">发送</span>
+						       <span class="yw-btn bg-gray ml20 cur" onclick="send();">清除</span>
 						    </td>
 						</tr>
-						<tr id="rcuGrid" class="ts15">
-				           <td></td>
-				           <td>一</td>
-				           <td>二</td>
-				           <td>三</td>
-				           <td>四</td>
-				           <td>五</td>
-		               </tr>
-		               <%-- <c:forEach var="item" items="">
-		                   <tr>
-		                      <td></td>
-		                   </tr>
-		               </c:forEach> --%>
+						<tr>
+						  <td width="10%" align="center">返回结果：</td>
+						  <td>
+						    <textarea name="imagetext" rows="20" cols="150" required>aaaaaa</textarea>
+						  </td>
+						</tr>
 					</table>
 				</form>
 			</div>
