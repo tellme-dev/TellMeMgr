@@ -49,25 +49,25 @@ PageClick = function(pageclickednumber) {
 	pagesearch();
 }
 function onConnection(){
-			this.wsClient =new WebSocket('ws:192.168.1.113:8080/TellMeMgr/console/' + this.consoleId);
+			this.wsClient =new WebSocket('ws:localhost:8080/TellMeMgr/console/' + this.consoleId);
 			
 			this.wsClient.onopen=function(){
-				$("#lblInfo").html('已连接');
+				$("#lblInfo").val('已连接');
 				console.log('open');
 			};
 			
 			this.wsClient.onmessage =function(msg){
 				var obj=JSON.parse(msg.data);
-				//$('#linkGrd').datagrid('appendRow',obj);
+				$("#lblInfo").val(JSON.stringify(obj));
 			};
 			
 			this.wsClient.onclose=function(){
-				$("#lblInfo").html('连接被关闭!');
+				$("#lblInfo").val('连接被关闭!');
 			};
 			
 			this.wsClient.onerror = function(evt)
 			{
-				$("#lblInfo").html('连接发送错误!' + JSON.stringify(evt));
+				$("#lblInfo").val('连接发送错误!' + JSON.stringify(evt));
 			};
 			
 		}
@@ -108,43 +108,12 @@ function selectModel(index){
         break;    
     }
 }
-function search(){
-	$("#pageNumber").val("1");
-	pagesearch(); 
-} 
-function pagesearch(){
-	rcuForm.submit();
+function clean(){
+    $("#textJson").val("");
 }
-function showdialog(){
-	var wz = getDialogPosition($('#rcuInfoWindow').get(0),100);
-	$('#rcuInfoWindow').window({
-		  	top: 100,
-		    left: wz[1],
-		    onBeforeClose: function () {
-		    }
-	});
-	$('#rcuInfoWindow').window('open');
+function send(json){
+    var a = 1;
 }
-function saveRcu(obj){
-	if ($('#saveRcuForm').form('validate')) {
-		$(obj).attr("onclick", ""); 
-		 $('#saveRcuForm').form('submit',{
-		  		success:function(data){
-		  			data = $.parseJSON(data);
-		  			if(data.code==0){
-		  				$.messager.alert('保存信息',data.message,'info',function(){
-		  					$('#rcuInfoWindow').window('close');
-		  					search();
-	        			});
-		  			}else{
-						$.messager.alert('错误信息',data.message,'error',function(){
-							$(obj).attr("onclick", "saveRcu(this);"); 
-	        			});
-		  			}
-		  		}
-		  	 });  
-	}
-}  
 </script>
 </head>
 
@@ -200,16 +169,17 @@ function saveRcu(obj){
 						<tr>
 						    <td width="10%" align="center">json命令：</td>
 							<td colspan="5">
-							   <input type="text" placeholder="json格式" style="width:1000px;height:30px;"/>
+							   <input id="textJson" type="text" placeholder="json格式" style="width:1000px;height:30px;"/>
 							</td>
 							<td>
-						       <span class="yw-btn bg-gray ml20 cur" onclick="send();">清除</span>
+							   <span class="yw-btn bg-green ml20 cur" onclick="send($('#textJson').val())">发送</span>
+						       <span class="yw-btn bg-gray ml20 cur" onclick="clean()">清除</span>
 						    </td>
 						</tr>
 						<tr>
 						  <td width="10%" align="center">返回结果：</td>
-						  <td>
-						    <textarea name="imagetext" rows="20" cols="150" required>aaaaaa</textarea>
+						  <td colspan="6">
+						    <textarea style="margin-top:10px" id="lblInfo" rows="20" cols="150" required></textarea>
 						  </td>
 						</tr>
 					</table>
