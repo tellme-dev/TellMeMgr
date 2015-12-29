@@ -1,163 +1,99 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hotel.dao.RcuCfgItemMapper" >
-  <resultMap id="BaseResultMap" type="com.hotel.model.RcuCfgItem" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="cfg_id" property="cfgId" jdbcType="INTEGER" />
-    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
-    <result column="level" property="level" jdbcType="INTEGER" />
-    <result column="path" property="path" jdbcType="VARCHAR" />
-    <result column="is_leaf" property="isLeaf" jdbcType="BIT" />
-    <result column="title" property="title" jdbcType="VARCHAR" />
-    <result column="sn" property="sn" jdbcType="VARCHAR" />
-    <result column="expression" property="expression" jdbcType="VARCHAR" />
-    <result column="icon_url" property="iconUrl" jdbcType="VARCHAR" />
-    <result column="note" property="note" jdbcType="VARCHAR" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hotel.dao.RcuCfgItemMapper">
+  <resultMap id="BaseResultMap" type="com.hotel.model.RcuCfgItem">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="cfg_id" jdbcType="INTEGER" property="cfgId" />
+    <result column="device_type" jdbcType="INTEGER" property="deviceType" />
+    <result column="expression" jdbcType="VARCHAR" property="expression" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    id, cfg_id, parent_id, level, path, is_leaf, title, sn, expression, icon_url, note
+  <sql id="Base_Column_List">
+    id, cfg_id, device_type, expression, note
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_rcu_cfg_item
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_rcu_cfg_item
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.hotel.model.RcuCfgItem" >
-    insert into t_rcu_cfg_item (id, cfg_id, parent_id, 
-      level, path, is_leaf, title, 
-      sn, expression, icon_url, 
-      note)
-    values (#{id,jdbcType=INTEGER}, #{cfgId,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, 
-      #{level,jdbcType=INTEGER}, #{path,jdbcType=VARCHAR}, #{isLeaf,jdbcType=BIT}, #{title,jdbcType=VARCHAR}, 
-      #{sn,jdbcType=VARCHAR}, #{expression,jdbcType=VARCHAR}, #{iconUrl,jdbcType=VARCHAR}, 
-      #{note,jdbcType=VARCHAR})
+  <insert id="insert" parameterType="com.hotel.model.RcuCfgItem">
+    insert into t_rcu_cfg_item (id, cfg_id, device_type, 
+      expression, note)
+    values (#{id,jdbcType=INTEGER}, #{cfgId,jdbcType=INTEGER}, #{deviceType,jdbcType=INTEGER}, 
+      #{expression,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.hotel.model.RcuCfgItem" >
+  <insert id="insertSelective" parameterType="com.hotel.model.RcuCfgItem">
     insert into t_rcu_cfg_item
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         id,
       </if>
-      <if test="cfgId != null" >
+      <if test="cfgId != null">
         cfg_id,
       </if>
-      <if test="parentId != null" >
-        parent_id,
+      <if test="deviceType != null">
+        device_type,
       </if>
-      <if test="level != null" >
-        level,
-      </if>
-      <if test="path != null" >
-        path,
-      </if>
-      <if test="isLeaf != null" >
-        is_leaf,
-      </if>
-      <if test="title != null" >
-        title,
-      </if>
-      <if test="sn != null" >
-        sn,
-      </if>
-      <if test="expression != null" >
+      <if test="expression != null">
         expression,
       </if>
-      <if test="iconUrl != null" >
-        icon_url,
-      </if>
-      <if test="note != null" >
+      <if test="note != null">
         note,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="cfgId != null" >
+      <if test="cfgId != null">
         #{cfgId,jdbcType=INTEGER},
       </if>
-      <if test="parentId != null" >
-        #{parentId,jdbcType=INTEGER},
+      <if test="deviceType != null">
+        #{deviceType,jdbcType=INTEGER},
       </if>
-      <if test="level != null" >
-        #{level,jdbcType=INTEGER},
-      </if>
-      <if test="path != null" >
-        #{path,jdbcType=VARCHAR},
-      </if>
-      <if test="isLeaf != null" >
-        #{isLeaf,jdbcType=BIT},
-      </if>
-      <if test="title != null" >
-        #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="sn != null" >
-        #{sn,jdbcType=VARCHAR},
-      </if>
-      <if test="expression != null" >
+      <if test="expression != null">
         #{expression,jdbcType=VARCHAR},
       </if>
-      <if test="iconUrl != null" >
-        #{iconUrl,jdbcType=VARCHAR},
-      </if>
-      <if test="note != null" >
+      <if test="note != null">
         #{note,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hotel.model.RcuCfgItem" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.hotel.model.RcuCfgItem">
     update t_rcu_cfg_item
-    <set >
-      <if test="cfgId != null" >
+    <set>
+      <if test="cfgId != null">
         cfg_id = #{cfgId,jdbcType=INTEGER},
       </if>
-      <if test="parentId != null" >
-        parent_id = #{parentId,jdbcType=INTEGER},
+      <if test="deviceType != null">
+        device_type = #{deviceType,jdbcType=INTEGER},
       </if>
-      <if test="level != null" >
-        level = #{level,jdbcType=INTEGER},
-      </if>
-      <if test="path != null" >
-        path = #{path,jdbcType=VARCHAR},
-      </if>
-      <if test="isLeaf != null" >
-        is_leaf = #{isLeaf,jdbcType=BIT},
-      </if>
-      <if test="title != null" >
-        title = #{title,jdbcType=VARCHAR},
-      </if>
-      <if test="sn != null" >
-        sn = #{sn,jdbcType=VARCHAR},
-      </if>
-      <if test="expression != null" >
+      <if test="expression != null">
         expression = #{expression,jdbcType=VARCHAR},
       </if>
-      <if test="iconUrl != null" >
-        icon_url = #{iconUrl,jdbcType=VARCHAR},
-      </if>
-      <if test="note != null" >
+      <if test="note != null">
         note = #{note,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hotel.model.RcuCfgItem" >
+  <update id="updateByPrimaryKey" parameterType="com.hotel.model.RcuCfgItem">
     update t_rcu_cfg_item
     set cfg_id = #{cfgId,jdbcType=INTEGER},
-      parent_id = #{parentId,jdbcType=INTEGER},
-      level = #{level,jdbcType=INTEGER},
-      path = #{path,jdbcType=VARCHAR},
-      is_leaf = #{isLeaf,jdbcType=BIT},
-      title = #{title,jdbcType=VARCHAR},
-      sn = #{sn,jdbcType=VARCHAR},
+      device_type = #{deviceType,jdbcType=INTEGER},
       expression = #{expression,jdbcType=VARCHAR},
-      icon_url = #{iconUrl,jdbcType=VARCHAR},
       note = #{note,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-</mapper>
+  <select id="selectRcuCfgItemBycfgId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_rcu_cfg_item
+    where cfg_id = #{cfgId,jdbcType=INTEGER}
+  </select>
+ </mapper>

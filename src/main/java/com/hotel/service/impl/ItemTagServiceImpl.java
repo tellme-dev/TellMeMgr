@@ -49,7 +49,7 @@ public class ItemTagServiceImpl implements ItemTagService{
 	}
 
 	@Override
-	public ItemTag selectByItemId(int itemId) {
+	public List<ItemTag> selectByItemId(int itemId) {
 		// TODO Auto-generated method stub
 		return itemTagMapper.selectByItemId(itemId);
 	}

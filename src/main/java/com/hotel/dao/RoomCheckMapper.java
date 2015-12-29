@@ -1,5 +1,8 @@
 package com.hotel.dao;
 
+import java.util.List;
+import java.util.Map;
+
 import com.hotel.model.RoomCheck;
 
 @MyBatisRepository
@@ -17,4 +20,6 @@ public interface RoomCheckMapper {
     int updateByPrimaryKey(RoomCheck record);
     
     int countHotelByCustomer(Integer customerId);
+
+	List<RoomCheck> selectByMap(Map<String, Object> map);
 }

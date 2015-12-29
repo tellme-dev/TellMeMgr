@@ -40,7 +40,7 @@
             <property name="enableSubPackages" value="true"/>  
         </javaClientGenerator>  
          
-        <table tableName="t_varifycode" domainObjectName="Varifycode"
+        <table tableName="t_rcu_cfg_item" domainObjectName="RcuCfgItem"
            enableSelectByExample="false"
 	       enableDeleteByExample="false"
 	       enableCountByExample="false"

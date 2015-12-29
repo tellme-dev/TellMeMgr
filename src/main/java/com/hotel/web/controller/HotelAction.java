@@ -118,17 +118,63 @@ public class HotelAction extends BaseAction {
 		JsonResult<Hotel> js = new JsonResult<Hotel>();
 		js.setCode(new Integer(0));
 		js.setMessage("保存失败!");
+		
+		String file = request.getParameter("file_logo");
+		String province = request.getParameter("ht_province");
+		String city = request.getParameter("ht_city");
+		String area = request.getParameter("ht_area");
+		if(province == null || province.trim().equals("")){
+			js.setMessage("请选择省份!");
+			return js;
+		}
+		String url = null;
+		if(file != null && !file.trim().equals("")){
+			String path = request.getSession().getServletContext().getRealPath("/");
+			String savePath = "hotel"+File.separator+"logo"+File.separator;
+			String fileName = new Date().getTime()+"";
+			String filePath = path + savePath;
+			File fl = new File(filePath);
+			if(!fl.exists()){
+				fl.mkdirs();
+			}
+			String[] arr = file.split(",");
+			String suffix = arr[0].split(";")[0].split("\\/")[1];
+			fileName += "."+suffix;
+			//arr[0]
+			ImgBase64.GenerateImage(arr[1], filePath+fileName);
+			url = "hotel/logo/"+fileName;
+		}
+		hotel.setLogo(url);
 		try {
-			/*新增时没有传id值*/
+			//新增时没有传id值
 			if(hotel.getId()==null){
 				hotel.setId(0);
 			}
-			if(hotel.getId() == 0){
-				js.setMessage("添加失败!");
-				hotelService.insert(hotel);
+			
+			int regionId = 0;
+			List<Region> regions = baseDataService.getRegionByCode(hotel.getRegionId()+"");
+			if(regions != null && regions.size() > 0){
+				regionId = regions.get(0).getId();
 			}else{
-				js.setMessage("修改失败!");
-				hotelService.updateByPrimaryKeySelective(hotel);
+				Region record = new Region();
+				record.setName(area);
+				record.setLevel(3);
+				record.setPath(province+"."+city);
+				record.setCode(hotel.getRegionId()+"");
+				int count = baseDataService.insertAndReturnId(record);
+				if(count > 0){
+					regionId = record.getId();
+				}
+			}
+			if(regionId > 0){
+				hotel.setRegionId(regionId);
+				if(hotel.getId() == 0){
+					js.setMessage("添加失败!");
+					hotelService.insert(hotel);
+				}else{
+					js.setMessage("修改失败!");
+					hotelService.updateByPrimaryKeySelective(hotel);
+				}
 			}
 			
 			js.setCode(new Integer(1));
@@ -249,13 +295,15 @@ public class HotelAction extends BaseAction {
 						
 						String path = request.getSession().getServletContext().getRealPath("/");
 						String savePath = "hotel"+File.separator+"item"+File.separator+"h"+hotelId+File.separator;
-						String fileName = hotelId + "_" + new Date().getTime() + ".png";
+						String fileName = hotelId + "_" + new Date().getTime();
 						String filePath = path + savePath;
 						File fl = new File(filePath);
 						if(!fl.exists()){
 							fl.mkdirs();
 						}
 						String[] arr = file.split(",");
+						String suffix = arr[0].split(";")[0].split("\\/")[1];
+						fileName += "."+suffix;
 						//arr[0]
 						ImgBase64.GenerateImage(arr[1], filePath+fileName);
 						
@@ -273,18 +321,36 @@ public class HotelAction extends BaseAction {
 			// 项目详情添加部分 end
 			//===============
 			
-			int tid = 0;
-			try {
-				tid = new Integer(proType);
-			} catch (Exception e) {
-				// TODO: handle exception
+			if(proType.contains(",")){
+				String[] types = proType.split(",");
+				for(String type : types){
+					int tid = 0;
+					try {
+						tid = new Integer(type);
+					} catch (Exception e) {
+						// TODO: handle exception
+					}
+					ItemTagAssociation tagAssociation = new ItemTagAssociation();
+					tagAssociation.setItemId(itemId);
+					tagAssociation.setItemTagId(tid);
+					itemTagAssociationService.insert(tagAssociation);
+				}
+				js.setCode(new Integer(1));
+				js.setMessage("添加项目成功!");
+			}else{
+				int tid = 0;
+				try {
+					tid = new Integer(proType);
+				} catch (Exception e) {
+					// TODO: handle exception
+				}
+				ItemTagAssociation tagAssociation = new ItemTagAssociation();
+				tagAssociation.setItemId(itemId);
+				tagAssociation.setItemTagId(tid);
+				itemTagAssociationService.insert(tagAssociation);
+				js.setCode(new Integer(1));
+				js.setMessage("添加项目成功!");
 			}
-			ItemTagAssociation tagAssociation = new ItemTagAssociation();
-			tagAssociation.setItemId(itemId);
-			tagAssociation.setItemTagId(tid);
-			itemTagAssociationService.insert(tagAssociation);
-			js.setCode(new Integer(1));
-			js.setMessage("添加项目成功!");
 		}
 		
 		return js;
@@ -304,7 +370,7 @@ public class HotelAction extends BaseAction {
 			HttpServletRequest request,
 			HttpServletResponse response) {
 		
-		List<Region> regions = baseDataService.getProvinceRegion();
+		//List<Region> regions = baseDataService.getProvinceRegion();
 		
 		String hotelId = request.getParameter("hotelId");
 		int id = 0;
@@ -320,19 +386,11 @@ public class HotelAction extends BaseAction {
 			Region tempArearRegion = baseDataService.getRegionById(ht.getRegionId());
 			if(tempArearRegion != null){
 				arearRegion = tempArearRegion;
+				String[] arr = tempArearRegion.getPath().split("\\.");
+				provinceRegion.setName(arr[0]);
+				cityRegion.setName(arr[1]);
 			}
-			String[] arr = arearRegion.getPath().split("\\.");
 			
-			Region tempCityRegion = baseDataService.getRegionById(new Integer(arr[1]));
-			if(tempCityRegion != null){
-				cityRegion = tempCityRegion;
-			}
-			for(Region region : regions){
-				if(region.getId().equals(new Integer(arr[0]))){
-					provinceRegion = region;
-					break;
-				}
-			}
 		}else{
 			ht.setId(0);
 			ht.setName("");
@@ -352,7 +410,7 @@ public class HotelAction extends BaseAction {
 		request.setAttribute("provinceRegion", provinceRegion);
 		request.setAttribute("cityRegion", cityRegion);
 		request.setAttribute("arearRegion", arearRegion);
-		request.setAttribute("regionList", regions);
+		//request.setAttribute("regionList", regions);
 		return "web/hotel/hotelInfo";
 	}
 	

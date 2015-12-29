@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.hotel.model.Hotel" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="logo" property="logo" jdbcType="VARCHAR" />
     <result column="text" property="text" jdbcType="VARCHAR" />
     <result column="region_id" property="regionId" jdbcType="INTEGER" />
     <result column="longitude" property="longitude" jdbcType="DECIMAL" />
@@ -26,7 +27,7 @@
   </resultMap>
   
   <sql id="Base_Column_List" >
-    id, name, text, region_id, longitude, latitude
+    id, name, logo, text, region_id, longitude, latitude
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -44,10 +45,10 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.hotel.model.Hotel" >
-    insert into t_hotle (id, name, text, 
+    insert into t_hotle (id, name, logo, text, 
       region_id, longitude, latitude
       )
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{logo,jdbcType=VARCHAR}, #{text,jdbcType=VARCHAR}, 
       #{regionId,jdbcType=INTEGER}, #{longitude,jdbcType=DECIMAL}, #{latitude,jdbcType=DECIMAL}
       )
   </insert>
@@ -100,6 +101,9 @@
       <if test="name != null" >
         name = #{name,jdbcType=VARCHAR},
       </if>
+      <if test="logo != null" >
+        logo = #{logo,jdbcType=VARCHAR},
+      </if>
       <if test="text != null" >
         text = #{text,jdbcType=VARCHAR},
       </if>
@@ -118,6 +122,7 @@
   <update id="updateByPrimaryKey" parameterType="com.hotel.model.Hotel" >
     update t_hotle
     set name = #{name,jdbcType=VARCHAR},
+      logo = #{logo,jdbcType=VARCHAR},
       text = #{text,jdbcType=VARCHAR},
       region_id = #{regionId,jdbcType=INTEGER},
       longitude = #{longitude,jdbcType=DECIMAL},
@@ -237,5 +242,24 @@
 	WHERE instr(a.name,#{0})>0 or instr(a.text,#{0})>0 and d.id = 1
 	ORDER BY b.score DESC
 	LIMIT 0,5;
+  </select>
+  
+  <select id="countByMap" resultType="java.lang.Integer" parameterType="java.util.Map">
+    select count(*)
+    from t_hotle h 
+    where 1=1
+    <if test="regionId != null" >
+        and h.region_id = #{regionId,jdbcType=INTEGER}
+    </if>
+  </select>
+  
+  <select id="selectHotelListByMap" resultMap="resultHotelVMMap" parameterType="java.util.Map" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_hotle h
+    where 1=1 
+    <if test="regionId != null" >
+        and h.region_id = #{regionId,jdbcType=INTEGER}
+    </if>
   </select>
 </mapper>

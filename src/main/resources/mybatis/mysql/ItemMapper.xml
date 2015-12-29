@@ -20,7 +20,7 @@
     <result column="position" property="position" jdbcType="VARCHAR" />
     <result column="score" property="score" jdbcType="DECIMAL" />
     <result column="is_used" property="isUsed" jdbcType="BIT" />
-    <association property="itemTag" javaType="ItemTag" column="id" select="com.hotel.dao.ItemTagMapper.selectByItemId"></association>
+    <collection property="itemTags" column="id" select="com.hotel.dao.ItemTagMapper.selectByItemId"></collection>
     <collection property="itemDetails" column="id" select="com.hotel.dao.ItemDetailMapper.selectItemVMByItemId"></collection>
   </resultMap>
   <sql id="Base_Column_List" >
@@ -42,6 +42,7 @@
     select *
     from t_item
     where hotel_id = #{hotelId,jdbcType=INTEGER}
+    ORDER BY score DESC
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from t_item

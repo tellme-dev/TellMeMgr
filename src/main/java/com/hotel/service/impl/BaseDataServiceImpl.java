@@ -142,5 +142,17 @@ public class BaseDataServiceImpl implements BaseDataService {
 		// TODO Auto-generated method stub
 		return regionMapper.selectByPrimaryKey(id);
 	}
+	
+	@Override
+	public List<Region> getRegionByCode(String code) {
+		// TODO Auto-generated method stub
+		return regionMapper.getRegionByCode(code);
+	}
+
+	@Override
+	public int insertAndReturnId(Region record) {
+		// TODO Auto-generated method stub
+		return regionMapper.insertAndReturnId(record);
+	}
 
 }

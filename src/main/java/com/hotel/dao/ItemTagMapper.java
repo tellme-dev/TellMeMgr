@@ -28,7 +28,7 @@ public interface ItemTagMapper {
     
     List<ItemTag> getchildItemTagsByParentId(Integer parentId);
     
-    ItemTag selectByItemId(int itemId);
+    List<ItemTag> selectByItemId(int itemId);
     
     List<ItemTag> getTagByParentId(int parentId);
 

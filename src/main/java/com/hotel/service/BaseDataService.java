@@ -28,4 +28,9 @@ public interface BaseDataService {
 	Region getRegionById(int id);
 
 	List<ItemTagWebVM> getItemTagTree(Integer pid);
+	
+	//根据地址码查找地区数据
+	List<Region> getRegionByCode(String code);
+	//添加并返回地区数据编号
+	int insertAndReturnId(Region record);
 }

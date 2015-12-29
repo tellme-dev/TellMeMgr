@@ -45,4 +45,8 @@ public interface HotelMapper {
 	
 	List<HotelParam> getRecommandHotelListOfSQL(int num);
 	List<HotelParam> fullTextSearchOfHotel(String text);
+
+	int countByMap(Map<String, Object> map);
+
+	List<HotelVM> selectHotelListByMap(Map<String, Object> map);
 }

@@ -8,7 +8,15 @@ import com.hotel.model.ItemTag;
 
 public class ItemVM extends Item{
 	List<ItemDetail> itemDetails;
-	ItemTag itemTag;
+	List<ItemTag> itemTags;
+
+	public List<ItemTag> getItemTags() {
+		return itemTags;
+	}
+
+	public void setItemTags(List<ItemTag> itemTags) {
+		this.itemTags = itemTags;
+	}
 
 	public List<ItemDetail> getItemDetails() {
 		return itemDetails;
@@ -18,12 +26,5 @@ public class ItemVM extends Item{
 		this.itemDetails = itemDetails;
 	}
 
-	public ItemTag getItemTag() {
-		return itemTag;
-	}
-
-	public void setItemTag(ItemTag itemTag) {
-		this.itemTag = itemTag;
-	}
 	
 }

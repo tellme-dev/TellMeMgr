@@ -14,7 +14,7 @@
 	content="width=device-width, initial-scale=1, minimum-scale=1  ,maximum-scale=1, user-scalable=no" />
 	
 <link rel="stylesheet" href="http://cache.amap.com/lbs/static/main.css?v=1.0" />
-<script src="http://webapi.amap.com/maps?v=1.3&key=7794bac5851d466a825637e82e4a7926"></script>
+<script src="http://webapi.amap.com/maps?v=1.3&key=7794bac5851d466a825637e82e4a7926&plugin=AMap.DistrictSearch"></script>
   	
 <script
 	src="${pageContext.request.contextPath}/source/js/pager/jquery.pager.js"></script>
@@ -24,15 +24,20 @@
 <script type="text/javascript">
 var map_show = null;
 var map_edit = null;
+var map_edit_marker = null;
+
+//地图省市区数据对象
+var amapAdcode = {};
 
 $(document).ready(function(){
 	
+	/*
 	$("#province").combobox({
 		onChange: function (n,o) {
 			if(n == 0){
 				return ;
 			}
-			selectProvince(n);
+			amapAdcode.createCity(n);
 		}
 	});
 	
@@ -41,9 +46,10 @@ $(document).ready(function(){
 			if(n == 0){
 				return ;
 			}
-			selectCity(n);
+			amapAdcode.createDistrict(n);
 		}
 	});
+	*/
 	
 	map_show = new AMap.Map('show_mapContainer', {
       // 设置中心点
@@ -73,17 +79,121 @@ $(document).ready(function(){
 			map_show.panTo(location);
 		}
 	}
+	
+	/*
+	//省市区数据对象设置
+	amapAdcode._district = new AMap.DistrictSearch({//高德行政区划查询插件实例
+        subdistrict: 1   //返回下一级行政区
+    });
+    amapAdcode._overlay = [];//行政区划覆盖物
+    amapAdcode.createSelectList = function(selectId, list) {//生成下拉列表
+        //var selectList = document.getElementById(selectId);
+        //selectList.innerHTML = '';
+        //selectList.add(new Option('--请选择--'));
+        //for (var i = 0, l = list.length, option; i < l; i++) {
+        //    option = new Option(list[i].name);
+        //    option.setAttribute("value", list[i].adcode);
+        //    selectList.add(option);
+        //}
+        var provinceName = '${provinceRegion.name}';
+        var cityName = '${cityRegion.name}';
+        var areaName = '${arearRegion.name}';
+        var areaCode = '${arearRegion.code}';
+        var sName = "区域";
+        var usName = "";
+        if(areaName != ''){
+        	usName = areaName;
+        }
+        if(selectId == "province"){
+			$("#city").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择城市=\",\"selected\":true}]"));
+			$("#district").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
+			sName = "省份";
+			if(provinceName != ''){
+				usName = provinceName;
+				$("#city").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"="+cityName+"=\",\"selected\":true}]"));
+				$("#district").combobox("loadData", eval("[{\"value\":\""+areaCode+"\",\"text\":\"="+areaName+"=\",\"selected\":true}]"));
+			}
+		}
+		if(selectId == "city"){
+			$("#district").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
+			sName = "城市";
+			if(cityName != ''){
+				usName = cityName;
+				$("#district").combobox("loadData", eval("[{\"value\":\""+areaCode+"\",\"text\":\"="+areaName+"=\",\"selected\":true}]"));
+			}
+		}
+        var titleString = "请选择"+sName;
+        if(usName != ''){
+        	titleString = usName;
+        }
+        
+        var dat = "[";
+		var fopt = "{\"value\":\"0\",\"text\":\"="+titleString+"=\",\"selected\":true},";
+		dat += fopt;
+		
+		var len = list.length;
+		for(var i =0; i < len; i++){
+			var opt;
+			if(i == len - 1){
+				opt = "{\"value\":\""+list[i].adcode+"\",\"text\":\""+list[i].name+"\",\"selected\":false}";
+			}else{
+				opt = "{\"value\":\""+list[i].adcode+"\",\"text\":\""+list[i].name+"\",\"selected\":false},";
+			}
+			
+			dat += opt;
+		}
+		
+		dat += "]";
+		var json = eval(dat);
+		
+		$("#"+selectId).combobox("loadData", json);
+    };
+    amapAdcode.search = function(adcodeLevel, keyword, selectId) {//查询行政区划列表并生成相应的下拉列表
+        var me = this;
+        if (adcodeLevel == 'district'||adcodeLevel == 'city') {//第三级时查询边界点
+            this._district.setExtensions('all');
+        } else {
+            this._district.setExtensions('base');
+        }
+        this._district.setLevel(adcodeLevel); //行政区级别
+        this._district.search(keyword, function(status, result) {//注意，api返回的格式不统一，在下面用三个条件分别处理
+            var districtData = result.districtList[0];
+            if (districtData.districtList) {
+                me.createSelectList(selectId, districtData.districtList);
+            } else if (districtData.districts) {
+                me.createSelectList(selectId, districtData.districts);
+            } else {
+                document.getElementById(selectId).innerHTML = '';
+            }
+        });
+    };
+    amapAdcode.clear = function(selectId) {//清空下拉列表
+        var selectList = document.getElementById(selectId);
+        selectList.innerHTML = '';
+    };
+    amapAdcode.createProvince = function() {//创建省列表
+        this.search('country', '中国', 'province');
+    };
+    amapAdcode.createCity = function(provinceAdcode) {//创建市列表
+        this.search('province', provinceAdcode, 'city');
+        this.clear('district');
+    };
+    amapAdcode.createDistrict = function(cityAdcode) {//创建区县列表
+        this.search('city', cityAdcode, 'district');
+    };
+    amapAdcode.createProvince();
+    */
 });
 
 
 
 //显示地理位置区域
 function showdialog(){
-	var val = $("#city").combobox("getValue");
-	if(val == 0){
-		myAlert("请先选中一个城市");
-		return ;
-	}
+	//var val = $("#city").combobox("getValue");
+	//if(val == 0){
+	//	myAlert("请先选中一个城市");
+	//	return ;
+	//}
 
 	var wz = getDialogPosition($('#hotelInfoWindow').get(0),100);
 	$('#hotelInfoWindow').window({
@@ -94,19 +204,20 @@ function showdialog(){
 	});
 	if(map_edit != null){
 		map_edit.clearMap();
-		var city = $("#city").combobox("getText");
-		if(city.indexOf("=") != -1){
-			city = city.substring(1, city.length - 1);
-		}
+		//var city = $("#city").combobox("getText");
+		//if(city.indexOf("=") != -1){
+		//	city = city.substring(1, city.length - 1);
+		//}
+		var city = "成都";
 		map_edit.setCity(city);
 		
 		var center = map_edit.getCenter();
 		
-		var marker = new AMap.Marker({map:map_edit,position:center,draggable:true});
-		marker.on("dragend", function(e){
-			setLocationText(marker);
+		map_edit_marker = new AMap.Marker({map:map_edit,position:center,draggable:true});
+		map_edit_marker.on("dragend", function(e){
+			setLocationText(map_edit_marker);
 		});
-		setLocationText(marker);
+		setLocationText(map_edit_marker);
 		
 		AMap.service(["AMap.Geocoder"], function() {
 			geocoder = new AMap.Geocoder({
@@ -119,7 +230,7 @@ function showdialog(){
 	            if(status=='complete') {
 	                var arr = result.geocodes;
 	                if(arr.length > 0){
-	                	marker.setPosition(arr[0].location);
+	                	map_edit_marker.setPosition(arr[0].location);
 	                	setLocationText(marker);
 	                }
 	            }else{
@@ -130,6 +241,31 @@ function showdialog(){
 		});
 	}
 	$('#hotelInfoWindow').window('open');
+}
+
+function searchMap(){
+	var val = document.getElementById("position_search").value;
+	AMap.service(["AMap.Geocoder"], function() {
+		geocoder = new AMap.Geocoder({
+            radius: 1000,
+            extensions: "all"
+        });
+        //步骤三：通过服务对应的方法回调服务返回结果，本例中通过逆地理编码方法getAddress回调结果
+        geocoder.getLocation(val, function(status, result){
+            //根据服务请求状态处理返回结果
+            if(status=='complete') {
+                var arr = result.geocodes;
+                if(arr.length > 0){
+                	map_edit.setCity(val);
+                	map_edit_marker.setPosition(arr[0].location);
+                	setLocationText(map_edit_marker);
+                }
+            }else{
+            	myAlert("城市解析失败");
+            }
+        });
+		
+	});
 }
 
 //设置初始位置或拖拽后的经纬度信息
@@ -150,6 +286,35 @@ function saveLocation(){
 		new AMap.Marker({map:map_show,position:location});
 		map_show.panTo(location);
 	}
+	AMap.service(["AMap.Geocoder"], function() {
+		geocoder = new AMap.Geocoder({
+            radius: 1000,
+            extensions: "all"
+        });
+        //步骤三：通过服务对应的方法回调服务返回结果，本例中通过逆地理编码方法getAddress回调结果
+       geocoder.getAddress(location, function(status, result){
+            //根据服务请求状态处理返回结果
+            if(status=='error') {
+                alert("服务请求出错啦！ ");
+            }
+            if(status=='no_data') {
+                alert("无数据返回，请换个关键字试试～～");
+            }
+            else {
+                console.log(result);
+                if(result.info == "OK"){
+                	var address = result.regeocode.addressComponent;
+                	//alert(address.province +"-"+address.city+"-"+address.district);
+                	document.getElementById("hotel_region").value = address.adcode;
+					document.getElementById("ht_province").value = address.province;
+					document.getElementById("ht_city").value = address.city;
+					document.getElementById("ht_area").value = address.district;
+                }
+            }
+        });
+
+		
+	});
 	
 	$('#hotelInfoWindow').window('close');
 }
@@ -198,7 +363,7 @@ function selectProvince(val){
 			dat += "]";
 			var json = eval(dat);
 			$("#city").combobox("loadData", json);
-			$("#area").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
+			$("#district").combobox("loadData", eval("[{\"value\":\"0\",\"text\":\"=请选择区域=\",\"selected\":true}]"));
 		}
 	});
 }
@@ -226,7 +391,7 @@ function selectCity(val){
 			
 			dat += "]";
 			var json = eval(dat);
-			$("#area").combobox("loadData", json);
+			$("#district").combobox("loadData", json);
 		}
 	});
 }
@@ -255,26 +420,40 @@ function submitHotel(obj){
 		myAlert("请输入酒店名称");
 		return ;
 	}
-	var region = $("#area").combobox("getValue");
-	if(region == 0){
-		myAlert("请选择酒店所属区域");
-		return ;
+	var fileItem = document.getElementById("hotel_logo");
+	if(fileItem.value != ""){
+		var fileobj = fileItem.files[0];
+		//alert(obj.type); image/png
+		var reader = new FileReader();
+		reader.readAsDataURL(fileobj);
+		reader.onload = function(e){
+			//addImgItem(obj, this.result);
+			document.getElementById("file_logo").value = this.result;
+			var location = document.getElementById("input_location");
+			if(location.value.trim() == ""){
+				myAlert("请标记酒店所在位置");
+				return ;
+			}
+			var temp = location.value.substring(1, location.value.length - 1);
+			var arr = temp.split(",");
+			//隐藏控件赋值
+			document.getElementById("hotel_lng").value = new Number(arr[0]);
+			document.getElementById("hotel_lat").value = new Number(arr[1]);
+			saveHotel(obj);
+		};
+	}else{
+		var location = document.getElementById("input_location");
+		if(location.value.trim() == ""){
+			myAlert("请标记酒店所在位置");
+			return ;
+		}
+		var temp = location.value.substring(1, location.value.length - 1);
+		var arr = temp.split(",");
+		//隐藏控件赋值
+		document.getElementById("hotel_lng").value = new Number(arr[0]);
+		document.getElementById("hotel_lat").value = new Number(arr[1]);
+		saveHotel(obj);
 	}
-	//隐藏控件赋值
-	document.getElementById("hotel_region").value = region;
-	
-	var location = document.getElementById("input_location");
-	if(location.value.trim() == ""){
-		myAlert("请标记酒店所在位置");
-		return ;
-	}
-	var temp = location.value.substring(1, location.value.length - 1);
-	var arr = temp.split(",");
-	//隐藏控件赋值
-	document.getElementById("hotel_lng").value = new Number(arr[0]);
-	document.getElementById("hotel_lat").value = new Number(arr[1]);
-	
-	saveHotel(obj);
 }
 
 function saveHotel(obj){
@@ -349,6 +528,9 @@ function myAlert(msg){
 .wid600{
 	width: 600px;
 }
+.wid100{
+	width: 100px;
+}
 
 .ht160{
 	height: 160px;
@@ -390,8 +572,10 @@ function myAlert(msg){
 									<span class="hint_red">**必填项**</span>
 								</div>
 								<div class = "mt20">
-									<input name = "regionId" id="hotel_region" type="hidden" value="${ht.regionId}" />
-									<span class="ts15">酒店区域：</span>
+									<input name = "regionId" id="hotel_region" type="hidden" value="${arearRegion.code}" />
+									<span class="ts15">酒店LOGO：</span>
+									<input id="hotel_logo" name="hotel_logo" type="file" />
+									<!--
 									<select id="province" name="province" style="width:120px;height:30px;" class="easyui-combobox">
 										<c:if test="${ht.id==0}">
 											<option selected="selected" value="0">=请选择省份=</option>
@@ -400,10 +584,6 @@ function myAlert(msg){
 										<c:if test="${ht.id!=0}">
 											<option selected="selected" value="0">=${provinceRegion.name}=</option>
 										</c:if>
-								 	 	
-								 	 	<c:forEach var="item" items="${regionList}">
-								 	 		<option value="${item.id}">${item.name}</option>
-										</c:forEach>
 								 	 	
 									</select>
 									<select id="city" name="city" style="width:120px;height:30px;" class="easyui-combobox">
@@ -415,22 +595,27 @@ function myAlert(msg){
 											<option selected="selected" value="0">=${cityRegion.name}=</option>
 										</c:if>
 									</select>
-									<select id="area" name="area" style="width:120px;height:30px;" class="easyui-combobox">
+									<select id="district" name="area" style="width:120px;height:30px;" class="easyui-combobox">
 								 	 	
 								 	 	<c:if test="${ht.id==0}">
 											<option  value="0" selected="selected">=请选择区域=</option>
 										</c:if>
 										
 										<c:if test="${ht.id!=0}">
-											<option selected="selected" value="${arearRegion.id}">=${arearRegion.name}=</option>
+											<option selected="selected" value="${arearRegion.code}">=${arearRegion.name}=</option>
 										</c:if>
 									</select>
+									-->
 									<span class="hint_red">**必填项**</span>
 								</div>
 								<div class = "mt20">
 									<span class="ts15">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述：</span><textarea name="text" id="hotel_text" cols="50" rows="6" style="vertical-align: top; border: 1px #C4C4C4 solid;">${ht.text}</textarea>
 								</div>
 								<div class = "mt20">
+									<input name = "file_logo" id="file_logo" type="hidden" />
+									<input name = "ht_province" id="ht_province" type="hidden" value="${provinceRegion.name}" />
+									<input name = "ht_city" id="ht_city" type="hidden" value="${cityRegion.name}" />
+									<input name = "ht_area" id="ht_area" type="hidden" value="${arearRegion.name}" />
 									<input name = "longitude" id="hotel_lng" type="hidden" value="${ht.longitude}" />
 									<input name = "latitude" id="hotel_lat" type="hidden" value="${ht.latitude}" />
 									<span class="ts15">经&nbsp;纬&nbsp;度：</span><input id="input_location" name="hotel_location" type="text" readonly="readonly" class="yw-input wid200 ts14" /><img alt="点击标记位置" onclick="showdialog();" class="icon_location" src="${pageContext.request.contextPath}/source/images/location.png">
@@ -464,13 +649,13 @@ function myAlert(msg){
 
 	</div>
 	<div class="cl"></div>
-	<div id="hotelInfoWindow" class="easyui-window" title="选择位置" style="width:560px;height:480px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
+	<div id="hotelInfoWindow" class="easyui-window" title="选择位置" style="width:600px;height:480px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
 		<div>
-			<div class="fl"><span class="ts14">经纬度：</span><span id="txt_location" class="txt_location">[104.065735, 30.659462]</span></div>
-			<div class="fr"><span class="yw-btn bg-blue ml40 cur ts15" onclick="saveLocation();">确定</span></div>
+			<div class="fl"><span class="ts14">关键字：</span><input id="position_search" type="text" class="yw-input wid100 ts14" /><span class="yw-btn bg-gray ml10 cur ts15" onclick="searchMap();">搜索</span><span class="ts14 ml10">经纬度：</span><span id="txt_location" class="txt_location">[104.065735, 30.659462]</span></div>
+			<div class="fr"><span class="yw-btn bg-blue cur ts15" onclick="saveLocation();">确定</span></div>
 			<div class="cl"></div>
 		</div>
-		<div id="edit_mapContainer" style="width: 540px; height: 390px; margin-top: 10px;"></div>
+		<div id="edit_mapContainer" style="width: 580px; height: 390px; margin-top: 10px;"></div>
 	</div>
 </body>
 </html>

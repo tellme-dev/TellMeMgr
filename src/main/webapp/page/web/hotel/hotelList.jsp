@@ -212,6 +212,10 @@ function myAlert(msg){
 	font-family: '微软雅黑';
 	font-size: 15px;
 }
+.logo_icon{
+	width: 60px;
+	height: 60px
+}
 </style>
 </head>
 
@@ -240,6 +244,7 @@ function myAlert(msg){
 					<tr class="ts15">
 						<th>选择</th>
 						<th>酒店名称</th> 
+						<th>LOGO</th>
 						<th>描述</th>
 						<th>所属区域编号</th>
 						<th>经度</th>
@@ -249,6 +254,7 @@ function myAlert(msg){
 						<tr class="ts14">
 							<td align="left"><input type="checkbox" name="cb_hotelId" value="${item.id}" /></td>
 							<td>${item.name}</td> 
+							<td><img class="logo_icon" src="${pageContext.request.contextPath}/${item.logo}"></td> 
 							<td>${item.text}</td> 
 							<td>${item.regionId}</td> 
 							<td>${item.longitude}</td> 

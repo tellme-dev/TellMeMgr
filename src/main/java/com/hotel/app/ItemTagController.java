@@ -175,9 +175,18 @@ public class ItemTagController {
 			List<ItemVM> list = hotels.get(i).getItemVMs();
 			for(int j = 0;j<list.size();j++){
 				ItemVM itemVM = list.get(j);
-				if(itemVM.getItemTag()!=null&&itemVM.getItemTag().getId() ==itemTag){
-					result.add(itemVM.getItemDetails().get(0).getImageUrl());
-					break;
+//				if(itemVM.getItemTags()!=null&&itemVM.getItemTags().getId() ==itemTag){
+//					result.add(itemVM.getItemDetails().get(0).getImageUrl());
+//					break;
+//				}
+				if(itemVM.getItemTags()!=null&&itemVM.getItemTags().size()>0){
+					for(int c = 0;c<itemVM.getItemTags().size();c++){
+						if(itemVM.getItemTags().get(c).getId() ==itemTag){
+							result.add(itemVM.getItemDetails().get(0).getImageUrl());
+							break;
+						}
+					}
+					
 				}
 			}
 		}
