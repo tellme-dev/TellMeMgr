@@ -19,6 +19,7 @@ import com.hotel.common.Result;
 import com.hotel.model.Item;
 import com.hotel.model.ItemTag;
 import com.hotel.model.ItemTagAssociation;
+import com.hotel.model.SwiperHotelItem;
 import com.hotel.modelVM.HomeItemVM;
 import com.hotel.modelVM.HotelVM;
 import com.hotel.modelVM.ItemVM;
@@ -57,12 +58,30 @@ public class ItemTagController {
 		
 		int size = homeItemVMList.size();
 		for(int count = 0;count<size;count++){
-			List<String> urlList = this.getImageUrlsByTagId(homeItemVMList.get(count).getItemTagId());
+			List<SwiperHotelItem> urlList = this.getImageUrlsByTagId(homeItemVMList.get(count).getItemTagId());
 //			if(urlList==null){
 //				//return new ListResult<HomeItemVM>(null,false,"获取菜单项失败").toJson();
 //				homeItemVMList.get(count).setImageUrls(null);
 //			}
-			homeItemVMList.get(count).setImageUrls(urlList);
+			homeItemVMList.get(count).setHotelItems(urlList);
+		}
+		return new ListResult<HomeItemVM>(homeItemVMList,true,"获取菜单项成功").toJson();
+	}
+	@RequestMapping(value = "loadSwiperList.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody String loadSwiperList(HttpServletRequest request)
+	{
+		List<HomeItemVM> homeItemVMList = new ArrayList<HomeItemVM>();
+		//获取8+1
+		List<ItemTag> itemTagList = itemTagService.getHomeItemList();
+		for(int index=0;index<itemTagList.size();index++){
+			homeItemVMList.add(new HomeItemVM(itemTagList.get(index).getId(),itemTagList.get(index).getName()));
+		}
+		homeItemVMList.add(new HomeItemVM( "更多"));
+		
+		int size = homeItemVMList.size();
+		for(int count = 0;count<size;count++){
+			List<SwiperHotelItem> urlList = this.getImageUrlsByTagId(homeItemVMList.get(count).getItemTagId());
+			homeItemVMList.get(count).setHotelItems(urlList);
 		}
 		return new ListResult<HomeItemVM>(homeItemVMList,true,"获取菜单项成功").toJson();
 	}
@@ -143,8 +162,8 @@ public class ItemTagController {
 	 * @param tagId
 	 * @return
 	 */
-	private List<String> getImageUrlsByTagId(int tagId){
-		List<String> urlList = null;
+	private List<SwiperHotelItem> getImageUrlsByTagId(int tagId){
+		List<SwiperHotelItem> urlList = null;
 		//所有酒店进行排序
 		//1、获取酒店
 		List<HotelVM> hotels = this.getHotelVMListByTagId(tagId);
@@ -169,20 +188,19 @@ public class ItemTagController {
 	 * @param itemTag
 	 * @return
 	 */
-	private List<String> getImageUrlsByItemTag(List<HotelVM> hotels,int itemTag){
-		List<String> result = new ArrayList<String>();
+	private List<SwiperHotelItem> getImageUrlsByItemTag(List<HotelVM> hotels,int itemTag){
+		List<SwiperHotelItem> result = new ArrayList<SwiperHotelItem>();
 		for(int i =0;i<hotels.size();i++){
 			List<ItemVM> list = hotels.get(i).getItemVMs();
 			for(int j = 0;j<list.size();j++){
 				ItemVM itemVM = list.get(j);
-//				if(itemVM.getItemTags()!=null&&itemVM.getItemTags().getId() ==itemTag){
-//					result.add(itemVM.getItemDetails().get(0).getImageUrl());
-//					break;
-//				}
 				if(itemVM.getItemTags()!=null&&itemVM.getItemTags().size()>0){
 					for(int c = 0;c<itemVM.getItemTags().size();c++){
 						if(itemVM.getItemTags().get(c).getId() ==itemTag){
-							result.add(itemVM.getItemDetails().get(0).getImageUrl());
+							SwiperHotelItem item = new SwiperHotelItem();
+							item.setImageUrl(itemVM.getItemDetails().get(0).getImageUrl());
+							item.setItemTagId(itemVM.getItemTags().get(0).getId());
+							result.add(item);
 							break;
 						}
 					}
