@@ -226,10 +226,10 @@
     		$.messager.alert('提示信息', "请选择社区！", "warning");
     		return;
     	}
-    	if(targetType != 1&&targetType != 2&&targetType != 3&&$("#txtTagContent").val() == ""){
+    	/* if(targetType != 1&&targetType != 2&&targetType != 3&&$("#txtTagContent").val() == ""){
     		$.messager.alert('提示信息', "请填写内容！", "warning");
     		return;
-    	}
+    	} */
     	//遍历文件 判断是否有空的
     	var file = $("#tab1 input[type='file']");
     	for(var j=0;j<file.length;j++){

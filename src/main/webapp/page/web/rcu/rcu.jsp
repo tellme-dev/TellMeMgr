@@ -49,7 +49,7 @@ PageClick = function(pageclickednumber) {
 	pagesearch();
 }
 function onConnection(){
-			this.wsClient =new WebSocket('ws:localhost:8080/TellMeMgr/console/' + this.consoleId);
+			this.wsClient =new WebSocket('ws:112.74.209.133:8080/tellme/console/' + this.consoleId);
 			
 			this.wsClient.onopen=function(){
 				$("#lblInfo").val('已连接');
@@ -112,7 +112,16 @@ function clean(){
     $("#textJson").val("");
 }
 function send(json){
-    var a = 1;
+    $.ajax({
+	    type: 'GET',
+	    url: url,
+	    data: data,
+	    success: success,
+	    error:function(){   
+        	alert('error');   
+        },
+	    dataType: 'json'
+	});
 }
 </script>
 </head>

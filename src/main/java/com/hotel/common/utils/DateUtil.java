@@ -314,7 +314,7 @@ public final class DateUtil {
 	 * @param formatType 日期字符格式
 	 * @return 返回相应的字符格式串，默认格式为yyyy-MM-dd HH:mm:ss
 	 */
-	private static String getFormatStr(int formatType) {
+	public static String getFormatStr(int formatType) {
 		String formatStr = null;
 		switch (formatType) {
 		case 1:
