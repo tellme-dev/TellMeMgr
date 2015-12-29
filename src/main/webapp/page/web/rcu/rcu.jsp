@@ -27,7 +27,6 @@ var consoleId;
 			    buttonClickCallback:PageClick                     /* 表示点击分页数按钮调用的方法 */                  
 			});
 			consoleId = createUUID();
-			//consoleId = "{"+createUUID()+"}";
 			/* $("#rcuinfoList tr").each(function(i){
 				if(i>0){
 					$(this).bind("click",function(){
@@ -50,7 +49,7 @@ PageClick = function(pageclickednumber) {
 	pagesearch();
 }
 function onConnection(){
-			this.wsClient =new WebSocket('ws:112.74.209.133:8080/tellme/console/' + this.consoleId);
+			this.wsClient =new WebSocket('ws:192.168.1.113:8080/TellMeMgr/console/' + this.consoleId);
 			
 			this.wsClient.onopen=function(){
 				$("#lblInfo").html('已连接');
