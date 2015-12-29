@@ -294,8 +294,8 @@ public class HotelController {
 		}
 		
 		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("pageStart", 0);
-		map.put("pageSize", pageNumber * pageSize);
+		map.put("pageStart", (pageNumber - 1) * pageSize);
+		map.put("pageSize", pageSize);
 		map.put("tagId", itemTagId);
 		map.put("hotelId", hotelId);
 		
