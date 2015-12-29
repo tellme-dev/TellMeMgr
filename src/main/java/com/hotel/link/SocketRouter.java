@@ -65,9 +65,10 @@ public class SocketRouter {
 	public static void client2Rcu(JSONObject jo) throws Exception{
 		if(jo.containsKey("sid") && jo.containsKey("type") ){
 			RcuSession rcuSession= rcuIoSessions.get(jo.getString("sid"));
-			rcuSession.sendMessage(jo);
-			notify2Console(jo.toString());
-			
+			if(rcuSession !=null){
+				rcuSession.sendMessage(jo);
+				notify2Console(jo.toString());
+			}
 		}else{
 			throw new Exception("接收的RCU Messge 格式不争取，没有SID Key!");
 		}

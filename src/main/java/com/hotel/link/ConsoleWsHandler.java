@@ -23,6 +23,9 @@ import org.springframework.web.socket.server.standard.SpringConfigurator;
 public class ConsoleWsHandler {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	
+	
+
+	
 	@OnOpen
 	public void onOpen(@PathParam(value = "consoleId") String consoleId,
 			Session session
@@ -31,6 +34,7 @@ public class ConsoleWsHandler {
 			if(consoleId !=null){
 				ConsoleSession consoleSession=new ConsoleSession();
 				consoleSession.setConsoleId(consoleId);
+				consoleSession.setSession(session);
 				SocketRouter.getConsoleSessions().put(consoleId, consoleSession);
 			}
 		} catch (Exception ex) {
