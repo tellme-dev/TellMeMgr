@@ -21,6 +21,7 @@ import com.hotel.dao.BbsMapper;
 import com.hotel.model.Bbs;
 import com.hotel.model.BbsAttach;
 import com.hotel.model.BbsCategory;
+import com.hotel.model.Comment;
 import com.hotel.modelVM.BbsVM;
 import com.hotel.service.BbsService;
 
@@ -285,6 +286,18 @@ public class BbsServiceImpl implements BbsService {
 		int count = bbsAttachMapper.countByMap(map);
 		List<BbsAttach> list = bbsAttachMapper.selectListByMap(map);
 		return new ListResult<BbsAttach>(count,list,true);
+	}
+
+	@Override
+	public List<Comment> selectCommentByHotel(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		return bbsMapper.selectCommentByHotel(map);
+	}
+
+	@Override
+	public int countCommentByHotel(int targetId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countCommentByHotel(targetId);
 	}
 
 }

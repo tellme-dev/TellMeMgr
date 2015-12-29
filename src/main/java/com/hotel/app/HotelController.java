@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONObject;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hotel.common.ListResult;
 import com.hotel.common.Result;
+import com.hotel.model.Bbs;
+import com.hotel.model.Comment;
 import com.hotel.model.CustomerBrowse;
 import com.hotel.model.Hotel;
 import com.hotel.model.Item;
@@ -34,6 +37,7 @@ import com.hotel.modelVM.HotelParam;
 import com.hotel.modelVM.ImageVM;
 import com.hotel.modelVM.ItemHotelVM;
 import com.hotel.service.BaseDataService;
+import com.hotel.service.BbsService;
 import com.hotel.service.CustomerBrowseService;
 import com.hotel.service.CustomerCollectionService;
 import com.hotel.service.HotelService;
@@ -71,6 +75,8 @@ public class HotelController {
 	private CustomerCollectionService customerCollectionService;
 	@Resource(name="baseDataService")
 	private BaseDataService baseDataService;
+	
+	@Autowired BbsService bbsService;
 	
 	/**
 	 * APP获取酒店列表接口（专题项目）
@@ -399,6 +405,63 @@ public class HotelController {
 		result.setTotal(list.size());
 		result.setMsg("");
 		result.setRows(list);
+		
+		return result;
+	}
+	
+	/**
+	 * APP获取指定酒店项目的评论列表
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/commentListByHotelItem.do", produces = "application/json;charset=UTF-8")
+	public ListResult<Comment> commentListByHotelItem(@RequestParam(value = "json", required = false)String json, HttpServletRequest request, HttpServletResponse response) {
+		int itemId = 0;
+		int pageNo = 1;
+		int pageSize = 10;
+		
+		JSONObject jsonObject = JSONObject.fromObject(json);
+		if(jsonObject.containsKey("itemId")){
+			itemId = new Integer(jsonObject.getString("itemId"));
+		}
+		if(jsonObject.containsKey("pageNo")){
+			pageNo = new Integer(jsonObject.getString("pageNo"));
+		}
+		if(jsonObject.containsKey("pageSize")){
+			pageSize = new Integer(jsonObject.getString("pageSize"));
+		}
+		
+		if(itemId < 1){
+			ListResult<Comment> result = new ListResult<Comment>();
+			result.setIsSuccess(false);
+			result.setTotal(0);
+			result.setMsg("请求参数无效");
+			result.setRows(new ArrayList<Comment>());
+			return result;
+		}
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("targetId", itemId);
+		map.put("startRow", (pageNo -1)*pageSize);
+		map.put("pageSize", pageSize);
+		
+		List<Comment> comments = bbsService.selectCommentByHotel(map);
+		int count = bbsService.countCommentByHotel(itemId);
+		int total = count/pageSize;
+		if(count%pageSize != 0){
+			total ++;
+		}
+		
+		//返回对象处理
+		ListResult<Comment> result = new ListResult<Comment>();
+		result.setIsSuccess(true);
+		result.setTotal(total);
+		result.setMsg("");
+		result.setRows(comments);
 		
 		return result;
 	}
@@ -892,6 +955,58 @@ public class HotelController {
 		result.setMsg("");
 		result.setData(data);
 		return result;
+	}
+	
+	/**
+	 * 保存用户评论酒店
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/saveHotelComment.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<String> saveAgreeHistory(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		int targetId = 0;
+		String text = "";
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("targetId")){
+				targetId = jsonObject.getInt("targetId");
+			}
+			if(jsonObject.containsKey("text")){
+				text = jsonObject.getString("text");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<String>("", false, "json解析异常");
+		}
+		if(customerId < 1 || targetId < 1 || text.trim().equals("")){
+			return new Result<String>("", false, "请求无效");
+		}
+		
+		Bbs bbs = new Bbs();
+		bbs.setCustomerId(customerId);
+		bbs.setBbsType(2);
+		bbs.setCategoryId(0);
+		bbs.setPostType(0);
+		bbs.setTargetType(1);
+		bbs.setTargetId(targetId);
+		bbs.setParentId(0);
+		bbs.setLevel(0);
+		bbs.setText(text);
+		bbs.setCreateTime(new Date());
+	    bbs.setTimeStamp(new Date());
+		
+		int count = bbsService.insert(bbs);
+		if(count > 0){
+			return new Result<String>("", true, "");
+		}
+		return new Result<String>("", false, "评论失败");
 	}
 
 	@ResponseBody

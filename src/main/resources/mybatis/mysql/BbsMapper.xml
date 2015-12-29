@@ -73,6 +73,12 @@
     <result column="time_stamp" property="timeStamp" jdbcType="TIMESTAMP" />
     <association column="customer_id" property="customer" javaType="Customer" select="com.hotel.dao.CustomerMapper.selectByPrimaryKey"></association>
   </resultMap>
+  <resultMap id="BaseCommentMap" type="com.hotel.model.Comment" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="name" property="customerName" jdbcType="VARCHAR" />
+    <result column="photo_url" property="customerPhoto" jdbcType="VARCHAR" />
+    <result column="text" property="text" jdbcType="VARCHAR" />
+  </resultMap>
   <sql id="Base_Column_List" >
     b.id, b.customer_id, b.bbs_type, b.category_id, b.post_type, b.target_type, b.target_id, b.parent_id, 
     b.level, b.path, b.title, b.text, b.score, b.create_time, b.browse_count, b.agree_count, b.answer_count, 
@@ -543,6 +549,17 @@
     <if test="pageEnd != null and pageSize != null and pageStart>-1 and pageSize>-1">
         limit 0, #{pageEnd}
     </if>
+  </select>
+  <select id="selectCommentByHotel" resultMap="BaseCommentMap" parameterType="java.util.Map" >
+   select a.id,a.text,b.name,b.photo_url from t_bbs a left join t_customer b on b.id = a.customer_id 
+   where a.bbs_type = 2 and a.target_type = 1 and a.target_id = #{targetId,jdbcType=INTEGER}
+    <if test="startRow != null and pageSize != null and startRow>-1 and pageSize>-1">
+        limit #{startRow}, #{pageSize}
+    </if>
+  </select>
+  <select id="countCommentByHotel" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+   select count(id) from t_bbs
+   where bbs_type = 2 and target_type = 1 and target_id = #{targetId,jdbcType=INTEGER}
   </select>
   <select id="countByMap" resultType="java.lang.Integer" parameterType="java.util.Map" >
     select count(b.id)

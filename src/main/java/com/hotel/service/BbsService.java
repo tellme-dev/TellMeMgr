@@ -10,6 +10,7 @@ import com.hotel.common.utils.Page;
 import com.hotel.model.Bbs;
 import com.hotel.model.BbsAttach;
 import com.hotel.model.BbsCategory;
+import com.hotel.model.Comment;
 import com.hotel.modelVM.BbsVM;
 
 public interface BbsService {
@@ -139,6 +140,15 @@ public interface BbsService {
 	 * @return
 	 */
 	Bbs selectByPrimaryKey(Integer id);
+	
+	/**
+	 * 指定获取酒店项目评论记录
+	 * @author LiuTaiXiong
+	 * @param id
+	 * @return
+	 */
+	List<Comment> selectCommentByHotel(Map<String, Object> map);
+	int countCommentByHotel(int targetId);
 
 	/**
 	 * 删除指定主贴记录
