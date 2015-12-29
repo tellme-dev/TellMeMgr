@@ -11,7 +11,7 @@
         	<!-- <li class="head-menu-now">个人工作台</li><li>统计分析</li><li>客户管理</li><li>员工管理</li><li>项目管理</li><li>知识库</li> -->
         </ul>
         <div class="fr head-menu-right ml40">
-            <a href="#"><i class="fl yw-icon icon-dot"></i><span>你有新消息</span></a>
-            <a href="#"><i class="fl yw-icon icon-fork"></i><span>退出</span></a>
+            <!-- <a href="#"><i class="fl yw-icon icon-dot"></i><span>你有新消息</span></a>
+            <a href="#"><i class="fl yw-icon icon-fork"></i><span>退出</span></a> -->
         </div>
     </div>
