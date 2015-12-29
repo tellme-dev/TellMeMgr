@@ -119,8 +119,9 @@ public class HotelServiceImpl implements HotelService{
 			String url = null;
 			if(list ==null||list.size() ==0){
 				url = null;
+			}else{
+				url = list.get(0).getImageUrl();
 			}
-			url = list.get(0).getImageUrl();
 			temp.get(i).setImageUrl(url);
 		}
 		return temp;
@@ -142,8 +143,9 @@ public class HotelServiceImpl implements HotelService{
 			String url = null;
 			if(list ==null||list.size() ==0){
 				url = null;
+			}else{
+				url = list.get(0).getImageUrl();
 			}
-			url = list.get(0).getImageUrl();
 			temp.get(i).setImageUrl(url);
 		}
 		return temp;
