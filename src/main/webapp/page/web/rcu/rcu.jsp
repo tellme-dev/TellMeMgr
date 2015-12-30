@@ -49,7 +49,7 @@ PageClick = function(pageclickednumber) {
 	pagesearch();
 }
 function onConnection(){
-			this.wsClient =new WebSocket('ws:112.74.209.133:8080/tellme/console/' + this.consoleId);
+			this.wsClient =new WebSocket('ws:localhost:8080/TellMeMgr/console/' + this.consoleId);
 			
 			this.wsClient.onopen=function(){
 				$("#lblInfo").val('已连接');
@@ -114,9 +114,17 @@ function clean(){
 function send(json){
     $.ajax({
 	    type: 'GET',
-	    url: url,
-	    data: data,
-	    success: success,
+	    url: 'app/link/send2Rcu.do',
+	    data: {
+				'message' : json
+			},
+	    success: function(req) {
+					if (req.isSuccess) {
+						$.messager.alert("系统提示", "发送成功", "warning");
+					} else {
+						$.messager.alert("系统提示", req.msg, "error");
+					}
+		},
 	    error:function(){   
         	alert('error');   
         },

@@ -212,7 +212,7 @@
   	 <if test="isUsed != null" >
         and a.is_used = #{isUsed,jdbcType=BIT}
       </if>
-      group by a.id order by a.create_time
+      group by a.id order by a.create_time DESC
     <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
         limit #{pageStart}, #{pageSize}
     </if>
@@ -235,7 +235,7 @@
     left join t_ad_detail ad on a.id = ad.ad_id
   	left join t_Item_tag t on a.target_id = t.id
   	where 1=1 <include refid="query_sql"/>
-  	group by a.id order by a.create_time
+  	group by a.id order by a.create_time DESC
   </select>
   <select id="selectAdVMByPrimaryKey" resultMap="WebVMResultMap" parameterType="java.lang.Integer" >
     select 

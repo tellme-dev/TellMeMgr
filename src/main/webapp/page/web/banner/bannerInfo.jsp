@@ -121,14 +121,22 @@
                                     <c:when test="${bannerinfo.positionType == 1}">
                                          <option value="1" selected="selected">首页顶部</option>
 							             <option value="2">首页底部</option>
+							             <option value="3">发现</option>
                                     </c:when>  
                                     <c:when test="${bannerinfo.positionType == 2}">
                                          <option value="2" selected="selected">首页底部</option>
 							             <option value="1">首页顶部</option>
+							             <option value="3">发现</option>
+                                    </c:when>
+                                    <c:when test="${bannerinfo.positionType == 3}">
+                                         <option value="3" selected="selected">发现</option>
+							             <option value="1">首页顶部</option>
+							             <option value="2">首页底部</option>
                                     </c:when>
                                     <c:otherwise>  
                                          <option value="1">首页顶部</option>
 							             <option value="2">首页底部</option>
+							             <option value="3">发现</option>
                                     </c:otherwise>  
                                  </c:choose>  
 							     <%-- <c:forEach var="item" items="${bannerlist }">
@@ -177,15 +185,19 @@
 			</div>
 		</div>
 	</div>
-	<div id="adWindow" class="easyui-window" title="选择广告" style="width:560px;height:480px;overflow:scrollbars;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
+	<div id="adWindow" class="easyui-window" title="选择广告" style="width:660px;height:580px;overflow:scrollbars;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
 	   <table id="tab2" class="yw-cm-table font16">
 	     <c:forEach var="item" items="${adList}"> 
 	      <tr>
 	        <td style="display:none" align="left">${item.id}</td>
 	        <td width="5%"><input name="checkbox" type="checkbox"/></td>
 	        <td>${item.name}</td>
+	        <td><input style="width:50px;height:30px"/></td>
 	      </tr>
 	      </c:forEach>
+	      <tr>
+	        <td></td>
+	      </tr>
 	   </table>
 	   <div class="yw-window-footer txt-right">
         	<span class="yw-window-btn bg-lightgray mt12" style="cursor: pointer;" onclick="$('#adWindow').window('close');">退出</span>
