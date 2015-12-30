@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hotel.common.BaseResult;
 import com.hotel.common.JsonResult;
 import com.hotel.common.utils.Constants;
+import com.hotel.common.utils.FileUtil;
 import com.hotel.common.utils.ImgBase64;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Function;
@@ -139,10 +140,13 @@ public class HotelAction extends BaseAction {
 			}
 			String[] arr = file.split(",");
 			String suffix = arr[0].split(";")[0].split("\\/")[1];
-			fileName += "."+suffix;
-			//arr[0]
-			ImgBase64.GenerateImage(arr[1], filePath+fileName);
-			url = "hotel/logo/"+fileName;
+			if(FileUtil.checkSuffix(suffix)){
+				fileName += "."+suffix;
+				//arr[0]
+				ImgBase64.GenerateImage(arr[1], filePath+fileName);
+				url = "hotel/logo/"+fileName;
+			}
+			
 		}
 		hotel.setLogo(url);
 		try {
@@ -225,7 +229,7 @@ public class HotelAction extends BaseAction {
 		String proPosition= request.getParameter("projectPosition");
 		String proType = request.getParameter("projectType");
 		String fileCount = request.getParameter("fileCount");
-		if(proName == null || proTel == null || proText == null || proPosition == null || proType == null || fileCount == null){
+		if(proName == null || proTel == null || proText == null || proType == null || fileCount == null){
 			js.setMessage("参数不完整!");
 			return js;
 		}
@@ -303,6 +307,9 @@ public class HotelAction extends BaseAction {
 						}
 						String[] arr = file.split(",");
 						String suffix = arr[0].split(";")[0].split("\\/")[1];
+						if(!FileUtil.checkSuffix(suffix)){
+							continue;
+						}
 						fileName += "."+suffix;
 						//arr[0]
 						ImgBase64.GenerateImage(arr[1], filePath+fileName);
