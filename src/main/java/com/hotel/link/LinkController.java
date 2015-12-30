@@ -22,7 +22,6 @@ public class LinkController {
 			
 			Result <Boolean>result=new Result<Boolean>();
 			
-			
 			JSONObject jo = JSONObject.fromObject(message);
 
 			try {
