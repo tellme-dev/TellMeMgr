@@ -18,7 +18,12 @@
 	href="${pageContext.request.contextPath}/source/js/pager/Pager.css"
 	rel="stylesheet" />
 <script type="text/javascript">
-var consoleId;
+		var consoleId;
+		var wsHost= window.location.host ;
+		var svrName=window.location.pathname.split("/")[1];
+		
+		var wsUrl="ws:" + wsHost +"/" + svrName;
+		
 		$(document).ready(function(){
 			$("#pager").pager({
 			    pagenumber:'${page.pageNo}',                         /* 表示初始页数 */
@@ -27,14 +32,9 @@ var consoleId;
 			    buttonClickCallback:PageClick                     /* 表示点击分页数按钮调用的方法 */                  
 			});
 			consoleId = createUUID();
-			/* $("#rcuinfoList tr").each(function(i){
-				if(i>0){
-					$(this).bind("click",function(){
-						var rcuId = $(this).find("td").first().text();
-						 window.location.href="rcuinfo.do?rcuId="+rcuId;
-					});
-				}
-			});  */
+			
+			
+			
 		}); 
 		
 PageClick = function(pageclickednumber) {
@@ -49,11 +49,15 @@ PageClick = function(pageclickednumber) {
 	pagesearch();
 }
 function onConnection(){
-			this.wsClient =new WebSocket('ws:112.74.209.133:8080/tellme/console/' + this.consoleId);
+			
+
+			this.wsClient =new WebSocket(wsUrl+'/appWs/' + 'u123'); //改成当前输入的用户id
 			
 			this.wsClient.onopen=function(){
 				$("#lblInfo").val('已连接');
 				console.log('open');
+				var result=wsClient.send("{type:'csts',uid:'u123',sid:'s556'}");
+				var x=result;
 			};
 			
 			this.wsClient.onmessage =function(msg){

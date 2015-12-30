@@ -10,6 +10,8 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import net.sf.json.JSONObject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
@@ -44,9 +46,15 @@ public class ConsoleWsHandler {
 	 * @return
 	 */
 	@OnMessage
-	public String onMessage(@PathParam(value = "consoleId") String consoleId,
+	public String onMessage(@PathParam(value = "consoleKey") String consoleKey,
 			String msg, 
 			Session session) {
+		try{
+			JSONObject jo =JSONObject.fromObject(msg.trim());
+			SocketRouter.execute(jo);
+		}catch(Exception ex){
+			logger.error(ex.getMessage());
+		}
 		return null;
 	}
 

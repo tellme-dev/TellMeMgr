@@ -17,7 +17,7 @@ public class SocketRouter {
 	/**
 	 * rcu客户端socket端连接的会话缓存
 	 */
-	private static Map<String,IoSession> rcuIoSessions=new ConcurrentHashMap<String,IoSession>();
+	private static Map<String,IoSession> rcuSessions=new ConcurrentHashMap<String,IoSession>();
 	
 	/**
 	 * web 控制台 websocket 连接会话缓存
@@ -28,37 +28,36 @@ public class SocketRouter {
 	 */
 	private static Map<String,Session> appSessions =new ConcurrentHashMap<String,Session>(); 
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final static Logger logger = LoggerFactory.getLogger(SocketRouter.class);
 	
-	public static  void rcuConnection(String message,IoSession ioSession){
-		
-		String sid=null;
-		
-		try{
-			String txt=message.toString().trim();
-			txt=txt.replaceAll("#@", "");
-			
-			JSONObject jo =JSONObject.fromObject(txt);
-
-			if(jo.containsKey("sid") && jo.containsKey("type") ){
-				sid=jo.getString("sid");
-				rcuIoSessions.put(sid, ioSession);
-			}else{
-				throw new Exception("接收的RCU Messge 格式不争取，没有SID Key!");
-			}
-			
-		}catch(Exception ex){
-			LoggerFactory.getLogger(SocketRouter.class).error(ex.getMessage());
-		}
+	/**
+	 *接收 RCU端发送的数据，注意，RCU的数据格式是 用#@ 打头， @#结尾
+	 * @param message
+	 * @param ioSession
+	 */
+	public static  void rcuConnection(String rcuKey,IoSession ioSession){
+		rcuSessions.put(rcuKey, ioSession);
 	}
 	
-	
+	/**
+	 * 控制台连接
+	 * @param consoleKey
+	 * @param session
+	 */
 	public static void consoleConnection(String consoleKey,Session session){
 		consoleSessions.put(consoleKey, session);
 	}
+	/**
+	 * App端连接
+	 * @param appKey
+	 * @param session
+	 */
+	public static void appConnection(String appKey,Session session){
+		appSessions.put(appKey, session);
+	}
 	
 	public static Map<String,IoSession> getRcuSessions() {
-		return rcuIoSessions;
+		return rcuSessions;
 	}
 
 	public static Map<String,Session> getConsoleSessions() {
@@ -75,20 +74,43 @@ public class SocketRouter {
 	 * @param jo
 	 */
 	public static void execute(JSONObject jo){
+		String src=null;
+		String dst=null;
+		String sid=null;
+		String uid=null;
 		
+		IoSession rcuSession=null;
+		Session appSession=null;
+		
+		if(jo.containsKey("src")){
+			src=jo.getString("src");
+		}
+		
+		if(jo.containsKey("dst")){
+			dst=jo.getString("dst");
+		}
+		
+		if(jo.containsKey("sid")){
+			sid=jo.getString("sid");
+		}
+		
+		if(jo.containsKey("uid")){
+			uid=jo.getString("uid");
+		}
+		
+		try{
+			if(dst =="rcu" && sid !=null  && (rcuSession=rcuSessions.get(sid)) !=null){
+				String msg="#@"+jo.toString() + "@#";
+				rcuSession.write(msg);
+			}else if (dst =="app" && uid !=null &&  (appSession=appSessions.get(uid)) !=null){
+				String msg=jo.toString();
+				appSession.getBasicRemote().sendText(msg);
+			}
+		}catch(Exception ex){
+			logger.error(ex.getMessage());
+		}
 	}
 	
-//	public static void client2Rcu(JSONObject jo) throws Exception{
-//		if(jo.containsKey("sid") && jo.containsKey("type") ){
-//			RcuSession rcuSession= rcuIoSessions.get(jo.getString("sid"));
-//			if(rcuSession !=null){
-//				rcuSession.sendMessage(jo);
-//				notify2Console(jo.toString());
-//			}
-//		}else{
-//			throw new Exception("接收的RCU Messge 格式不争取，没有SID Key!");
-//		}
-//	}
 	
 	/**
 	 * 发送到web 客户端
