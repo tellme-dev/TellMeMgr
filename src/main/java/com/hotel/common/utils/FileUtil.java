@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -158,9 +160,10 @@ public class FileUtil {
 	 * @param request
 	 * @param path
 	 * @throws IOException
+	 * @throws ParseException 
 	 */
 	public static List<String> uploadMultiFile2(HttpServletRequest request,
-			String path, int pathType) throws IOException {
+			String path, int pathType) throws IOException, ParseException {
 		MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
 		Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
 		List<String> imageUrl = new ArrayList<String>();// 存放图片url
@@ -179,7 +182,10 @@ public class FileUtil {
 		String fileName = null;
 		for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
 			MultipartFile mf = entity.getValue();
-			fileName = mf.getOriginalFilename();
+			//fileName = mf.getOriginalFilename();
+			Map<String,Object> m = GeneralUtil.getCurrentDate();
+			String time = (String) m.get("currentTime");
+			fileName = time + CommonUtil.getRandom(4) + ".jpg";
 			// File uploadFile = new File(savePath + fileName);
 			File uploadFile = new File(savePath, fileName);
 			// 如果路徑不存在 自動創建

@@ -4,7 +4,7 @@
 <script type="text/javascript">
 
 </script>
-<div class="con-left" id="conLeft">
+<div class="con-left" id="conLeft" style="display:none">
             	<%-- <div class="yw-user">
                 	<div class="yw-userhead">
                     	<img src="${pageContext.request.contextPath}/source/images/userhaed.png"/>

@@ -54,9 +54,9 @@
 
     <bean id="rcuAcceptor" class="org.apache.mina.transport.socket.nio.NioSocketAcceptor"
         init-method="bind" destroy-method="unbind"> 
-        <property name="defaultLocalAddress" value=":10668" /> 
+        <property name="defaultLocalAddress" value=":10668" />
         <property name="handler" ref="rcuSocketHandler" />
-        <property name="filterChainBuilder" ref="filterChainBuilder" /> 
+        <property name="filterChainBuilder" ref="filterChainBuilder" />
     </bean>
 </beans>
 

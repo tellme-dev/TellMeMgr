@@ -5,15 +5,12 @@ import net.sf.json.JSONObject;
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IdleStatus;
 import org.apache.mina.core.session.IoSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class RcuSocketHandler extends IoHandlerAdapter{
 	
-	/**
-	 * 唯一标识符号，来至于RCU硬件编码
-	 */
-	private String sid;
-	
-	private IoSession ioSession;
+	private final  Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Override 
     public void sessionCreated(IoSession session) throws Exception {
@@ -40,25 +37,26 @@ public class RcuSocketHandler extends IoHandlerAdapter{
 	 */
 	@Override
     public void messageReceived(IoSession session, Object message) throws Exception {
-
-		this.ioSession=session;
 		
 		try{
-			if(message != null){
-				String txt=(String)message;
-				SocketRouter.rcuConnection(txt, session);
-				
+			
+			String txt=message.toString().trim();
+			txt=txt.replaceAll("#@", "");
+			String sid=null;
+			
+			JSONObject jo =JSONObject.fromObject(txt);
+	
+			if(jo.containsKey("sid") && jo.containsKey("type") ){
+				sid=jo.getString("sid");
+				SocketRouter.rcuConnection(sid, session);
+				SocketRouter.execute(jo);
+			}else{
+				throw new Exception("接收的RCU Messge 格式不争取，没有SID Key!");
 			}
-		}catch(Exception ex){
-			System.out.println(ex.getMessage());
-		}
-		
 
+		}catch(Exception ex){
+			logger.error(ex.getMessage());
+		}
     }
 	
-	public void sendMessage(String msg){
-		if(this.ioSession != null){
-			this.ioSession.write(msg);
-		}
-	}
 }

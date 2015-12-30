@@ -138,7 +138,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 				String imageUrl = imageUrls.get(i);
 				
 				adDetail.setAdId(ad.getId());
-				adDetail.setId(1);
+				adDetail.setId(0);
 				adDetail.setImageUrl(imageUrl);
 				adDetail.setText(text);
 				adDetailMapper.insert(adDetail);
