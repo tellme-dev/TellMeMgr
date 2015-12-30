@@ -114,11 +114,11 @@ public class UserAction extends BaseAction {
 		js.setCode(new Integer(0));
 		js.setMessage("保存失败!");
 		try {
-			User u = userService.getUserByName(user.getName());
-			if(u!=null){
-				js.setMessage("用户名已存在!");
-				return js;
-			}
+//			User u = userService.getUserByName(user.getName());
+//			if(u!=null&&u.getId()!=user.getId()){
+//				js.setMessage("用户名已存在!");
+//				return js;
+//			}
 			/*新增时没有传id值*/
 			if(user.getId()==null){
 				user.setId(0);
