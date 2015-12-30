@@ -50,7 +50,7 @@ PageClick = function(pageclickednumber) {
 	pagesearch();
 }
 function onConnection(){
-			this.wsClient =new WebSocket('ws:localhost:8080/hotel/console/' + this.consoleId);
+			this.wsClient =new WebSocket('ws:localhost:8080/hotel/appWs/' + 'u123');
 			
 			this.wsClient.onopen=function(){
 				$("#lblInfo").html('已连接');
@@ -70,6 +70,8 @@ function onConnection(){
 			{
 				$("#lblInfo").html('连接发送错误!' + JSON.stringify(evt));
 			};
+			
+			this.wsClient.send("{type:'csts',uid:'u123',sid:'s5566'} ");
 			
 		}
 function createUUID(){
