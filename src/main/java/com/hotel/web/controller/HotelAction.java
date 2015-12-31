@@ -473,6 +473,7 @@ public class HotelAction extends BaseAction {
 		if(hotelId == null){
 			result.setMessage("参数不完整");
 		}
+		String path = request.getSession().getServletContext().getRealPath("/");
 		List<HashMap<String, Integer>> list = new ArrayList<HashMap<String,Integer>>();
 		if(hotelId.contains(",")){
 			String[] arr = hotelId.split(",");
@@ -495,6 +496,8 @@ public class HotelAction extends BaseAction {
 		if(count > 0){
 			result.setCode(1);
 			result.setMessage("");
+			//删除无效的logo图片
+			deleteLogoFile(list, path);
 		}
 		
 		return result;
@@ -547,6 +550,7 @@ public class HotelAction extends BaseAction {
 
 	// [end]
 
+	//删除元素的图片
 	private void deleteItemFiles(int itemId, String path){
 		List<ItemDetail> details = itemDetailService.selectByItemId(itemId);
 		if(details != null && details.size() > 0){
@@ -555,6 +559,24 @@ public class HotelAction extends BaseAction {
 					File file = new File(path+detail.getImageUrl());
 					if(file.exists()){
 						file.delete();
+					}
+				}
+			}
+		}
+	}
+	
+	//删除酒店logo
+	private void deleteLogoFile(List<HashMap<String, Integer>> list, String path){
+		if(list != null && list.size() > 0){
+			for(HashMap<String, Integer> map : list){
+				int id = map.get("id");
+				Hotel hotel = hotelService.selectByPrimaryKey(id);
+				if(hotel != null){
+					if(hotel.getLogo() != null && !hotel.getLogo().trim().equals("")){
+						File file = new File(path+hotel.getLogo());
+						if(file.exists()){
+							file.delete();
+						}
 					}
 				}
 			}
