@@ -646,7 +646,7 @@ var ObjectImgItemList = function(){
 			<div class="mt10">
 				<span class="txt ts14">位置描述：</span>
 				<!-- <input id="project_position" name="projectPosition" type="text" class="yw-input wid428 ts14" /> -->
-				<textarea id="project_text" name="projectPosition" rows="3" maxlength="100" cols="" class="v_top wid400 ts14"></textarea>
+				<textarea id=project_position name="projectPosition" rows="3" maxlength="100" cols="" class="v_top wid400 ts14"></textarea>
 			</div>
 			<input id="project_id" name="projectId" type="hidden" value="0"/>
 			<input name="hotelId" type="hidden" value="${hotelId}"/>
