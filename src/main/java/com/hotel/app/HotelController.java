@@ -389,6 +389,8 @@ public class HotelController {
 		for(Item it : itemsByTags){
 			Hotel hotel = hotelService.selectByPrimaryKey(it.getHotelId());
 			List<ItemDetail> details = itemDetailService.selectByItemId(it.getId());
+			List<ItemTag> tags = itemTagService.selectByItemId(it.getId());
+			
 			ItemHotelVM hotelVM = new ItemHotelVM();
 			hotelVM.setHotel(hotel);
 			hotelVM.setItem(it);
@@ -396,6 +398,11 @@ public class HotelController {
 				hotelVM.setItemDetail(details.get(0));
 			}
 			hotelVM.setDetails(details);
+			if(foundTag(tags,"交通")){
+				hotelVM.setTagTransport(true);
+			}else{
+				hotelVM.setTagTransport(false);
+			}
 			list.add(hotelVM);
 		}
 		
@@ -1045,5 +1052,19 @@ public class HotelController {
 			return new ListResult<HotelParam>(null,false,"全文搜索酒店失败").toJson();
 		}
 		return new ListResult<HotelParam>(list,true,"获取推荐酒店成功").toJson();
+	}
+	
+	//查找指定类型的标签
+	private boolean foundTag(List<ItemTag> tags, String name){
+		boolean res = false;
+		if(tags != null && tags.size() > 0){
+			for(ItemTag tag : tags){
+				if(tag.getName().equals(name)){
+					res = true;
+					break;
+				}
+			}
+		}
+		return res;
 	}
 }

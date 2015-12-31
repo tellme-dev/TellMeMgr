@@ -11,6 +11,7 @@ public class ItemHotelVM {
 	private Hotel hotel;
 	private ItemDetail itemDetail;
 	private List<ItemDetail> details;
+	private boolean tagTransport;
 	
 	public Item getItem() {
 		return item;
@@ -35,5 +36,11 @@ public class ItemHotelVM {
 	}
 	public void setDetails(List<ItemDetail> details) {
 		this.details = details;
+	}
+	public boolean getTagTransport() {
+		return tagTransport;
+	}
+	public void setTagTransport(boolean tagTransport) {
+		this.tagTransport = tagTransport;
 	}
 }
