@@ -42,6 +42,8 @@ public class FileUtil {
 	public static final int ABSOLUTE_PATH = 1;
 	/** 相对路径 */
 	public static final int RELATIVELY_PATH = 2;
+	
+	public final static String[] imgSuffix = {"jpg","jpeg","png"};
 
 	/**
 	 * 保存对象到磁盘文件上
@@ -66,6 +68,17 @@ public class FileUtil {
 			}
 		}
 	}
+	
+	public static boolean checkSuffix(String suffix){
+		boolean res = false;
+		for(String sf : imgSuffix){
+			if(suffix.equals(sf)){
+				res = true;
+				break;
+			}
+		}
+		return res;
+	} 
 
 	/**
 	 * 单文件上传

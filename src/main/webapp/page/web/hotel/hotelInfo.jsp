@@ -609,7 +609,7 @@ function myAlert(msg){
 									<span class="hint_red">**必填项**</span>
 								</div>
 								<div class = "mt20">
-									<span class="ts15">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述：</span><textarea name="text" id="hotel_text" cols="50" rows="6" style="vertical-align: top; border: 1px #C4C4C4 solid;">${ht.text}</textarea>
+									<span class="ts15">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述：</span><textarea name="text" id="hotel_text" cols="50" rows="6" maxlength="100" style="vertical-align: top; border: 1px #C4C4C4 solid;">${ht.text}</textarea>
 								</div>
 								<div class = "mt20">
 									<input name = "file_logo" id="file_logo" type="hidden" />
