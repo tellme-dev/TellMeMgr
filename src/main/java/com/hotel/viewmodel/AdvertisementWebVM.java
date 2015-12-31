@@ -9,6 +9,8 @@ public class AdvertisementWebVM extends Advertisement {
 	
     private String  createtime;//时间格式转换
     
+    private Integer sort;
+    
     private Integer hotelId;
     
     private Integer bbsId;
@@ -37,6 +39,14 @@ public class AdvertisementWebVM extends Advertisement {
     
     private List<AdDetail> adDetailList;
     
+	public Integer getSort() {
+		return sort;
+	}
+
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	}
+
 	public Integer getBbsId() {
 		return bbsId;
 	}

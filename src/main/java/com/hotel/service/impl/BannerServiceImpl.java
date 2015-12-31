@@ -71,32 +71,52 @@ public class BannerServiceImpl implements BannerService {
 			}
 			adIds = Arrays.asList(array);
 		}
+		//sort格式"1,2,3"
+		List<Integer> sorts = new ArrayList<Integer>();
+		if(banner.getSorts() != null&&!"".equals(banner.getSorts())){
+			String[] str = banner.getSorts().split(",");
+			Integer array[] = new Integer[str.length];  
+			for(int i=0;i<str.length;i++){  
+			    array[i]=Integer.parseInt(str[i]);
+			}
+			sorts = Arrays.asList(array);
+		}
 		if(banner.getId() == 0){//新增
 			banner.setCreateTime(new Date());
 			bannerMapper.insert(banner);
-			int i = 1;
+			int i = 0;
 			for(int adId: adIds){
 				BannerDetail bad = new BannerDetail();
 				bad.setId(0);
 				bad.setAdId(adId);
 				bad.setBannerId(banner.getId());
-				bad.setSort(i++);
+				bad.setSort(sorts.get(i));
 				badMapper.insert(bad);
+				i++;
 			}
 		}else{
 			bannerMapper.updateByPrimaryKeySelective(banner);
 			badMapper.deleteByBannerId(banner.getId());
-			int i = 1;
+			int i = 0;
 			for(int adId: adIds){
 				BannerDetail bad = new BannerDetail();
 				bad.setId(0);
 				bad.setAdId(adId);
 				bad.setBannerId(banner.getId());
-				bad.setSort(i++);
+				bad.setSort(sorts.get(i));
 				badMapper.insert(bad);
+				i++;
 			}
 		}
 		
+	}
+
+	@Override
+	public List<BannerDetail> loadBannerDetailListByBannerId(Integer id) {
+		// TODO Auto-generated method stub
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("bannerId", id);
+		return badMapper.selectByMap(map);
 	}
 
 }

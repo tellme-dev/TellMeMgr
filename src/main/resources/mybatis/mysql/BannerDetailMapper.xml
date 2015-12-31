@@ -92,5 +92,13 @@
     delete from t_banner_detail
     where banner_id = #{bannerId,jdbcType=INTEGER}
   </delete>
-
+  <select id="selectByMap" resultMap="BaseResultMap" parameterType="java.util.Map">
+  	select 
+    <include refid="Base_Column_List" />
+    from t_banner_detail
+    where 1=1
+    <if test="bannerId != null" >
+        and banner_id = #{bannerId,jdbcType=INTEGER}
+    </if>
+  </select>
 </mapper>

@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.websocket.Session;
+
 import net.sf.json.JSONObject;
 
 import org.apache.mina.core.session.IoSession;
@@ -13,66 +15,102 @@ import org.slf4j.LoggerFactory;
 
 public class SocketRouter {
 	/**
-	 * rcu客户端端连接的集合。
+	 * rcu客户端socket端连接的会话缓存
 	 */
-	private static Map<String,RcuSession> rcuIoSessions=new ConcurrentHashMap<String,RcuSession>();
+	private static Map<String,IoSession> rcuSessions=new ConcurrentHashMap<String,IoSession>();
 	
 	/**
-	 * web 控制台 websocket 连接
+	 * web 控制台 websocket 连接会话缓存
 	 */
-	private static Map<String,ConsoleSession> consoleSessions=new ConcurrentHashMap<String,ConsoleSession>();
+	private static Map<String,Session> consoleSessions=new ConcurrentHashMap<String,Session>();
+	/**
+	 * 客户端的websocket连接会话缓存
+	 */
+	private static Map<String,Session> appSessions =new ConcurrentHashMap<String,Session>(); 
 	
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final static Logger logger = LoggerFactory.getLogger(SocketRouter.class);
 	
-	public static  RcuSession rcuConnection(String message,IoSession ioSession){
-		
-		String sid=null;
-		RcuSession rcuIoSession=null;
-		
-		try{
-			String txt=message.toString().trim();
-			txt=txt.replaceAll("#@", "");
-			
-			JSONObject jo =JSONObject.fromObject(txt);
+	/**
+	 *接收 RCU端发送的数据，注意，RCU的数据格式是 用#@ 打头， @#结尾
+	 * @param message
+	 * @param ioSession
+	 */
+	public static  void rcuConnection(String rcuKey,IoSession ioSession){
+		rcuSessions.put(rcuKey, ioSession);
+	}
+	
+	/**
+	 * 控制台连接
+	 * @param consoleKey
+	 * @param session
+	 */
+	public static void consoleConnection(String consoleKey,Session session){
+		consoleSessions.put(consoleKey, session);
+	}
+	/**
+	 * App端连接
+	 * @param appKey
+	 * @param session
+	 */
+	public static void appConnection(String appKey,Session session){
+		appSessions.put(appKey, session);
+	}
+	
+	public static Map<String,IoSession> getRcuSessions() {
+		return rcuSessions;
+	}
 
-			if(jo.containsKey("sid") && jo.containsKey("type") ){
-				sid=jo.getString("sid");
-				rcuIoSession=new RcuSession();
-				rcuIoSession.setSid(sid);
-				rcuIoSession.setMessageJson(jo);
-				rcuIoSessions.put(sid, rcuIoSession);
-			}else{
-				throw new Exception("接收的RCU Messge 格式不争取，没有SID Key!");
-			}
-			
-		}catch(Exception ex){
-			LoggerFactory.getLogger(SocketRouter.class).error(ex.getMessage());
-			return null;
-		}
-		return rcuIoSession;
-	}
-	
-	public static Map<String,RcuSession> getRcuIoSessions() {
-		return rcuIoSessions;
-	}
-	
-	
-	
-	public static Map<String,ConsoleSession> getConsoleSessions() {
+	public static Map<String,Session> getConsoleSessions() {
 		return consoleSessions;
 	}
 	
-	public static void client2Rcu(JSONObject jo) throws Exception{
-		if(jo.containsKey("sid") && jo.containsKey("type") ){
-			RcuSession rcuSession= rcuIoSessions.get(jo.getString("sid"));
-			if(rcuSession !=null){
-				rcuSession.sendMessage(jo);
-				notify2Console(jo.toString());
+	public static Map<String,Session> getAppSessions() {
+		return appSessions;
+	}
+	
+	/**
+	 * 执行接受到的命令
+	 * 包括 rcu,app, console 发送的，
+	 * @param jo
+	 */
+	public static void execute(JSONObject jo){
+		String src=null;
+		String dst=null;
+		String sid=null;
+		String uid=null;
+		
+		IoSession rcuSession=null;
+		Session appSession=null;
+		
+		if(jo.containsKey("src")){
+			src=jo.getString("src");
+		}
+		
+		if(jo.containsKey("dst")){
+			dst=jo.getString("dst");
+		}
+		
+		if(jo.containsKey("sid")){
+			sid=jo.getString("sid");
+		}
+		
+		if(jo.containsKey("uid")){
+			uid=jo.getString("uid");
+		}
+		
+		try{
+			if(dst =="rcu" && sid !=null  && (rcuSession=rcuSessions.get(sid)) !=null){
+				String msg="#@"+jo.toString() + "@#";
+				rcuSession.write(msg);
+			}else if (dst =="app" && uid !=null &&  (appSession=appSessions.get(uid)) !=null){
+				String msg=jo.toString();
+				appSession.getBasicRemote().sendText(msg);
 			}
-		}else{
-			throw new Exception("接收的RCU Messge 格式不争取，没有SID Key!");
+		}catch(Exception ex){
+			logger.error(ex.getMessage());
 		}
 	}
+	
 	
 	/**
 	 * 发送到web 客户端
@@ -81,9 +119,9 @@ public class SocketRouter {
 	 */
 	private static void  notify2Console(String msg) throws IOException{
 		
-		for(Entry<String,ConsoleSession> entry:consoleSessions.entrySet()){
-			ConsoleSession  cs=entry.getValue();
-			cs.getSession().getBasicRemote().sendText(msg);
+		for(Entry<String,Session> entry:consoleSessions.entrySet()){
+			Session  session=entry.getValue();
+			session.getBasicRemote().sendText(msg);
 		}
 	}
 }
