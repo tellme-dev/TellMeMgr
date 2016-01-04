@@ -97,9 +97,7 @@ public class ItemTagController {
 		List<HomeItemVM> homeItemVMList = new ArrayList<HomeItemVM>();
 		List<ItemTag> itemTagList = itemTagService.getTagByParentId(0);
 		for(int index=0;index<itemTagList.size();index++){
-			if(itemTagList.get(index).getTagType() == 2 || itemTagList.get(index).getTagType() == 1){
-				homeItemVMList.add(new HomeItemVM(itemTagList.get(index).getId(),itemTagList.get(index).getName()));
-			}
+			homeItemVMList.add(new HomeItemVM(itemTagList.get(index).getId(),itemTagList.get(index).getName()));
 		}
 		
 		return new ListResult<HomeItemVM>(homeItemVMList,true,"获取菜单项成功").toJson();
