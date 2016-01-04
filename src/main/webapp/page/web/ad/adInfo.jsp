@@ -299,7 +299,7 @@
 	function add_img(){
 	    var html = "";
 	    i = j;
-		html +='<tr id="tr_'+i+'"><td width="15%"><span class="yw-window-btn bg-blue mr26" style="cursor: pointer;" onclick="del_f('+i+')">删除</span></td><td><img id="image_'+i+'" src=""/></td><td><textarea name="imagetext" placeholder="图片描述" rows="5" cols="30" required></textarea></td><td><input name="file'+i+'" id="file_'+i+'" type="file" onchange="fileChange('+i+')" style="width:200px;height:30px"/></td></tr>';
+		html +='<tr id="tr_'+i+'"><td width="15%"><span class="yw-window-btn bg-blue mr26" style="cursor: pointer;" onclick="del_f('+i+')">删除</span></td><td><img id="image_'+i+'" src=""/></td><td><textarea name="imagetext" placeholder="图片描述" rows="5" cols="30" required></textarea></td><td><input name="file'+i+'" id="file_'+i+'" type="file" accept="image/png, image/jpeg" onchange="fileChange('+i+')" style="width:200px;height:30px"/></td></tr>';
     	//document.getElementById("upload1").innerHTML+='<div id="div_'+i+'"><input id="file_'+i+'" type="file" style="width:200px;height:30px"/><input name="imagetext" value="" placeholder="图片描述" style="width:200px;height:30px"/><span class="yw-btn bg-blue mr26" style="cursor: pointer;" onclick="del_f('+i+')">删除</span></div>'; 
         //document.getElementById("upload2").innerHTML+='<div id="img_'+i+'" style="display:none"><input id="image_'+i+'" name="file_'+i+'" type="file" class="easyui-validatebox" style="width:200px;height:30px"/></div>'; 
           j++;
@@ -353,8 +353,8 @@
 		});
 		$('#bbsWindow').window('open');
 	}
-	function selectBbs(bbsId,title){
-		document.getElementById("bbsShow").value = title;
+	function selectBbs(bbsId,title,text){
+		document.getElementById("bbsShow").value = '#'+title+'#'+text;
 		document.getElementById("bbsSelect").value = bbsId;
 		$('#bbsWindow').window('close');
 	}
@@ -455,7 +455,7 @@
 						<tr id="bbs">
 							<td width="10%" align="center">关联社区：</td>
 							<td colspan="4">
-							   <input id="bbsShow" class="easyui-validatebox" value="${adinfo.bbsName}" readonly="readonly" placeholder="选择社区类型才能编辑此项" style="width:500px;height:30px;"/>
+							   <input id="bbsShow" class="easyui-validatebox" value="#${adinfo.bbsName}#${adinfo.bbsText }" readonly="readonly" placeholder="选择社区类型才能编辑此项" style="width:500px;height:30px;"/>
 							   <input type="hidden" id="bbsSelect" name="bbsId" value="${adinfo.bbsId}" class="easyui-validatebox" style="width:500px;height:30px;"/>
 							   <span id="select_bbs" class="yw-btn bg-blue mt12" style="cursor: pointer;" onclick="showdialog()">选择社区</span>
 							</td>
@@ -501,9 +501,14 @@
 	</div>
 	<div id="bbsWindow" class="easyui-window" title="关联社区" style="width:560px;height:480px;overflow:scrollbars;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
 	   <table id="tab2" class="yw-cm-table font16">
-	     <c:forEach var="item" items="${bbsList}"> 
 	      <tr>
-	        <td onclick="selectBbs(${item.id},'${item.title}')">${item.title}</td>
+	         <td>标题</td>
+	         <td>内容</td>
+	      </tr>
+	     <c:forEach var="item" items="${bbsList}"> 
+	      <tr onclick="selectBbs(${item.id},'${item.title}','${item.text }')">
+	        <td>${item.title}</td>
+	        <td>${item.text }</td>
 	      </tr>
 	      </c:forEach>
 	   </table>

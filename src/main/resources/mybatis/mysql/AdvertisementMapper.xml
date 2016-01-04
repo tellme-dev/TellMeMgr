@@ -242,7 +242,7 @@
   </select>
   <select id="selectAdVMByPrimaryKey" resultMap="WebVMResultMap" parameterType="java.lang.Integer" >
     select 
-    <include refid="Base_Column_List" />,h.name as hotelName,t.name as targetName,b.id as bbsId,b.title as bbsName
+    <include refid="Base_Column_List" />,h.name as hotelName,t.name as targetName,b.id as bbsId,b.title as bbsName,b.text as bbsText
     from t_ad a 
     left join t_hotle h on h.id = a.target_id
   	left join t_Item_tag t on a.target_id = t.id

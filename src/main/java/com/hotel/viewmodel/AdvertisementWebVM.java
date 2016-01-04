@@ -21,6 +21,8 @@ public class AdvertisementWebVM extends Advertisement {
     
     private String bbsName;
     
+    private String bbsText;
+    
     private List<Integer> targetIds;
     
     private String imageUrl;
@@ -39,6 +41,14 @@ public class AdvertisementWebVM extends Advertisement {
     
     private List<AdDetail> adDetailList;
     
+	public String getBbsText() {
+		return bbsText;
+	}
+
+	public void setBbsText(String bbsText) {
+		this.bbsText = bbsText;
+	}
+
 	public Integer getSort() {
 		return sort;
 	}

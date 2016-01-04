@@ -182,10 +182,11 @@ public class FileUtil {
 		String fileName = null;
 		for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
 			MultipartFile mf = entity.getValue();
-			//fileName = mf.getOriginalFilename();
+			String name = mf.getOriginalFilename();
+			String suffix = name.substring(name.lastIndexOf(".")+1);
 			Map<String,Object> m = GeneralUtil.getCurrentDate();
 			String time = (String) m.get("currentTime");
-			fileName = time + CommonUtil.getRandom(4) + ".jpg";
+			fileName = time + CommonUtil.getRandom(4) + "." + suffix;
 			// File uploadFile = new File(savePath + fileName);
 			File uploadFile = new File(savePath, fileName);
 			// 如果路徑不存在 自動創建
