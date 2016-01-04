@@ -200,6 +200,7 @@ public class ItemTagController {
 							SwiperHotelItem item = new SwiperHotelItem();
 							item.setImageUrl(itemVM.getItemDetails().get(0).getImageUrl());
 							item.setItemTagId(itemVM.getItemTags().get(0).getId());
+							item.setItemId(itemVM.getId());
 							result.add(item);
 							break;
 						}
