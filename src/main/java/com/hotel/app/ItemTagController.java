@@ -97,9 +97,7 @@ public class ItemTagController {
 		List<HomeItemVM> homeItemVMList = new ArrayList<HomeItemVM>();
 		List<ItemTag> itemTagList = itemTagService.getTagByParentId(0);
 		for(int index=0;index<itemTagList.size();index++){
-			if(itemTagList.get(index).getTagType() == 2 || itemTagList.get(index).getTagType() == 1){
-				homeItemVMList.add(new HomeItemVM(itemTagList.get(index).getId(),itemTagList.get(index).getName()));
-			}
+			homeItemVMList.add(new HomeItemVM(itemTagList.get(index).getId(),itemTagList.get(index).getName()));
 		}
 		
 		return new ListResult<HomeItemVM>(homeItemVMList,true,"获取菜单项成功").toJson();
@@ -200,6 +198,7 @@ public class ItemTagController {
 							SwiperHotelItem item = new SwiperHotelItem();
 							item.setImageUrl(itemVM.getItemDetails().get(0).getImageUrl());
 							item.setItemTagId(itemVM.getItemTags().get(0).getId());
+							item.setItemId(itemVM.getId());
 							result.add(item);
 							break;
 						}
