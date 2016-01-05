@@ -188,22 +188,33 @@ public class ItemTagController {
 	 */
 	private List<SwiperHotelItem> getImageUrlsByItemTag(List<HotelVM> hotels,int itemTag){
 		List<SwiperHotelItem> result = new ArrayList<SwiperHotelItem>();
+		
 		for(int i =0;i<hotels.size();i++){
 			List<ItemVM> list = hotels.get(i).getItemVMs();
+			int mark = 0;
 			for(int j = 0;j<list.size();j++){
+				if(mark ==1){
+					break;
+				}
 				ItemVM itemVM = list.get(j);
+				
 				if(itemVM.getItemTags()!=null&&itemVM.getItemTags().size()>0){
 					for(int c = 0;c<itemVM.getItemTags().size();c++){
-						if(itemVM.getItemTags().get(c).getId() ==itemTag){
+						if(itemVM.getItemTags().get(c).getParentId() ==itemTag){
 							SwiperHotelItem item = new SwiperHotelItem();
-							item.setImageUrl(itemVM.getItemDetails().get(0).getImageUrl());
-							item.setItemTagId(itemVM.getItemTags().get(0).getId());
+							if(itemVM.getItemDetails()==null||itemVM.getItemDetails().size() ==0){
+								item.setImageUrl("");
+							}else{
+								item.setImageUrl(itemVM.getItemDetails().get(0).getImageUrl());
+							}
+							
+							item.setItemTagId(itemVM.getItemTags().get(c).getId());
 							item.setItemId(itemVM.getId());
 							result.add(item);
+							mark = 1;
 							break;
 						}
 					}
-					
 				}
 			}
 		}
@@ -365,11 +376,7 @@ public class ItemTagController {
 		if(tagId ==0){
 			List<ItemTag> temp = itemTagService.getMoreItemList();
 			childItemTagList = itemTagService.getchildItemTagsByParentId(temp.get(0).getId());
-		}else if(tagId ==1){
-			//如果是"酒店"的话，它就没有二级标签
-			childItemTagList.add(itemTagService.getItemTagById(tagId));
-		}
-		else{
+		}else{
 			childItemTagList = itemTagService.getchildItemTagsByParentId(tagId);
 		}
 		return childItemTagList;
