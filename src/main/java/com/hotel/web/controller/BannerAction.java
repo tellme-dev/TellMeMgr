@@ -1,10 +1,10 @@
 package com.hotel.web.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,15 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
 import com.hotel.common.JsonResult;
 import com.hotel.common.utils.Constants;
-import com.hotel.common.utils.FileUtil;
 import com.hotel.common.utils.Page;
+import com.hotel.model.BannerDetail;
 import com.hotel.model.Function;
 import com.hotel.model.User;
-import com.hotel.modelVM.BbsVM;
 import com.hotel.service.AdvertisementService;
 import com.hotel.service.BannerService;
 import com.hotel.service.FunctionService;
@@ -81,10 +79,13 @@ public class BannerAction {
 			BannerWebVM banner,
 			@RequestParam(value = "bannerId", required = false) Integer id,
 			HttpServletRequest request, HttpServletResponse response) {
+		List<BannerDetail> bdList = new ArrayList<BannerDetail>();
 		if(id!=0){//编辑
 			/*根据Id查询所选择的banner详情*/
 			banner = bannerService.loadBannerById(id);
 			request.setAttribute("bannerinfo", banner);
+			/*根据bannerId该banner下的广告*/
+			bdList = bannerService.loadBannerDetailListByBannerId(id);
 			request.setAttribute("type", Constants.EDIT_TYPE);
 		}else{
 			request.setAttribute("type", Constants.ADD_TYPE);
@@ -93,6 +94,14 @@ public class BannerAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("isUsed", true);
 		List<AdvertisementWebVM> list = adService.getAdPageList(map);
+		/*遍历 将bdList中的sort写入到对应的广告列表中*/
+		for(AdvertisementWebVM adVM:list){
+			for(BannerDetail bd: bdList){
+				if(adVM.getId() == bd.getAdId()){
+					adVM.setSort(bd.getSort());
+				}
+			}
+		}
 		request.setAttribute("adList", list);
 		return "web/banner/bannerInfo";
 	}

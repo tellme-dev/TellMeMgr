@@ -76,7 +76,7 @@ public class AdController {
 	}
 	
 	/**
-	 * 发现页面广告列表查询
+	 * 发现页面广告列表查询(查询条件positionType=3)
 	 * @author jun
 	 * @param adParam
 	 * @param request

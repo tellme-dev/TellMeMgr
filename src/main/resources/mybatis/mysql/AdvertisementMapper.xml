@@ -199,6 +199,9 @@
       <if test="timeStamp != null" >
         and a.time_stamp = #{timeStamp,jdbcType=TIMESTAMP}
       </if>
+      <if test="positionType != null">
+        and b.position_type = #{positionType,jdbcType=INTEGER}
+    </if>
   </sql>
   
   <select id="getAdPageList" resultMap="WebVMResultMap" parameterType="java.util.Map" >
@@ -212,7 +215,7 @@
   	 <if test="isUsed != null" >
         and a.is_used = #{isUsed,jdbcType=BIT}
       </if>
-      group by a.id order by a.create_time
+      group by a.id order by a.create_time DESC
     <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
         limit #{pageStart}, #{pageSize}
     </if>
@@ -235,11 +238,11 @@
     left join t_ad_detail ad on a.id = ad.ad_id
   	left join t_Item_tag t on a.target_id = t.id
   	where 1=1 <include refid="query_sql"/>
-  	group by a.id order by a.create_time
+  	group by a.id order by a.create_time DESC
   </select>
   <select id="selectAdVMByPrimaryKey" resultMap="WebVMResultMap" parameterType="java.lang.Integer" >
     select 
-    <include refid="Base_Column_List" />,h.name as hotelName,t.name as targetName,b.id as bbsId,b.title as bbsName
+    <include refid="Base_Column_List" />,h.name as hotelName,t.name as targetName,b.id as bbsId,b.title as bbsName,b.text as bbsText
     from t_ad a 
     left join t_hotle h on h.id = a.target_id
   	left join t_Item_tag t on a.target_id = t.id
@@ -259,7 +262,13 @@
     select 
     <include refid="Base_Column_List" />
     from t_ad a
-  	order by a.create_time
+    LEFT JOIN t_banner_detail bd on bd.ad_id = a.id
+    LEFT JOIN t_banner b on b.id = bd.banner_id
+    where 1=1
+    <if test="positionType != null">
+        and b.position_type = #{positionType,jdbcType=INTEGER}
+    </if>
+    ORDER BY bd.sort
   	<if test="pageEnd != null and pageSize != null and pageStart>-1 and pageSize>-1">
         limit 0, #{pageEnd}
     </if>
@@ -267,7 +276,10 @@
   <select id="countByMap" resultType="java.lang.Integer" parameterType="java.util.Map" >
     select count(a.id)
     from t_ad a
+    LEFT JOIN t_banner_detail bd on bd.ad_id = a.id
+    LEFT JOIN t_banner b on b.id = bd.banner_id
     where 1=1 <include refid="query_sql"/>
+    
   </select>
   <select id="selectAdListByMap" resultMap="resultAdvertisementMap" parameterType="java.util.Map" >
     select * 
