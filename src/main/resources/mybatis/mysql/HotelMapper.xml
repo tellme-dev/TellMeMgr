@@ -29,6 +29,9 @@
   <sql id="Base_Column_List" >
     id, name, logo, text, region_id, longitude, latitude
   </sql>
+  <sql id="H_Column_List" >
+    h.id, h.name, h.logo, h.text, h.region_id, h.longitude, h.latitude
+  </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     <include refid="Base_Column_List" />
@@ -186,22 +189,20 @@
   </delete>
   <select id="getPageHotelByItemTag" resultMap="BaseResultMap" parameterType="java.util.Map">
      select 
-     <include refid="Base_Column_List" />
-     from t_hotle 
-     where id in (select distinct hotel_id from t_item where id in (select item_id from t_item_tag_association where item_tag_id in (select id from t_Item_tag where parent_id = #{itemTagId})) order by score desc)
+     <include refid="H_Column_List" />
+     from t_item_tag_association ita left join t_Item_tag it on it.id = ita.item_tag_id left join t_item i on ita.item_id = i.id left join t_hotle h on h.id = i.hotel_id where it.parent_id = #{itemTagId}
      <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
         limit #{pageStart}, #{pageSize}
      </if>
   </select>
   <select id="getPageHotelCountByItemTag" resultType="java.lang.Integer">
-    select count(id) from t_hotle where id in (select distinct hotel_id from t_item where id in (select item_id from t_item_tag_association where item_tag_id in (select id from t_Item_tag where parent_id = #{itemTagId})))
+    select count(h.id) from t_item_tag_association ita left join t_Item_tag it on it.id = ita.item_tag_id left join t_item i on ita.item_id = i.id left join t_hotle h on h.id = i.hotel_id where it.parent_id = #{itemTagId}
   </select>
   
   <select id="getPageHotelByCustomer" resultMap="BaseResultMap" parameterType="java.util.Map" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_hotle 
-    where id in (select distinct hotel_id from t_room_check where customer_id = #{customerId,jdbcType=INTEGER}) 
+  	select 
+  	<include refid="H_Column_List" />
+  	from t_room_check rc left join t_hotle h on rc.hotel_id = h.id where rc.customer_id = #{customerId,jdbcType=INTEGER} group by h.id
     <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
         limit #{pageStart}, #{pageSize}
      </if>

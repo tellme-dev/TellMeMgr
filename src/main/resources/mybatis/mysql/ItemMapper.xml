@@ -204,6 +204,12 @@
     </if>
   </select>
   
+  <select id="selectItemByHotelAndTagName" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    a.id, a.hotel_id, a.name, a.text, a.tel, a.position, a.score, a.is_used
+    from t_item_tag_association ita left join t_Item_tag it on ita.item_tag_id = it.id left join t_item a on ita.item_id = a.id where it.name = #{tagName,jdbcType=VARCHAR} and a.hotel_id = #{hotelId,jdbcType=INTEGER}
+  </select>
+  
   <select id="selectByItemTagRootAndHotel" resultMap="BaseResultMap" parameterType="java.util.Map" >
     select 
     a.id, a.hotel_id, a.name, a.text, a.tel, a.position, a.score, a.is_used

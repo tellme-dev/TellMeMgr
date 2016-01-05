@@ -36,5 +36,7 @@ public interface ItemMapper {
     
     List<Item> selectByItemTagChildOrderByScore(Map<String, Object> map);
     
+    List<Item> selectItemByHotelAndTagName(Map<String, Object> map);
+    
     List<Item> selectByItemTagRootAndHotel(Map<String, Object> map);
 }
