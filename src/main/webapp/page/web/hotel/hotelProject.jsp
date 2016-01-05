@@ -24,17 +24,44 @@
 <script type="text/javascript">
 
 var tempImgArr = null;
+var itemTagIds = "";
 
 $(document).ready(function(){
-	$("#project_classification").combobox({
-		onChange: function (n,o) {
-			if(n == 0){
-				return ;
-			}
-			setTag(n);
-		}
-	});
-	initItemTagTree();
+	//$("#project_classification").combobox({
+	//	onChange: function (n,o) {
+	//		if(n == 0){
+	///			return ;
+	//		}
+	//		setTag(n);
+	//	}
+	//});
+	//initItemTagTree();
+	$('#itemTagSelect').combotree( {  
+       url : '${pageContext.request.contextPath}/web/ad/jsonLoadItemTagTree.do?pid=0',
+       onChange:function(){
+       		 var tree = $('#itemTagSelect').combotree('tree');
+       		 var node = tree.tree('getChecked');
+       		 var txt = "";
+       		 var ids = "";
+       		 if(node.length > 0){
+       		 	for(var i = 0; i < node.length; i ++){
+       		 		if(node[i].level == 2){
+       		 			ids += node[i].id+",";
+       		 			txt += node[i].name+",";
+       		 		}
+       		 	}
+       		 }
+       		 if(txt.indexOf(",") != -1){
+       		 	txt = txt.substring(0, txt.length - 1);
+       		 }
+       		 if(ids.indexOf(",") != -1){
+       		 	ids = ids.substring(0, ids.length - 1);
+       		 }
+       		 //$('#itemTagSelect').combotree('setValues',ids);
+       		 itemTagIds = ids;
+       		 $('#itemTagSelect').combotree('setText',txt);
+       }
+    });
 
 	tempImgArr = new ObjectImgItemList();
 });
@@ -164,6 +191,7 @@ function refresh(){
 
 //保存一个项目
 function saveItem(obj){
+	
 	var proName = document.getElementById("project_name").value;
 	if(proName.trim() == ""){
 		myAlert("请输入项目名称");
@@ -186,7 +214,7 @@ function saveItem(obj){
 	//	myAlert("请选择项目分类");
 	//	return ;
 	//}
-	var type = $('#itemTagSelect').combotree("getValues");
+	var type = itemTagIds;
 	if(type == ""){
 		myAlert("请选择项目类型");
 		return ;
@@ -242,6 +270,8 @@ function resetWindow(){
 	//$("#project_classification").combobox("setValue", 0);
 	//$("#project_type").combobox("setValue", 0);
 	//document.getElementById("item_info").value = "";
+	$('#itemTagSelect').combotree('setValues',"");
+    itemTagIds = "";
 	document.getElementById("item_file").value = "";
 	document.getElementById("project_file_count").value="0";
 	document.getElementById("project_type_item").value="";
@@ -337,21 +367,6 @@ function addImgItem(file, url){
 	
 	tempImgArr.add(objectImgItem);
 }
-
-function initItemTagTree(){
-	    $('#itemTagSelect').combotree( {  
-          url : '${pageContext.request.contextPath}/web/ad/jsonLoadItemTagTree.do?pid=0',
-          onSelect : function(node) {  
-            var tree = $(this).tree;  
-            //选中的节点是否为叶子节点,如果不是叶子节点,清除选中  
-            var isLeaf = tree('isLeaf', node.target);  
-            if (!isLeaf) {  
-                //清除选中  
-                $('#itemTagSelect').combotree('clear');  
-            }  
-         }  
-       });  
-	}
 
 //电话号码验证
 function checkTel(value){
