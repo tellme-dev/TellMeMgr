@@ -149,15 +149,15 @@ function send(json){
 					    <tr>
 							<td width="10%" align="center">uid：</td>
 							<td colspan="6">
-								<input id="uid" name="uid" type="text" onkeyup='this.value=this.value.replace(/\D/gi,"")' class="easyui-validatebox" style="width:100px;height:30px;" /> 
+								<input id="uid" name="uid" type="text" class="easyui-validatebox" style="width:100px;height:30px;" /> 
 							</td>
 						</tr>
-						<tr>
+						<!-- <tr>
 							<td width="10%" align="center">sid：</td>
 							<td colspan="6">
-								<input id="sid" name="id" type="text" onkeyup='this.value=this.value.replace(/\D/gi,"")' class="easyui-validatebox" style="width:100px;height:30px;" /> 
+								<input id="sid" name="id" type="text" class="easyui-validatebox" style="width:100px;height:30px;" /> 
 							</td>
-						</tr>
+						</tr> -->
 						<!-- <tr>
 							<td width="10%" align="center">灯光：</td>
 							<td colspan="6">
