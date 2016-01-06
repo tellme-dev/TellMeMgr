@@ -66,6 +66,14 @@ $(document).ready(function(){
       // 设置缩放级别
       zoom: 12
     });
+    map_edit.on('click', function(e) {
+        //document.getElementById("lnglat").value = e.lnglat.getLng() + ',' + e.lnglat.getLat()
+        //alert("click");
+        if(map_edit_marker != null){
+        	map_edit_marker.setPosition(e.lnglat);
+        	setLocationText(map_edit_marker);
+        }
+    });
     
     var id = ${ht.id};
 	if(id != 0){
@@ -231,7 +239,7 @@ function showdialog(){
 	                var arr = result.geocodes;
 	                if(arr.length > 0){
 	                	map_edit_marker.setPosition(arr[0].location);
-	                	setLocationText(marker);
+	                	setLocationText(map_edit_marker);
 	                }
 	            }else{
 	            	myAlert("城市解析失败");
@@ -609,7 +617,7 @@ function myAlert(msg){
 									<span class="hint_red">**必填项**</span>
 								</div>
 								<div class = "mt20">
-									<span class="ts15">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述：</span><textarea name="text" id="hotel_text" cols="50" rows="6" style="vertical-align: top; border: 1px #C4C4C4 solid;">${ht.text}</textarea>
+									<span class="ts15">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述：</span><textarea name="text" id="hotel_text" cols="50" rows="6" maxlength="100" style="vertical-align: top; border: 1px #C4C4C4 solid;">${ht.text}</textarea>
 								</div>
 								<div class = "mt20">
 									<input name = "file_logo" id="file_logo" type="hidden" />

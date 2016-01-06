@@ -24,17 +24,44 @@
 <script type="text/javascript">
 
 var tempImgArr = null;
+var itemTagIds = "";
 
 $(document).ready(function(){
-	$("#project_classification").combobox({
-		onChange: function (n,o) {
-			if(n == 0){
-				return ;
-			}
-			setTag(n);
-		}
-	});
-	initItemTagTree();
+	//$("#project_classification").combobox({
+	//	onChange: function (n,o) {
+	//		if(n == 0){
+	///			return ;
+	//		}
+	//		setTag(n);
+	//	}
+	//});
+	//initItemTagTree();
+	$('#itemTagSelect').combotree( {  
+       url : '${pageContext.request.contextPath}/web/ad/jsonLoadItemTagTree.do?pid=0',
+       onChange:function(){
+       		 var tree = $('#itemTagSelect').combotree('tree');
+       		 var node = tree.tree('getChecked');
+       		 var txt = "";
+       		 var ids = "";
+       		 if(node.length > 0){
+       		 	for(var i = 0; i < node.length; i ++){
+       		 		if(node[i].level == 2){
+       		 			ids += node[i].id+",";
+       		 			txt += node[i].name+",";
+       		 		}
+       		 	}
+       		 }
+       		 if(txt.indexOf(",") != -1){
+       		 	txt = txt.substring(0, txt.length - 1);
+       		 }
+       		 if(ids.indexOf(",") != -1){
+       		 	ids = ids.substring(0, ids.length - 1);
+       		 }
+       		 //$('#itemTagSelect').combotree('setValues',ids);
+       		 itemTagIds = ids;
+       		 $('#itemTagSelect').combotree('setText',txt);
+       }
+    });
 
 	tempImgArr = new ObjectImgItemList();
 });
@@ -164,6 +191,7 @@ function refresh(){
 
 //保存一个项目
 function saveItem(obj){
+	
 	var proName = document.getElementById("project_name").value;
 	if(proName.trim() == ""){
 		myAlert("请输入项目名称");
@@ -186,7 +214,7 @@ function saveItem(obj){
 	//	myAlert("请选择项目分类");
 	//	return ;
 	//}
-	var type = $('#itemTagSelect').combotree("getValues");
+	var type = itemTagIds;
 	if(type == ""){
 		myAlert("请选择项目类型");
 		return ;
@@ -198,17 +226,18 @@ function saveItem(obj){
 		return ;
 	}
 	
-	var proPosition = document.getElementById("project_position").value;
-	if(proPosition.trim() == ""){
-		myAlert("请输入位置描述");
-		return ;
-	}
+	//var proPosition = document.getElementById("project_position").value;
+	//if(proPosition.trim() == ""){
+	//	myAlert("请输入位置描述");
+	//	return ;
+	//}
 	
 	//var type = classification;
 	//if($("#project_type").combobox("getValue") != 0){
 	//	type = $("#project_type").combobox("getValue");
 	//}
-	
+	//alert(type);
+	//return;
 	document.getElementById("project_type_item").value = type;
 	
 	if(tempImgArr != null && tempImgArr.size() > 0){
@@ -226,11 +255,10 @@ function saveItem(obj){
 			var ip_text = document.createElement("input");
 			ip_text.type = "hidden";
 			ip_text.name = "fileText"+i;
-			ip_text.value = item.text;
+			ip_text.value = item.ta.value;
 			view.appendChild(ip_text);
 		}
 	}
-	
 	saveProject(obj);
 }
 
@@ -241,7 +269,9 @@ function resetWindow(){
 	document.getElementById("project_position").value = "";
 	//$("#project_classification").combobox("setValue", 0);
 	//$("#project_type").combobox("setValue", 0);
-	document.getElementById("item_info").value = "";
+	//document.getElementById("item_info").value = "";
+	$('#itemTagSelect').combotree('setValues',"");
+    itemTagIds = "";
 	document.getElementById("item_file").value = "";
 	document.getElementById("project_file_count").value="0";
 	document.getElementById("project_type_item").value="";
@@ -250,6 +280,7 @@ function resetWindow(){
 }
 
 function addFile(){
+	
 	var fileItem = document.getElementById("item_file");
 	if(fileItem.value != ""){
 		
@@ -265,30 +296,11 @@ function addFile(){
 	}
 }
 
-function deleteFile(){
-	if(tempImgArr == null){
-		myAlert("缓存内存初始化失败");
-		return;
-	}
-	if(tempImgArr.arr.length > 0){
-		var temp = new Array();
-		for(var i = 0; i < tempImgArr.arr.length; i++){
-			if(tempImgArr.arr[i].selected){
-				temp.push(tempImgArr.arr[i]);
-			}
-		}
-		if(temp.length > 0){
-			var tempView = document.getElementById("temp_img_view");
-			for(var j = 0; j < temp.length; j ++){
-				tempView.removeChild(temp[j].obj);
-				tempImgArr.remove(temp[j]);
-			}
-		}else{
-			myAlert("没有找到需要删除的元素");
-		}
-	}else{
-		myAlert("当前还没有可以删除的元素");
-	}
+function deleteFile(obj){
+	var tempView = document.getElementById("temp_img_view");
+	tempView.removeChild(obj.obj);
+	tempImgArr.remove(obj);
+	return ;
 }
 
 function clearFile(){
@@ -302,64 +314,59 @@ function clearFile(){
 	tempImgArr = new ObjectImgItemList();
 }
 
+
 /**
 * 添加缓存的酒店图片元素
 */
 function addImgItem(file, url){
-	var text = document.getElementById("item_info").value;
-
 	var tempView = document.getElementById("temp_img_view");
 	var imgItem = document.createElement("div");
-	imgItem.className = "fl border ml10 mt10 ht160";
-	imgItem.align = "center";
+	imgItem.className = "border ml10 mt10";
 	
 	var imgView = document.createElement("div");
+	imgView.className = "fl";
 	var img = document.createElement("img");
 	img.className = "photo_show";
 	img.src = url;
 	imgView.appendChild(img);
 	
 	var txtView = document.createElement("div");
-	txtView.className = "wid120 mt10";
-	var txt = document.createElement("font");
-	txt.className = "txt ts12";
+	txtView.className = "wid300 ml10 fl";
+	var txt = document.createElement("textarea");
+	txt.className = "v_top wid300 ts14";
+	txt.rows= "3";
+	txt.maxLength = "100";
 	
-	txt.innerHTML = text;
+	var iconView = document.createElement("div");
+	iconView.className = "fl ml40";
+	var icon = document.createElement("img");
+	icon.className = "icon_show";
+	icon.src = "${pageContext.request.contextPath}/source/images/icon_delete.png";
+	iconView.appendChild(icon);
+	
 	txtView.appendChild(txt);
+	
+	var clear = document.createElement("div");
+	clear.className = "cl";
 	
 	imgItem.appendChild(imgView);
 	imgItem.appendChild(txtView);
+	imgItem.appendChild(iconView);
+	imgItem.appendChild(clear);
 	
 	tempView.appendChild(imgItem);
-	
-	if(tempImgArr == null){
-		myAlert("缓存内存初始化失败");
-		return ;
-	}
 	
 	var objectImgItem = new ObjectImgItem(tempImgArr.id, imgItem);
 	objectImgItem.setFile(file);
 	objectImgItem.setUrl(url);
-	objectImgItem.setText(text);
-	objectImgItem.register();
+	objectImgItem.ta = txt;
+	
+	icon.onclick = function(){
+		deleteFile(objectImgItem);
+	};
 	
 	tempImgArr.add(objectImgItem);
 }
-
-function initItemTagTree(){
-	    $('#itemTagSelect').combotree( {  
-          url : '${pageContext.request.contextPath}/web/ad/jsonLoadItemTagTree.do?pid=0',
-          onSelect : function(node) {  
-            var tree = $(this).tree;  
-            //选中的节点是否为叶子节点,如果不是叶子节点,清除选中  
-            var isLeaf = tree('isLeaf', node.target);  
-            if (!isLeaf) {  
-                //清除选中  
-                $('#itemTagSelect').combotree('clear');  
-            }  
-         }  
-       });  
-	}
 
 //电话号码验证
 function checkTel(value){
@@ -390,20 +397,8 @@ var ObjectImgItem = function(id, obj){
 	this.file= null;
 	this.url = "";
 	this.text = "";
-	
-	ObjectImgItem.prototype.register = function(){
-		var context = this;
-		this.obj.onclick = function(){
-			if(context.selected){
-				obj.className = "fl border ml10 mt10 ht160";
-			}else{
-				obj.className = "fl border_selected ml10 mt10 ht160";
-			}
-			
-			context.selected = !context.selected;
-		};
-	};
-	
+	this.ta = null;
+
 	ObjectImgItem.prototype.setFile = function(file){
 		this.file = file;
 	};
@@ -502,12 +497,20 @@ var ObjectImgItemList = function(){
 	width: 300px;
 }
 
-.wid528{
+.wid428{
 	width: 428px;
+}
+
+.wid400{
+	width: 420px;
 }
 
 .ht160{
 	height: 160px;
+}
+
+.v_top{
+	vertical-align: top;
 }
 
 .border{
@@ -543,14 +546,21 @@ var ObjectImgItemList = function(){
 }
 
 .photo_show{
-	width: 120px;
-	height: 120px;
+	width: 60px;
+	height: 60px;
+	cursor: pointer;
+}
+
+.icon_show{
+	width: 32px;
+	height: 32px;
+	margin-top: 14px;
 	cursor: pointer;
 }
 
 .photo_show_selected{
-	width: 118px;
-	height: 118px;
+	width: 58px;
+	height: 58px;
 	margin-left: 5px;
 	cursor: pointer;
 	border: 1px #FF0000 solid;
@@ -620,13 +630,13 @@ var ObjectImgItemList = function(){
 	</div>
 	<div class="cl"></div>
 	
-	<div id="tagInfoWindow" class="easyui-window" title="项目设置" style="width:520px;height:640px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
+	<div id="tagInfoWindow" class="easyui-window" title="项目设置" style="width:520px;height:680px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
 		<form name="projectForm" id="projectForm" action="saveOrupdateHotelProject.do" method="post">
 			<div>
-				<span class="txt ts14">项目名称：</span><input id="project_name" name="projectName" type="text" class="yw-input wid528 ts14" />
+				<span class="txt ts14">项目名称：</span><input id="project_name" name="projectName" type="text" class="yw-input wid428 ts14" />
 			</div>
 			<div class="mt10">
-				<span class="txt ts14">联系电话：</span><input id="project_tel" name="projectTel" type="text" class="yw-input wid528 ts14" />
+				<span class="txt ts14">联系电话：</span><input id="project_tel" name="projectTel" type="text" class="yw-input wid428 ts14" />
 			</div>
 			<div class="mt10">
 				<span class="txt ts14">项目类型：</span>
@@ -644,10 +654,14 @@ var ObjectImgItemList = function(){
 				-->
 			</div>
 			<div class="mt10">
-				<span class="txt ts14">项目描述：</span><input id="project_text" name="projectText" type="text" class="yw-input wid528 ts14" />
+				<span class="txt ts14">项目描述：</span>
+				<!-- <input id="project_text" name="projectText" type="text" class="yw-input wid428 ts14" /> -->
+				<textarea id="project_text" name="projectText" rows="3" cols="" maxlength="100" class="v_top wid400 ts14"></textarea>
 			</div>
 			<div class="mt10">
-				<span class="txt ts14">位置描述：</span><input id="project_position" name="projectPosition" type="text" class="yw-input wid528 ts14" />
+				<span class="txt ts14">位置描述：</span>
+				<!-- <input id="project_position" name="projectPosition" type="text" class="yw-input wid428 ts14" /> -->
+				<textarea id=project_position name="projectPosition" rows="3" maxlength="100" cols="" class="v_top wid400 ts14"></textarea>
 			</div>
 			<input id="project_id" name="projectId" type="hidden" value="0"/>
 			<input name="hotelId" type="hidden" value="${hotelId}"/>
@@ -659,7 +673,6 @@ var ObjectImgItemList = function(){
 		<div class="divider mt20"></div>
 		<div class="mt10">
 			<div class="fl"><span class="txt ts14">图片：</span></div>
-			<div class="fr"><span class="txt_function" onclick="deleteFile();">[删除]</span></div>
 			<div class="cl"></div>
 		</div>
 			
@@ -670,14 +683,10 @@ var ObjectImgItemList = function(){
 		<div>
 			<div class="fl">
 				<div class="ml10 mt10">
-					<span class="txt ts14">文件：</span><input id="item_file" type="file"/>
-				</div>
-				<div class="ml10 mt10">
-					<span class="txt ts14">描述：</span><input id="item_info" type="text" class="yw-input ts14 wid300"/>
+					<span class="txt ts14">文件：</span><input onchange="addFile()" id="item_file" type="file" accept="image/png, image/jpeg"/>
 				</div>
 			</div>
 			<div class="fr">
-				<span class="txt_function" onclick="addFile();">[添加]</span>
 			</div>
 			<div class="cl"></div>
 		</div>

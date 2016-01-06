@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.hotel.common.BaseResult;
 import com.hotel.common.JsonResult;
 import com.hotel.common.utils.Constants;
+import com.hotel.common.utils.FileUtil;
 import com.hotel.common.utils.ImgBase64;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Function;
@@ -139,10 +140,13 @@ public class HotelAction extends BaseAction {
 			}
 			String[] arr = file.split(",");
 			String suffix = arr[0].split(";")[0].split("\\/")[1];
-			fileName += "."+suffix;
-			//arr[0]
-			ImgBase64.GenerateImage(arr[1], filePath+fileName);
-			url = "hotel/logo/"+fileName;
+			if(FileUtil.checkSuffix(suffix)){
+				fileName += "."+suffix;
+				//arr[0]
+				ImgBase64.GenerateImage(arr[1], filePath+fileName);
+				url = "hotel/logo/"+fileName;
+			}
+			
 		}
 		hotel.setLogo(url);
 		try {
@@ -225,7 +229,7 @@ public class HotelAction extends BaseAction {
 		String proPosition= request.getParameter("projectPosition");
 		String proType = request.getParameter("projectType");
 		String fileCount = request.getParameter("fileCount");
-		if(proName == null || proTel == null || proText == null || proPosition == null || proType == null || fileCount == null){
+		if(proName == null || proTel == null || proText == null || proType == null || fileCount == null){
 			js.setMessage("参数不完整!");
 			return js;
 		}
@@ -303,6 +307,9 @@ public class HotelAction extends BaseAction {
 						}
 						String[] arr = file.split(",");
 						String suffix = arr[0].split(";")[0].split("\\/")[1];
+						if(!FileUtil.checkSuffix(suffix)){
+							continue;
+						}
 						fileName += "."+suffix;
 						//arr[0]
 						ImgBase64.GenerateImage(arr[1], filePath+fileName);
@@ -466,6 +473,7 @@ public class HotelAction extends BaseAction {
 		if(hotelId == null){
 			result.setMessage("参数不完整");
 		}
+		String path = request.getSession().getServletContext().getRealPath("/");
 		List<HashMap<String, Integer>> list = new ArrayList<HashMap<String,Integer>>();
 		if(hotelId.contains(",")){
 			String[] arr = hotelId.split(",");
@@ -488,6 +496,8 @@ public class HotelAction extends BaseAction {
 		if(count > 0){
 			result.setCode(1);
 			result.setMessage("");
+			//删除无效的logo图片
+			deleteLogoFile(list, path);
 		}
 		
 		return result;
@@ -540,6 +550,7 @@ public class HotelAction extends BaseAction {
 
 	// [end]
 
+	//删除元素的图片
 	private void deleteItemFiles(int itemId, String path){
 		List<ItemDetail> details = itemDetailService.selectByItemId(itemId);
 		if(details != null && details.size() > 0){
@@ -548,6 +559,24 @@ public class HotelAction extends BaseAction {
 					File file = new File(path+detail.getImageUrl());
 					if(file.exists()){
 						file.delete();
+					}
+				}
+			}
+		}
+	}
+	
+	//删除酒店logo
+	private void deleteLogoFile(List<HashMap<String, Integer>> list, String path){
+		if(list != null && list.size() > 0){
+			for(HashMap<String, Integer> map : list){
+				int id = map.get("id");
+				Hotel hotel = hotelService.selectByPrimaryKey(id);
+				if(hotel != null){
+					if(hotel.getLogo() != null && !hotel.getLogo().trim().equals("")){
+						File file = new File(path+hotel.getLogo());
+						if(file.exists()){
+							file.delete();
+						}
 					}
 				}
 			}

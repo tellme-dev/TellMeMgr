@@ -204,10 +204,25 @@
     </if>
   </select>
   
+  <select id="selectItemByHotelAndTagName" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select 
+    a.id, a.hotel_id, a.name, a.text, a.tel, a.position, a.score, a.is_used
+    from t_item_tag_association ita left join t_Item_tag it on ita.item_tag_id = it.id left join t_item a on ita.item_id = a.id where it.name = #{tagName,jdbcType=VARCHAR} and a.hotel_id = #{hotelId,jdbcType=INTEGER}
+  </select>
+  
   <select id="selectByItemTagRootAndHotel" resultMap="BaseResultMap" parameterType="java.util.Map" >
     select 
     a.id, a.hotel_id, a.name, a.text, a.tel, a.position, a.score, a.is_used
     from t_item a inner join t_item_tag_association ita on ita.item_id = a.id left join t_Item_tag it on ita.item_tag_id = it.id
-    where it.parent_id = #{itemTagId,jdbcType=INTEGER} and a.hotel_id = #{hotelId,jdbcType=INTEGER}
+    where it.parent_id = #{itemTagId,jdbcType=INTEGER} and a.hotel_id = #{hotelId,jdbcType=INTEGER} order by it.id
+  </select>
+  <select id="getItemVMByChildTagId" resultMap="resultItemVMMap" parameterType="java.lang.Integer">
+      select 
+    a.id, a.hotel_id, a.name, a.text, a.tel, a.position, a.score, a.is_used
+    from t_item a
+    LEFT JOIN t_item_tag_association b on a.id = b.item_id
+	WHERE b.item_tag_id =#{0}
+	ORDER BY a.score DESC
+	limit 0, #{1}
   </select>
 </mapper>

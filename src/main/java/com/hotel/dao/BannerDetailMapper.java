@@ -1,6 +1,7 @@
 package com.hotel.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import com.hotel.model.BannerDetail;
 
@@ -21,4 +22,6 @@ public interface BannerDetailMapper {
 	List<BannerDetail> getAdIdList(int banner);
 
 	void deleteByBannerId(Integer id);
+
+	List<BannerDetail> selectByMap(Map<String, Object> map);
 }

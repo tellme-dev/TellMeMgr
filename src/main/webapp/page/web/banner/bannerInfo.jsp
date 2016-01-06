@@ -72,19 +72,33 @@
 	function saveAds(){
 		var adIds = "";
 		var adNames = "";
+		var sorts = "";
+		var mark = 1;//跳过函数的参数
 		$("#tab2 :checkbox:checked").each(function(i){
 			var adId = $(this).parents("tr").find("td").first().text();
 			var adName = $(this).parents("tr").find("td")[2].innerText;
+			var sort = $("#sort_"+adId).val();
+			if(sort == ""){
+				$.messager.alert('提示信息', "你选择的某些广告没有排序！", "warning");
+				mark = 0;
+				return;
+			}
 			if(i==0){
 				adIds += adId;
 				adNames += adName;
+				sorts += sort;
 			}else{
 				adIds += ","+adId; 
 				adNames += ","+adName;
+				sorts += ","+sort;
 			}
 		}); 
+		if(mark == 0){
+			return;
+		}
 		document.getElementById("adShow").value = adNames;
 		document.getElementById("adSelect").value = adIds;
+		document.getElementById("adSort").value = sorts;
 		$('#adWindow').window('close');
 	}
 </script>
@@ -121,14 +135,22 @@
                                     <c:when test="${bannerinfo.positionType == 1}">
                                          <option value="1" selected="selected">首页顶部</option>
 							             <option value="2">首页底部</option>
+							             <option value="3">发现</option>
                                     </c:when>  
                                     <c:when test="${bannerinfo.positionType == 2}">
                                          <option value="2" selected="selected">首页底部</option>
 							             <option value="1">首页顶部</option>
+							             <option value="3">发现</option>
+                                    </c:when>
+                                    <c:when test="${bannerinfo.positionType == 3}">
+                                         <option value="3" selected="selected">发现</option>
+							             <option value="1">首页顶部</option>
+							             <option value="2">首页底部</option>
                                     </c:when>
                                     <c:otherwise>  
                                          <option value="1">首页顶部</option>
 							             <option value="2">首页底部</option>
+							             <option value="3">发现</option>
                                     </c:otherwise>  
                                  </c:choose>  
 							     <%-- <c:forEach var="item" items="${bannerlist }">
@@ -158,6 +180,7 @@
 							<td colspan="2">
 							   <input id="adShow" class="easyui-validatebox" value="${bannerinfo.adName}" readonly="readonly" placeholder="请选择广告" style="width:500px;height:30px;"/>
 							   <input type="hidden" id="adSelect" name="adIds" value="${bannerinfo.adIds}" class="easyui-validatebox" style="width:500px;height:30px;"/>
+							   <input type="hidden" id="adSort" name="sorts" value="${bannerinfo.sorts}" class="easyui-validatebox" style="width:500px;height:30px;"/>
 							   <span id="select_ad" class="yw-btn bg-blue mt12" style="cursor: pointer;" onclick="showdialog()">选择广告</span>
 							</td>
 						</tr>
@@ -177,19 +200,29 @@
 			</div>
 		</div>
 	</div>
-	<div id="adWindow" class="easyui-window" title="选择广告" style="width:560px;height:480px;overflow:scrollbars;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
+	<div id="adWindow" class="easyui-window" title="选择广告" style="width:660px;height:580px;overflow:scrollbars;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
 	   <table id="tab2" class="yw-cm-table font16">
+	      <tr>
+	        <th width="5%"></th>
+	        <th>广告名称</th>
+	        <th>排序</th>
+	      </tr>
 	     <c:forEach var="item" items="${adList}"> 
 	      <tr>
 	        <td style="display:none" align="left">${item.id}</td>
 	        <td width="5%"><input name="checkbox" type="checkbox"/></td>
 	        <td>${item.name}</td>
+	        <td><input id="sort_${item.id}" style="width:50px;height:30px" value="${item.sort }" onkeyup='this.value=this.value.replace(/\D/gi,"")'/></td>
 	      </tr>
 	      </c:forEach>
+	      <!-- 最后一行 不能删 -->
+	      <tr>
+	        <td></td>
+	      </tr>
 	   </table>
 	   <div class="yw-window-footer txt-right">
-        	<span class="yw-window-btn bg-lightgray mt12" style="cursor: pointer;" onclick="$('#adWindow').window('close');">退出</span>
-        	<span class="yw-window-btn bg-blue mt12" onclick="saveAds();" style="cursor: pointer;">保存</span>
+        	<span class="yw-btn bg-lightgray mt12" style="cursor: pointer;" onclick="$('#adWindow').window('close');">退出</span>
+        	<span class="yw-btn bg-blue mt12" onclick="saveAds();" style="cursor: pointer;margin-right:10px">保存</span>
        </div>
 	</div>
 </body>

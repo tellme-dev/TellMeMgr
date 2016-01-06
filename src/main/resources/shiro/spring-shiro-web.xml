@@ -115,6 +115,7 @@
                 /login.do = anon
                 /app/** = anon
                 /source/** = anon
+                /image/** = anon
                 /hotel/** = anon
                 /unauthorized.jsp = anon
                 /login.jsp = authc
