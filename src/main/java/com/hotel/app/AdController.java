@@ -65,8 +65,8 @@ public class AdController {
 		String msg = "";
 		ListResult<AdvertisementVM> result = new ListResult<AdvertisementVM>(list,true,"");
 		if(list==null||list.size()==0){
-			msg="未获取到广告";
-			result.setIsSuccess(false);
+			msg="无广告信息";
+			result.setIsSuccess(true);
 			result.setMsg(msg);
 		}else{
 			result.setIsSuccess(true);

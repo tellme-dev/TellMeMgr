@@ -1033,7 +1033,7 @@ public class HotelController {
 	{
 		List<HotelParam> temp = hotelService.getRecommandHotelList(DEFAULT_RECOMMAND_NUM);
 		if(temp ==null){
-			return new ListResult<HotelParam>(null,false,"获取推荐酒店失败").toJson();
+			return new ListResult<HotelParam>(null,true,"获取推荐酒店失败").toJson();
 		}
 		return new ListResult<HotelParam>(temp,true,"获取推荐酒店成功").toJson();
 	}

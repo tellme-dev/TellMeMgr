@@ -78,39 +78,86 @@ public class SocketRouter {
 		String dst=null;
 		String sid=null;
 		String uid=null;
+		String type=null;
+		
+		JSONObject msg=null;
 		
 		IoSession rcuSession=null;
 		Session appSession=null;
 		
+		if(jo.containsKey("type")){
+			type=jo.getString("type");
+			type=type!=null?type.toLowerCase():null;
+		}
+		
 		if(jo.containsKey("src")){
 			src=jo.getString("src");
+			src=src!=null?src.toLowerCase():null;
 		}
 		
 		if(jo.containsKey("dst")){
 			dst=jo.getString("dst");
+			dst=dst!=null?dst.toLowerCase():null;
 		}
 		
 		if(jo.containsKey("sid")){
 			sid=jo.getString("sid");
+			rcuSession=rcuSessions.get(sid);
 		}
 		
 		if(jo.containsKey("uid")){
 			uid=jo.getString("uid");
+			appSession=appSessions.get(uid);
 		}
 		
 		try{
-			if(dst =="rcu" && sid !=null  && (rcuSession=rcuSessions.get(sid)) !=null){
-				String msg="#@"+jo.toString() + "@#";
-				rcuSession.write(msg);
-			}else if (dst =="app" && uid !=null &&  (appSession=appSessions.get(uid)) !=null){
-				String msg=jo.toString();
-				appSession.getBasicRemote().sendText(msg);
+
+			if("htpk".equals(type) && "rcu".equals(src) && rcuSession!=null){
+				/**
+				 * rcu发出的心跳包
+				 */
+				msg=new JSONObject();
+				msg.accumulate("src", "svr");
+				msg.accumulate("dst", "rcu");
+				msg.accumulate("type", "htpk");
+				msg.accumulate("sid", sid);
+				String result="#@" + msg.toString() +"@#";
+				rcuSession.write(result);
+			}else if("idset".equals(type) && "app".equals(src) && rcuSession!=null){
+				/**
+				 * app发出的上线通知
+				 */
+				String result="#@" + jo.toString() +"@#";
+				rcuSession.write(result); //转发到rcu
+
+			}else if ("ctst".equals(type) && "rcu".equals(dst) && rcuSession !=null ){
+				/**
+				 * 控制命令 
+				 * 发送都rcu端
+				 */
+				String result="#@" + jo.toString() +"@#";
+				rcuSession.write(result);
+				
+			}else if("ctrc".equals(type) && "app".equals(dst) && appSession !=null){
+				/**
+				 * RCU响应控制命令的回复信息
+				 */
+				String result= jo.toString() ;
+				appSession.getBasicRemote().sendText(result);
+			}else if("sats".equals(type)  && "app".equals(dst) && appSession !=null){
+				//
+			}else if("idclr".equals(type)){
+				/**
+				 * 用户已经退房
+				 */
+			}else{
+				logger.error(jo.toString());
 			}
 		}catch(Exception ex){
 			logger.error(ex.getMessage());
 		}
+		
 	}
-	
 	
 	/**
 	 * 发送到web 客户端
