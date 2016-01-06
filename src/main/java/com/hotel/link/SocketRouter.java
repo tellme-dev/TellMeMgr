@@ -112,7 +112,7 @@ public class SocketRouter {
 		
 		try{
 
-			if(type =="htpk" && src=="rcu" && rcuSession!=null){
+			if("htpk".equals(type) && "rcu".equals(src) && rcuSession!=null){
 				/**
 				 * rcu发出的心跳包
 				 */
@@ -123,14 +123,14 @@ public class SocketRouter {
 				msg.accumulate("sid", sid);
 				String result="#@" + msg.toString() +"@#";
 				rcuSession.write(result);
-			}else if(type=="idset"  && src=="app"  && rcuSession!=null){
+			}else if("idset".equals(type) && "app".equals(src) && rcuSession!=null){
 				/**
 				 * app发出的上线通知
 				 */
 				String result="#@" + jo.toString() +"@#";
 				rcuSession.write(result); //转发到rcu
 
-			}else if (type=="ctst" && dst=="rcu" && rcuSession !=null ){
+			}else if ("ctst".equals(type) && "rcu".equals(dst) && rcuSession !=null ){
 				/**
 				 * 控制命令 
 				 * 发送都rcu端
@@ -138,15 +138,15 @@ public class SocketRouter {
 				String result="#@" + jo.toString() +"@#";
 				rcuSession.write(result);
 				
-			}else if(type=="ctrc" && dst=="app" && appSession !=null){
+			}else if("ctrc".equals(type) && "app".equals(dst) && appSession !=null){
 				/**
 				 * RCU响应控制命令的回复信息
 				 */
 				String result= jo.toString() ;
 				appSession.getBasicRemote().sendText(result);
-			}else if(type=="sats"  && dst =="app" && appSession !=null){
+			}else if("sats".equals(type)  && "app".equals(dst) && appSession !=null){
 				//
-			}else if(type=="idclr'"){
+			}else if("idclr".equals(type)){
 				/**
 				 * 用户已经退房
 				 */
@@ -158,7 +158,6 @@ public class SocketRouter {
 		}
 		
 	}
-	
 	
 	/**
 	 * 发送到web 客户端
