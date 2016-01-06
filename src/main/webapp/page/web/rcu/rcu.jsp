@@ -66,8 +66,7 @@ function onConnection(){
 				$("#lblInfo").val(res+"已连接");
 				console.log('open');
 				var result=wsClient.send(json);
-				//var result=wsClient.send("{type:'csts',uid:'u123',sid:'s556'}");
-				var x=result;
+
 			};
 			
 			this.wsClient.onmessage =function(msg){
