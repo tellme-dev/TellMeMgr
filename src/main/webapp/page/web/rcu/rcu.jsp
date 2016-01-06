@@ -56,7 +56,7 @@ function onConnection(){
 			this.wsClient.onopen=function(){
 				$("#lblInfo").val('已连接');
 				console.log('open');
-				var result=wsClient.send("{type:'csts',uid:'u123',sid:'s556'}");
+				//var result=wsClient.send("{type:'csts',uid:'u123',sid:'s556'}");
 				var x=result;
 			};
 			
