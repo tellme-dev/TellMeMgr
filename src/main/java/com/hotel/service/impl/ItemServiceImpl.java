@@ -66,4 +66,10 @@ public class ItemServiceImpl implements ItemService{
 		return itemMapper.selectByItemTagRootAndHotel(map);
 	}
 
+	@Override
+	public List<ItemVM> getItemVMByChildTagId(int childTagId, int num) {
+		// TODO Auto-generated method stub
+		return itemMapper.getItemVMByChildTagId(childTagId,num);
+	}
+
 }
