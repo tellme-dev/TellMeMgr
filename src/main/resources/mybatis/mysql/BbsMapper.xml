@@ -616,7 +616,7 @@
   </select>
   
   <select id="countByBbs" resultType="java.lang.Integer" parameterType="com.hotel.model.Bbs" >
-    select count(id) from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and target_type = #{targetType,jdbcType=INTEGER} and target_id = #{targetId,jdbcType=INTEGER}
+    select count(id) from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type=#{bbsType,jdbcType=INTEGER} and target_type = #{targetType,jdbcType=INTEGER} and target_id = #{targetId,jdbcType=INTEGER}
   </select>
   
   <select id="countPostByCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
