@@ -419,7 +419,8 @@ function requestGet(url, data, success){
 }
 
 function returnBack(){
-	window.history.back();
+	//window.history.back();
+	window.location.href = "hotelList.do";
 }
 
 function submitHotel(obj){
