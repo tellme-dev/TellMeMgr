@@ -592,6 +592,7 @@ var ObjectImgItemList = function(){
 							<span class="yw-btn bg-green cur ts15" onclick="showTagdialog(true);">添加项目</span>
 							<!-- <span class="yw-btn bg-blue ml20 cur ts15" onclick="loadHotelInfo(false);">修改项目</span> -->
 							<span class="yw-btn bg-orange ml20 cur ts15" onclick="deleteProject(this);">删除项目</span>
+							<span class="ml20 hint_red">**酒店标签下属每个项目类型必须添加**</span>
 						</div>
 					</div>
 				</div>
@@ -661,7 +662,6 @@ var ObjectImgItemList = function(){
 				</select>
 				-->
 			</div>
-			<span class="hint_red">**酒店下属项目必须添加**</span>
 			<div class="mt10">
 				<span class="txt ts14">项目描述：</span>
 				<!-- <input id="project_text" name="projectText" type="text" class="yw-input wid428 ts14" /> -->
