@@ -436,6 +436,12 @@ function submitHotel(obj){
 		reader.readAsDataURL(fileobj);
 		reader.onload = function(e){
 			//addImgItem(obj, this.result);
+			var img = new Image();
+			img.src = this.result;
+			if(img.width != 50 || img.height != 50){
+				alert("LOGO仅支持50×50像素的图片");
+				return ;
+			}
 			document.getElementById("file_logo").value = this.result;
 			var location = document.getElementById("input_location");
 			if(location.value.trim() == ""){
@@ -576,13 +582,13 @@ function myAlert(msg){
 							<div class="fl">
 								<div>
 									<input name="id" type="hidden" id="hotel_id" value="${ht.id}" />
-									<span class="ts15">酒店名称：</span><input id="hotel_name" value="${ht.name}" name="name" type="text" class="yw-input wid200 ts14" />
+									<span class="ts15">酒店名称：</span><input id="hotel_name" value="${ht.name}" maxlength="255" name="name" type="text" class="yw-input wid200 ts14" />
 									<span class="hint_red">**必填项**</span>
 								</div>
 								<div class = "mt20">
 									<input name = "regionId" id="hotel_region" type="hidden" value="${arearRegion.code}" />
 									<span class="ts15">酒店LOGO：</span>
-									<input id="hotel_logo" name="hotel_logo" type="file" />
+									<input id="hotel_logo" name="hotel_logo" type="file" accept="image/png, image/jpeg" />
 									<!--
 									<select id="province" name="province" style="width:120px;height:30px;" class="easyui-combobox">
 										<c:if test="${ht.id==0}">
@@ -614,10 +620,10 @@ function myAlert(msg){
 										</c:if>
 									</select>
 									-->
-									<span class="hint_red">**必填项**</span>
+									<span class="hint_red">**格式支持png、jpg或jpeg，大小为50×50像素**</span>
 								</div>
 								<div class = "mt20">
-									<span class="ts15">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述：</span><textarea name="text" id="hotel_text" cols="50" rows="6" maxlength="100" style="vertical-align: top; border: 1px #C4C4C4 solid;">${ht.text}</textarea>
+									<span class="ts15">描&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;述：</span><textarea name="text" id="hotel_text" cols="50" rows="6" maxlength="500" style="vertical-align: top; border: 1px #C4C4C4 solid;">${ht.text}</textarea>
 								</div>
 								<div class = "mt20">
 									<input name = "file_logo" id="file_logo" type="hidden" />
