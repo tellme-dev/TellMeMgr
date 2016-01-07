@@ -41,7 +41,6 @@ public class RcuSocketHandler extends IoHandlerAdapter{
 		try{
 			
 			String txt=message.toString().trim();
-			txt=txt.replaceAll("#@", "");
 			String sid=null;
 			
 			JSONObject jo =JSONObject.fromObject(txt);

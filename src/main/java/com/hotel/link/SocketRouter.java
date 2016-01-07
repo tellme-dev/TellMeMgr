@@ -31,7 +31,7 @@ public class SocketRouter {
 	private final static Logger logger = LoggerFactory.getLogger(SocketRouter.class);
 	
 	/**
-	 *接收 RCU端发送的数据，注意，RCU的数据格式是 用#@ 打头， @#结尾
+	 *接收 RCU端发送的数据，注意，RCU的数据格式是 用 @#结尾
 	 * @param message
 	 * @param ioSession
 	 */
@@ -121,13 +121,13 @@ public class SocketRouter {
 				msg.accumulate("dst", "rcu");
 				msg.accumulate("type", "htpk");
 				msg.accumulate("sid", sid);
-				String result="#@" + msg.toString() +"@#";
+				String result= msg.toString() ;
 				rcuSession.write(result);
 			}else if("idset".equals(type) && "app".equals(src) && rcuSession!=null){
 				/**
 				 * app发出的上线通知
 				 */
-				String result="#@" + jo.toString() +"@#";
+				String result= jo.toString() ;
 				rcuSession.write(result); //转发到rcu
 
 			}else if ("ctst".equals(type) && "rcu".equals(dst) && rcuSession !=null ){
@@ -135,13 +135,14 @@ public class SocketRouter {
 				 * 控制命令 
 				 * 发送都rcu端
 				 */
-				String result="#@" + jo.toString() +"@#";
+				String result= jo.toString() ;
 				rcuSession.write(result);
 				
 			}else if("ctrc".equals(type) && "app".equals(dst) && appSession !=null){
 				/**
 				 * RCU响应控制命令的回复信息
 				 */
+
 				String result= jo.toString() ;
 				appSession.getBasicRemote().sendText(result);
 			}else if("sats".equals(type)  && "app".equals(dst) && appSession !=null){
