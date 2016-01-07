@@ -526,8 +526,8 @@ public class CustomerController {
 					Region area = baseDataService.getRegionById(hotel.getRegionId());
 					String path = area.getPath();
 					String[] arr = path.split("\\.");
-					Region city = baseDataService.getRegionById(new Integer(arr[1]));
-					vm.setCity(city.getName());
+					//Region city = baseDataService.getRegionById(new Integer(arr[1]));
+					vm.setCity(arr[1]);
 				}
 				vm.setProjects(items);
 				
@@ -645,8 +645,8 @@ public class CustomerController {
 					Region area = baseDataService.getRegionById(hotel.getRegionId());
 					String path = area.getPath();
 					String[] arr = path.split("\\.");
-					Region city = baseDataService.getRegionById(new Integer(arr[1]));
-					vm.setCity(city.getName());
+					//Region city = baseDataService.getRegionById(new Integer(arr[1]));
+					vm.setCity(arr[1]);
 				}
 				vm.setProjects(items);
 				
@@ -786,8 +786,8 @@ public class CustomerController {
 					Region area = baseDataService.getRegionById(hotel.getRegionId());
 					String path = area.getPath();
 					String[] arr = path.split("\\.");
-					Region city = baseDataService.getRegionById(new Integer(arr[1]));
-					vm.setCity(city.getName());
+					//Region city = baseDataService.getRegionById(new Integer(arr[1]));
+					vm.setCity(arr[1]);
 				}
 				vm.setProjects(items);
 				
