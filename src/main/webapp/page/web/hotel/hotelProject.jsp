@@ -661,6 +661,7 @@ var ObjectImgItemList = function(){
 				</select>
 				-->
 			</div>
+			<span class="hint_red">**酒店下属项目必须添加**</span>
 			<div class="mt10">
 				<span class="txt ts14">项目描述：</span>
 				<!-- <input id="project_text" name="projectText" type="text" class="yw-input wid428 ts14" /> -->
