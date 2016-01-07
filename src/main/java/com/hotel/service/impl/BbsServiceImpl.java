@@ -50,6 +50,7 @@ public class BbsServiceImpl implements BbsService {
 		map.put("pageSize", page.getPageSize());
 		map.put("pageEnd",page.getPageSize()*page.getPageNo());
 		map.put("postType", 0);//加载主贴
+		map.put("bbsType", 1);//属于论坛
 		map.put("type", type);
 		List<BbsVM> list = bbsMapper.selectByMap(map);
 		int total = bbsMapper.countByMap(map);
