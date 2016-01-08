@@ -646,13 +646,13 @@
     select count(id) from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 3 and post_type = 2 and target_type = 0
   </select>
   <select id="countDPraiseToCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
-    select count(id) from t_bbs where bbs_type = 3 and post_type = 2 and target_type = 0 and customer_id != #{customerId,jdbcType=INTEGER} and target_id in (select id from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and (post_type = 1 or post_type = 0) and target_type = 0)
+    select count(id) from t_bbs where bbs_type = 3 and post_type = 2 and target_type = 0 and customer_id != #{customerId,jdbcType=INTEGER} and target_id in (select id from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and (post_type = 1 or post_type = 0) and target_type = 0 and delete_user_id is null)
   </select>
   <select id="countDCommentByCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
     select count(id) from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and post_type = 1 and target_type = 0
   </select>
   <select id="countDCommentToCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
-    select count(id) from t_bbs where bbs_type = 1 and post_type = 1 and target_type = 0 and customer_id != #{customerId,jdbcType=INTEGER} and parent_id in(select id from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and (post_type = 1 or post_type = 0) and target_type = 0)
+    select count(id) from t_bbs where bbs_type = 1 and post_type = 1 and target_type = 0 and customer_id != #{customerId,jdbcType=INTEGER} and parent_id in(select id from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and (post_type = 1 or post_type = 0) and target_type = 0 and delete_user_id is null)
   </select>
   
   <select id="getPageDPByCustomer" resultMap="BaseResultMap" parameterType="java.util.Map" >
@@ -668,7 +668,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_bbs b 
-    where b.bbs_type = 3 and b.post_type = 2 and b.target_type = 0 and b.customer_id != #{customerId,jdbcType=INTEGER} and b.target_id in (select id from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and (post_type = 1 or post_type = 0) and target_type = 0) order by b.create_time desc 
+    where b.bbs_type = 3 and b.post_type = 2 and b.target_type = 0 and b.customer_id != #{customerId,jdbcType=INTEGER} and b.target_id in (select id from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and (post_type = 1 or post_type = 0) and target_type = 0 and delete_user_id is null) order by b.create_time desc 
     <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
     	limit #{pageStart}, #{pageSize}
     </if>
@@ -687,7 +687,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_bbs b 
-    where b.bbs_type = 1 and b.post_type = 1 and b.target_type = 0 and b.customer_id != #{customerId,jdbcType=INTEGER} and b.parent_id in(select id from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and (post_type = 1 or post_type = 0) and target_type = 0) order by b.create_time desc 
+    where b.bbs_type = 1 and b.post_type = 1 and b.target_type = 0 and b.customer_id != #{customerId,jdbcType=INTEGER} and b.parent_id in(select id from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and (post_type = 1 or post_type = 0) and target_type = 0 and delete_user_id is null) order by b.create_time desc 
     <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
     	limit #{pageStart}, #{pageSize}
     </if>
