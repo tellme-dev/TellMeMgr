@@ -4,10 +4,17 @@ import com.hotel.model.Banner;
 
 public class BannerWebVM extends Banner {
 	private String adName;
-	private String adIds;
+	private String adIds;   //格式： A,B,C
+	private String sorts;   //格式：1,2,3
 	private String position;
 	private String createtime;//字符串格式
 	
+	public String getSorts() {
+		return sorts;
+	}
+	public void setSorts(String sorts) {
+		this.sorts = sorts;
+	}
 	public String getCreatetime() {
 		return createtime;
 	}

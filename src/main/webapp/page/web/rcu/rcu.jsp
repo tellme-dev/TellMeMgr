@@ -49,29 +49,42 @@ PageClick = function(pageclickednumber) {
 	pagesearch();
 }
 function onConnection(){
-			
+			var uid = $("#uid").val();
+			var json = $("#textJson").val();
+			var res = $("#lblInfo").val();
+			if(res != ""){
+			    res += "\n\t\r";
+			}
+			if(uid == ""){
+			  $.messager.alert('系统提示', "请输入uid", 'warning');
+			  return;
+			}
 
-			this.wsClient =new WebSocket(wsUrl+'/appWs/' + 'u123'); //改成当前输入的用户id
+			this.wsClient =new WebSocket(wsUrl+'/appWs/' + uid); //改成当前输入的用户id
 			
 			this.wsClient.onopen=function(){
-				$("#lblInfo").val('已连接');
+				$("#lblInfo").val(res+"已连接");
 				console.log('open');
-				var result=wsClient.send("{type:'csts',uid:'u123',sid:'s556'}");
-				var x=result;
+				var result=wsClient.send(json);
+
 			};
 			
 			this.wsClient.onmessage =function(msg){
-				var obj=JSON.parse(msg.data);
-				$("#lblInfo").val(JSON.stringify(obj));
+			try{
+			    var obj=JSON.parse(msg.data);
+				$("#lblInfo").val(res+JSON.stringify(obj));
+			}catch(e){
+			    $("#lblInfo").val(res+"返回结果无法转换成json格式:" + msg.data);
+			}
 			};
 			
 			this.wsClient.onclose=function(){
-				$("#lblInfo").val('连接被关闭!');
+				$("#lblInfo").val(res+'连接被关闭!');
 			};
 			
 			this.wsClient.onerror = function(evt)
 			{
-				$("#lblInfo").val('连接发送错误!' + JSON.stringify(evt));
+				$("#lblInfo").val(res+'连接发送错误!' + JSON.stringify(evt));
 			};
 			
 		}
@@ -116,16 +129,6 @@ function clean(){
     $("#textJson").val("");
 }
 function send(json){
-    $.ajax({
-	    type: 'GET',
-	    url: url,
-	    data: data,
-	    success: success,
-	    error:function(){   
-        	alert('error');   
-        },
-	    dataType: 'json'
-	});
 }
 </script>
 </head>
@@ -136,19 +139,25 @@ function send(json){
 			<div class="yw-bi-rows">
 				<div class="yw-bi-tabs mt5" id="ywTabs">
 					<span class="yw-bi-now">控制台</span>
-					<span style="background-color:#75B74B" class="bg-green" onclick="onConnection()">连接</span>
+					<!-- <span style="background-color:#75B74B" class="bg-green" onclick="onConnection()">连接</span> -->
 				</div>
 			</div>
 			<div class="yw-tab">
 				<form id="rcuForm" name="rcuForm" action="saveOrupdateRcu.do" method="post">
 					<table id="tab1" class="yw-cm-table font16">
-						<tr>
-							<td width="10%" align="center">sid：</td>
+					    <tr>
+							<td width="10%" align="center">uid：</td>
 							<td colspan="6">
-								<input id="sid" name="id" type="text" onkeyup='this.value=this.value.replace(/\D/gi,"")' class="easyui-validatebox" style="width:100px;height:30px;" /> 
+								<input id="uid" name="uid" type="text" class="easyui-validatebox" style="width:100px;height:30px;" /> 
 							</td>
 						</tr>
-						<tr>
+						<!-- <tr>
+							<td width="10%" align="center">sid：</td>
+							<td colspan="6">
+								<input id="sid" name="id" type="text" class="easyui-validatebox" style="width:100px;height:30px;" /> 
+							</td>
+						</tr> -->
+						<!-- <tr>
 							<td width="10%" align="center">灯光：</td>
 							<td colspan="6">
 							     <span id="model_1" class="yw-btn bg-gray ml20 cur ts15" onclick="selectModel(1)">模式一</span>
@@ -178,14 +187,14 @@ function send(json){
 					                      <label><i></i></label>
 				                    </div>
 							</td>
-						</tr>
+						</tr> -->
 						<tr>
 						    <td width="10%" align="center">json命令：</td>
 							<td colspan="5">
 							   <input id="textJson" type="text" placeholder="json格式" style="width:1000px;height:30px;"/>
 							</td>
 							<td>
-							   <span class="yw-btn bg-green ml20 cur" onclick="send($('#textJson').val())">发送</span>
+							   <span class="yw-btn bg-green ml20 cur" onclick="onConnection()">发送</span>
 						       <span class="yw-btn bg-gray ml20 cur" onclick="clean()">清除</span>
 						    </td>
 						</tr>

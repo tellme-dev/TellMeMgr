@@ -63,7 +63,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		// TODO Auto-generated method stub
 		List<String> imageTexts = new ArrayList<String>();
 		List<String> imageUrls = ad.getImageUrlList();
-		List<Integer> adDetailIds = new ArrayList<Integer>();
+		List<Integer> adDetailIds = new ArrayList<Integer>();//存放的编辑时原有的图片id
 		List<Integer> delAdDetailIds = new ArrayList<Integer>();
 		//取出imageTexts
 		if(ad.getImageText() != null&&!"".equals(ad.getImageText())){
@@ -209,6 +209,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		map.put("pageNo", page.getPageNo());
 		map.put("pageSize", page.getPageSize());
 		map.put("pageEnd",page.getPageSize()*page.getPageNo());
+		map.put("positionType", 3);
 		List<AdvertisementVM> list = advertisementMapper.selectWithPage(map);
 		int total = advertisementMapper.countByMap(map);
 		ListResult<AdvertisementVM> result = new ListResult<AdvertisementVM>(total,list);

@@ -37,7 +37,6 @@ import com.hotel.model.CustomerCollection;
 import com.hotel.model.Hotel;
 import com.hotel.model.Item;
 import com.hotel.model.ItemDetail;
-import com.hotel.model.ItemTagAssociation;
 import com.hotel.model.Region;
 import com.hotel.model.User;
 import com.hotel.model.Varifycode;
@@ -73,7 +72,9 @@ import com.hotel.service.VarifycodeService;
 public class CustomerController {
 	private final static int DEFAULT_PAGE_SIZE = 10;
 	//酒店本身的标签类型
-	private final static int TAG_TYPE_HOTEL = 1;
+//	private final static int TAG_TYPE_HOTEL = 1;
+	//酒店本身的标签类型
+	private final static String TAG_NAME_HOTEL_DEFAULT = "介绍";
 	
 	//酒店收藏类型
 	private final static int BROWSE_TYPE_HOTEL = 1;
@@ -490,6 +491,8 @@ public class CustomerController {
 		
 		List<HotelListInfoVM> list = new ArrayList<HotelListInfoVM>();
 		if(lh != null && lh.size() > 0){
+			Map<String, Object> imap = new HashMap<String, Object>();
+			imap.put("tagName", TAG_NAME_HOTEL_DEFAULT);
 			//逐一转存
 			for(Hotel hotel : lh){
 				//转存酒店基本数据
@@ -500,70 +503,33 @@ public class CustomerController {
 				vm.setLatitude(hotel.getLatitude());
 				vm.setLongitude(hotel.getLongitude());
 				
-				//查询所有酒店类型的项目
-				List<ItemTagAssociation> associations =  itemTagAssociationService.getTagTypeItem(TAG_TYPE_HOTEL);
+				imap.put("hotelId", hotel.getId());
+				List<Item> introItem = itemService.selectItemByHotelAndTagName(imap);
+				
+				if(introItem != null && introItem.size() > 0){
+					Item temp = introItem.get(0);
+					vm.setTel(temp.getTel());
+					vm.setAddress(temp.getPosition());
+					vm.setScore(temp.getScore());
+					List<ItemDetail> details = itemDetailService.selectByItemId(temp.getId());
+					if(details != null && details.size() > 0){
+						//仅获取第一张图片
+						vm.setImgUrl(details.get(0).getImageUrl());
+					}
+				}
+				
 				//查询所有酒店所有的项目
 				List<Item> items = itemService.getItemByHotel(hotel.getId());
 				
-				//酒店非自身项目缓存
-				List<Item> notSelfItems = new ArrayList<Item>();
-				
-				//如果单方没有数据则没有交集
-				if(associations != null && items != null && items.size() > 0 && associations.size() > 0){
-					Item temp = null;
-					boolean isFind = false;
-					//找出属于酒店自身的项目（求交集）
-					for(ItemTagAssociation association : associations){
-						for(Item item : items){
-							if(association.getItemId() == item.getId()){
-								temp = item;
-								isFind = true;
-								break;
-							}
-						}
-						if(isFind){
-							break;
-						}
-					}
-					//判断是否找到该酒店的项目
-					if(temp != null){
-						//设置联系方式
-						vm.setTel(temp.getTel());
-						vm.setAddress(temp.getPosition());
-						vm.setScore(temp.getScore());
-						//查找该项目的详细信息
-						List<ItemDetail> details = itemDetailService.selectByItemId(temp.getId());
-						if(details != null && details.size() > 0){
-							//仅获取第一张图片
-							vm.setImgUrl(details.get(0).getImageUrl());
-						}
-						//设置数量统计
-						//查询浏览次数
-						//int countBrowse = customerBrowseService.countByItemId(temp.getId());
-						//查询收藏次数
-						//int countCollectiono = customerCollectionService.countByItemId(temp.getId());
-						//vm.setCountBrowse(countBrowse);
-						//vm.setCountCollection(countCollectiono);
-						
-						//设置非自身的项目数据
-						for(Item tempItem : items){
-							if(!tempItem.getId().equals(temp.getId())){
-								notSelfItems.add(tempItem);
-							}
-						}
-					}else{
-						notSelfItems = items;
-					}
-				}
 				if(hotel.getRegionId() != null){
 					//设置位置
 					Region area = baseDataService.getRegionById(hotel.getRegionId());
 					String path = area.getPath();
 					String[] arr = path.split("\\.");
-					Region city = baseDataService.getRegionById(new Integer(arr[1]));
-					vm.setCity(city.getName());
+					//Region city = baseDataService.getRegionById(new Integer(arr[1]));
+					vm.setCity(arr[1]);
 				}
-				vm.setProjects(notSelfItems);
+				vm.setProjects(items);
 				
 				//空数据清理
 				vm.clear();
@@ -643,6 +609,8 @@ public class CustomerController {
 		//*********************************************
 		List<CustomerBrowseVM> vms = new ArrayList<CustomerBrowseVM>();
 		
+		Map<String, Object> imap = new HashMap<String, Object>();
+		imap.put("tagName", TAG_NAME_HOTEL_DEFAULT);
 		for(CustomerBrowse browse : browses){
 			switch (browse.getTargetType()) {
 			case BROWSE_TYPE_HOTEL:
@@ -655,63 +623,32 @@ public class CustomerController {
 				vm.setLatitude(hotel.getLatitude());
 				vm.setLongitude(hotel.getLongitude());
 				
-				//查询所有酒店类型的项目
-				List<ItemTagAssociation> associations =  itemTagAssociationService.getTagTypeItem(TAG_TYPE_HOTEL);
+				imap.put("hotelId", hotel.getId());
+				List<Item> introItem = itemService.selectItemByHotelAndTagName(imap);
+				if(introItem != null && introItem.size() > 0){
+					Item temp = introItem.get(0);
+					vm.setTel(temp.getTel());
+					vm.setAddress(temp.getPosition());
+					vm.setScore(temp.getScore());
+					List<ItemDetail> details = itemDetailService.selectByItemId(temp.getId());
+					if(details != null && details.size() > 0){
+						//仅获取第一张图片
+						vm.setImgUrl(details.get(0).getImageUrl());
+					}
+				}
+				
 				//查询所有酒店所有的项目
 				List<Item> items = itemService.getItemByHotel(hotel.getId());
 				
-				//酒店非自身项目缓存
-				List<Item> notSelfItems = new ArrayList<Item>();
-				
-				//如果单方没有数据则没有交集
-				if(associations != null && items != null && items.size() > 0 && associations.size() > 0){
-					Item temp = null;
-					boolean isFind = false;
-					//找出属于酒店自身的项目（求交集）
-					for(ItemTagAssociation association : associations){
-						for(Item item : items){
-							if(association.getItemId() == item.getId()){
-								temp = item;
-								isFind = true;
-								break;
-							}
-						}
-						if(isFind){
-							break;
-						}
-					}
-					//判断是否找到该酒店的项目
-					if(temp != null){
-						//设置联系方式
-						vm.setTel(temp.getTel());
-						vm.setAddress(temp.getPosition());
-						vm.setScore(temp.getScore());
-						//查找该项目的详细信息
-						List<ItemDetail> details = itemDetailService.selectByItemId(temp.getId());
-						if(details != null && details.size() > 0){
-							//仅获取第一张图片
-							vm.setImgUrl(details.get(0).getImageUrl());
-						}
-												
-						//设置非自身的项目数据
-						for(Item tempItem : items){
-							if(!tempItem.getId().equals(temp.getId())){
-								notSelfItems.add(tempItem);
-							}
-						}
-					}else{
-						notSelfItems = items;
-					}
-				}
 				if(hotel.getRegionId() != null){
 					//设置位置
 					Region area = baseDataService.getRegionById(hotel.getRegionId());
 					String path = area.getPath();
 					String[] arr = path.split("\\.");
-					Region city = baseDataService.getRegionById(new Integer(arr[1]));
-					vm.setCity(city.getName());
+					//Region city = baseDataService.getRegionById(new Integer(arr[1]));
+					vm.setCity(arr[1]);
 				}
-				vm.setProjects(notSelfItems);
+				vm.setProjects(items);
 				
 				//空数据清理
 				vm.clear();
@@ -813,7 +750,8 @@ public class CustomerController {
 		// 根据类型做相应的数据处理
 		//*********************************************
 		List<CustomerBrowseVM> vms = new ArrayList<CustomerBrowseVM>();
-		
+		Map<String, Object> imap = new HashMap<String, Object>();
+		imap.put("tagName", TAG_NAME_HOTEL_DEFAULT);
 		for(CustomerCollection collection : collections){
 			switch (collection.getCollectionType()) {
 			case BROWSE_TYPE_HOTEL:
@@ -826,63 +764,32 @@ public class CustomerController {
 				vm.setLatitude(hotel.getLatitude());
 				vm.setLongitude(hotel.getLongitude());
 				
-				//查询所有酒店类型的项目
-				List<ItemTagAssociation> associations =  itemTagAssociationService.getTagTypeItem(TAG_TYPE_HOTEL);
+				imap.put("hotelId", hotel.getId());
+				List<Item> introItem = itemService.selectItemByHotelAndTagName(imap);
+				if(introItem != null && introItem.size() > 0){
+					Item temp = introItem.get(0);
+					vm.setTel(temp.getTel());
+					vm.setAddress(temp.getPosition());
+					vm.setScore(temp.getScore());
+					List<ItemDetail> details = itemDetailService.selectByItemId(temp.getId());
+					if(details != null && details.size() > 0){
+						//仅获取第一张图片
+						vm.setImgUrl(details.get(0).getImageUrl());
+					}
+				}
+				
 				//查询所有酒店所有的项目
 				List<Item> items = itemService.getItemByHotel(hotel.getId());
 				
-				//酒店非自身项目缓存
-				List<Item> notSelfItems = new ArrayList<Item>();
-				
-				//如果单方没有数据则没有交集
-				if(associations != null && items != null && items.size() > 0 && associations.size() > 0){
-					Item temp = null;
-					boolean isFind = false;
-					//找出属于酒店自身的项目（求交集）
-					for(ItemTagAssociation association : associations){
-						for(Item item : items){
-							if(association.getItemId() == item.getId()){
-								temp = item;
-								isFind = true;
-								break;
-							}
-						}
-						if(isFind){
-							break;
-						}
-					}
-					//判断是否找到该酒店的项目
-					if(temp != null){
-						//设置联系方式
-						vm.setTel(temp.getTel());
-						vm.setAddress(temp.getPosition());
-						vm.setScore(temp.getScore());
-						//查找该项目的详细信息
-						List<ItemDetail> details = itemDetailService.selectByItemId(temp.getId());
-						if(details != null && details.size() > 0){
-							//仅获取第一张图片
-							vm.setImgUrl(details.get(0).getImageUrl());
-						}
-												
-						//设置非自身的项目数据
-						for(Item tempItem : items){
-							if(!tempItem.getId().equals(temp.getId())){
-								notSelfItems.add(tempItem);
-							}
-						}
-					}else{
-						notSelfItems = items;
-					}
-				}
 				if(hotel.getRegionId() != null){
 					//设置位置
 					Region area = baseDataService.getRegionById(hotel.getRegionId());
 					String path = area.getPath();
 					String[] arr = path.split("\\.");
-					Region city = baseDataService.getRegionById(new Integer(arr[1]));
-					vm.setCity(city.getName());
+					//Region city = baseDataService.getRegionById(new Integer(arr[1]));
+					vm.setCity(arr[1]);
 				}
-				vm.setProjects(notSelfItems);
+				vm.setProjects(items);
 				
 				//空数据清理
 				vm.clear();

@@ -10,6 +10,9 @@
 <head>
 <meta charset="utf-8">
 <title>酒店管理</title>
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, minimum-scale=1  ,maximum-scale=1, user-scalable=no" />
   	
@@ -232,7 +235,7 @@ function myAlert(msg){
 								<span class="yw-btn bg-green cur ts15" onclick="loadHotelInfo(true);">添加酒店</span>
 								<span class="yw-btn bg-blue ml20 cur ts15" onclick="loadHotelInfo(false);">修改酒店</span>
 								<span class="yw-btn bg-gray ml20 cur ts15" onclick="loadHotelProject();">项目管理</span>
-								<span class="yw-btn bg-orange ml20 cur ts15" onclick="deleteHotel(this);">删除酒店</span>
+								<!-- <span class="yw-btn bg-orange ml20 cur ts15" onclick="deleteHotel(this);">删除酒店</span> -->
 							</div>
 						</div>
 			

@@ -515,7 +515,7 @@ public class HotelAction extends BaseAction {
 		if(projectId == null){
 			result.setMessage("参数不完整");
 		}
-		String path = request.getSession().getServletContext().getRealPath("/");
+		//String path = request.getSession().getServletContext().getRealPath("/");
 		List<HashMap<String, Integer>> list = new ArrayList<HashMap<String,Integer>>();
 		if(projectId.contains(",")){
 			String[] arr = projectId.split(",");
@@ -524,7 +524,7 @@ public class HotelAction extends BaseAction {
 				int iid = new Integer(id);
 				map.put("id", iid);
 				list.add(map);
-				deleteItemFiles(iid, path);
+				//deleteItemFiles(iid, path);
 			}
 			
 		}else{
@@ -532,14 +532,14 @@ public class HotelAction extends BaseAction {
 			int iid = new Integer(projectId);
 			map.put("id", iid);
 			list.add(map);
-			deleteItemFiles(iid, path);
+			//deleteItemFiles(iid, path);
 		}
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("idList", list);
 		
-		itemTagAssociationService.deleteByItemId(map);
-		itemDetailService.deleteByItemId(map);
+		//itemTagAssociationService.deleteByItemId(map);
+		//itemDetailService.deleteByItemId(map);
 		itemService.deleteByItemId(map);
 		result.setCode(1);
 		result.setMessage("");
