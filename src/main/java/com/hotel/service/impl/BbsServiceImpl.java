@@ -317,4 +317,10 @@ public class BbsServiceImpl implements BbsService {
 		return bbsMapper.countCommentByHotel(targetId);
 	}
 
+	@Override
+	public int deleteByItem(int targetId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.deleteByItem(targetId);
+	}
+
 }
