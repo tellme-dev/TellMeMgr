@@ -110,12 +110,12 @@
   </select>
   
   <select id="countByCustomer" parameterType="java.lang.Integer" resultType="java.lang.Integer">
-    select count(id) from t_customer_browse where customer_id = #{customerId,jdbcType=INTEGER}
+    select count(id) from t_customer_browse where customer_id = #{customerId,jdbcType=INTEGER} and deleted_time is null
   </select>
   <select id="getPageByCustomer" parameterType="java.util.Map" resultMap="BaseResultMap">
     select 
 	<include refid="Base_Column_List" /> 
-	from t_customer_browse where customer_id = #{customerId,jdbcType=INTEGER} order by visit_time desc 
+	from t_customer_browse where customer_id = #{customerId,jdbcType=INTEGER} and deleted_time is null order by visit_time desc 
 	<if test="pageStart != null and pageSize != null and pageStart&gt;-1 and pageSize&gt;-1">
     	limit #{pageStart}, #{pageSize}
     </if>
