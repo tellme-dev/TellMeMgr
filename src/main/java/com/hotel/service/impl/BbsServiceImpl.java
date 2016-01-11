@@ -51,6 +51,7 @@ public class BbsServiceImpl implements BbsService {
 		map.put("pageEnd",page.getPageSize()*page.getPageNo());
 		map.put("postType", 0);//加载主贴
 		map.put("bbsType", 1);//属于论坛
+		map.put("deleteUserId", null);
 		map.put("type", type);
 		List<BbsVM> list = bbsMapper.selectByMap(map);
 		int total = bbsMapper.countByMap(map);
@@ -72,7 +73,7 @@ public class BbsServiceImpl implements BbsService {
 				bbsMapper.insertSelective(bbs);
 				/*将临时文件中的图片移动到目标文件夹*/
 				List<String> fileUrls = new ArrayList<String>();//存放图片Url
-				String sourcePath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
+				String sourcePath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp/"+bbs.getCustomerId();
 				String toPath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/"+bbs.getId();
 				File sourcefile = new File(sourcePath);
 				File dirPath = new File(toPath);
@@ -82,6 +83,7 @@ public class BbsServiceImpl implements BbsService {
 				File[] files = sourcefile.listFiles();
 				for(File file:files){
 					String name = file.getName();
+					//过滤出文件名以customerId开头的
 					if(name.startsWith(bbs.getCustomerId()+"_")){
 						file.renameTo(new File(toPath,file.getName()));
 						fileUrls.add("app/bbs/"+bbs.getId()+"/"+name);

@@ -179,6 +179,10 @@ public class BbsController {
 //        	String path = getClass().getResource("/").getFile().toString();
 //			path = path.substring(0, (path.length() - 16))+"washPhoto";
         	String fileName = bbsPhoto.getOriginalFilename();
+        	//分割出customerId作为左后一级的文件夹
+        	String[] str = fileName.split("_");
+        	String customerID = str[0];
+        	path = path +"/"+ customerID;
         	
         	File uploadFile = new File(path,fileName);
         	if(!uploadFile.exists()){  
@@ -198,19 +202,78 @@ public class BbsController {
 			@RequestParam(value = "param", required = true) String param,
 			HttpServletRequest request){
 		JSONObject jObj = JSONObject.fromObject(param);
-		String fileUrl = jObj.getString("fileUrl");
+		String fileUrl = "";
+		int customerId = 0;
+		try{
+			if(jObj.containsKey("fileUrl")){
+				fileUrl = jObj.getString("fileUrl");
+			}
+			if(jObj.containsKey("customerId")){
+				customerId = jObj.getInt("customerId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<String>(null, false, "json解析异常").toJson();
+		}
 		Result<Bbs> result = null;
 		try{
-			String path = request.getSession().getServletContext().getRealPath("/")+fileUrl;
-			boolean isSuccess = (new File(path)).delete();
-			result = new Result<Bbs>(null, true,"删除成功");
-			return result.toJson();
+			//删除对应的图片
+			if(fileUrl != ""&&customerId == 0){
+				String path = request.getSession().getServletContext().getRealPath("/")+fileUrl;//fileUrl是文件相对路径
+				boolean isSuccess = (new File(path)).delete();
+				result = new Result<Bbs>(null, true,"删除照片成功");
+				return result.toJson();
+			}
+			//删除整个文件夹
+			if(customerId != 0){
+				String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp/"+customerId;
+				String msg = "";
+				try{
+
+					File file = new File(path);
+					msg = deleteFile(file); 
+				}catch(Exception ex){
+					ex.printStackTrace();
+				}
+				result = new Result<Bbs>(null, true, msg);
+				return result.toJson();
+			}
+			return new Result<Bbs>(null, true,"要删除的文件出错").toJson();
 		}catch(Exception ex){
 			result = new Result<Bbs>(null, false,"删除失败");
 			return result.toJson();
 		} 
 	}
 	
+//	private void deleteDir(File dir) { 
+//		// TODO Auto-generated method stub 
+//		 if (dir.isDirectory()) {
+//	            String[] children = dir.list(); 
+//	            for (int i=0; i<children.length; i++) {
+//	                deleteDir(new File(dir, children[i])); 
+//	            }
+//	        } 
+//	}
+	private String deleteFile(File file) { 
+		String msg = "";
+	    if (file.exists()) {//判断文件是否存在  
+	        if (file.isFile()) {//判断是否是文件  
+	            file.delete();//删除文件  
+	            msg = "删除文件成功";
+	        } else if (file.isDirectory()) {//否则如果它是一个目录  
+	             File[] files = file.listFiles();//声明目录下所有的文件 files[];  
+	             for (int i = 0;i < files.length;i ++) {//遍历目录下所有的文件  
+	             this.deleteFile(files[i]);//把每个文件用这个方法进行迭代  
+	             }  
+	             file.delete();//删除文件夹  
+	             msg = "删除文件夹及子文件成功";
+	        } 
+	    } else {  
+	       msg = "所删除的文件不存在";  
+	    }  
+	    return msg;
+	}  
+
 	@RequestMapping(value = "fullTextSearchOfBbs.do", produces = "application/json;charset=UTF-8")
 	public @ResponseBody  String fullTextSearchOfBbs(
 			@RequestParam(value = "searchData", required = false) String searchData,

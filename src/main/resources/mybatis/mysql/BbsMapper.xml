@@ -530,6 +530,9 @@
       <if test="deleteUserId != null" >
         and b.delete_user_id = #{deleteUserId,jdbcType=INTEGER}
       </if>
+      <if test="deleteUserId == null" >
+        and b.delete_user_id is null
+      </if>
       <if test="deleteTime != null" >
         and b.delete_time = #{deleteTime,jdbcType=TIMESTAMP}
       </if>
