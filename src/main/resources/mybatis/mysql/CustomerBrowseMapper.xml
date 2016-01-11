@@ -1,93 +1,106 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hotel.dao.CustomerBrowseMapper" >
-  <resultMap id="BaseResultMap" type="com.hotel.model.CustomerBrowse" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="customer_id" property="customerId" jdbcType="INTEGER" />
-    <result column="target_type" property="targetType" jdbcType="INTEGER" />
-    <result column="target_id" property="targetId" jdbcType="INTEGER" />
-    <result column="visit_time" property="visitTime" jdbcType="TIMESTAMP" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hotel.dao.CustomerBrowseMapper">
+  <resultMap id="BaseResultMap" type="com.hotel.model.CustomerBrowse">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="customer_id" jdbcType="INTEGER" property="customerId" />
+    <result column="target_type" jdbcType="INTEGER" property="targetType" />
+    <result column="target_id" jdbcType="INTEGER" property="targetId" />
+    <result column="visit_time" jdbcType="TIMESTAMP" property="visitTime" />
+    <result column="deleted_time" jdbcType="TIMESTAMP" property="deletedTime" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    id, customer_id, target_type, target_id, visit_time
+  <sql id="Base_Column_List">
+    id, customer_id, target_type, target_id, visit_time, deleted_time
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_customer_browse
     where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_customer_browse
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.hotel.model.CustomerBrowse" >
+  <insert id="insert" parameterType="com.hotel.model.CustomerBrowse">
     insert into t_customer_browse (id, customer_id, target_type, 
-      target_id, visit_time)
+      target_id, visit_time, deleted_time
+      )
     values (#{id,jdbcType=INTEGER}, #{customerId,jdbcType=INTEGER}, #{targetType,jdbcType=INTEGER}, 
-      #{targetId,jdbcType=INTEGER}, #{visitTime,jdbcType=TIMESTAMP})
+      #{targetId,jdbcType=INTEGER}, #{visitTime,jdbcType=TIMESTAMP}, #{deletedTime,jdbcType=TIMESTAMP}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.hotel.model.CustomerBrowse" >
+  <insert id="insertSelective" parameterType="com.hotel.model.CustomerBrowse">
     insert into t_customer_browse
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         id,
       </if>
-      <if test="customerId != null" >
+      <if test="customerId != null">
         customer_id,
       </if>
-      <if test="targetType != null" >
+      <if test="targetType != null">
         target_type,
       </if>
-      <if test="targetId != null" >
+      <if test="targetId != null">
         target_id,
       </if>
-      <if test="visitTime != null" >
+      <if test="visitTime != null">
         visit_time,
       </if>
+      <if test="deletedTime != null">
+        deleted_time,
+      </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="customerId != null" >
+      <if test="customerId != null">
         #{customerId,jdbcType=INTEGER},
       </if>
-      <if test="targetType != null" >
+      <if test="targetType != null">
         #{targetType,jdbcType=INTEGER},
       </if>
-      <if test="targetId != null" >
+      <if test="targetId != null">
         #{targetId,jdbcType=INTEGER},
       </if>
-      <if test="visitTime != null" >
+      <if test="visitTime != null">
         #{visitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deletedTime != null">
+        #{deletedTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.hotel.model.CustomerBrowse" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.hotel.model.CustomerBrowse">
     update t_customer_browse
-    <set >
-      <if test="customerId != null" >
+    <set>
+      <if test="customerId != null">
         customer_id = #{customerId,jdbcType=INTEGER},
       </if>
-      <if test="targetType != null" >
+      <if test="targetType != null">
         target_type = #{targetType,jdbcType=INTEGER},
       </if>
-      <if test="targetId != null" >
+      <if test="targetId != null">
         target_id = #{targetId,jdbcType=INTEGER},
       </if>
-      <if test="visitTime != null" >
+      <if test="visitTime != null">
         visit_time = #{visitTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deletedTime != null">
+        deleted_time = #{deletedTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.hotel.model.CustomerBrowse" >
+  <update id="updateByPrimaryKey" parameterType="com.hotel.model.CustomerBrowse">
     update t_customer_browse
     set customer_id = #{customerId,jdbcType=INTEGER},
       target_type = #{targetType,jdbcType=INTEGER},
       target_id = #{targetId,jdbcType=INTEGER},
-      visit_time = #{visitTime,jdbcType=TIMESTAMP}
+      visit_time = #{visitTime,jdbcType=TIMESTAMP},
+      deleted_time = #{deletedTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=INTEGER}
   </update>
   
@@ -96,14 +109,14 @@
     target_id = #{itemId,jdbcType=INTEGER}
   </select>
   
-  <select id="countByCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+  <select id="countByCustomer" parameterType="java.lang.Integer" resultType="java.lang.Integer">
     select count(id) from t_customer_browse where customer_id = #{customerId,jdbcType=INTEGER}
   </select>
-  <select id="getPageByCustomer" resultMap="BaseResultMap" parameterType="java.util.Map" >
+  <select id="getPageByCustomer" parameterType="java.util.Map" resultMap="BaseResultMap">
     select 
 	<include refid="Base_Column_List" /> 
 	from t_customer_browse where customer_id = #{customerId,jdbcType=INTEGER} order by visit_time desc 
-	<if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+	<if test="pageStart != null and pageSize != null and pageStart&gt;-1 and pageSize&gt;-1">
     	limit #{pageStart}, #{pageSize}
     </if>
   </select>
