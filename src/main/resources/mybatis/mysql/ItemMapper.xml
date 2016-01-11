@@ -154,7 +154,7 @@
     select 
     <include refid="Base_Column_List" />
     from t_item
-    where hotel_id = #{hotelId,jdbcType=INTEGER}
+    where hotel_id = #{hotelId,jdbcType=INTEGER} and is_used = 1
   </select>
   <select id=""></select>
   
@@ -172,29 +172,29 @@
 	
  </insert>
  
- <delete id="deleteByItemId" parameterType="java.util.HashMap" >
-    delete from t_item
+ <update id="deleteByItemId" parameterType="java.util.HashMap" >
+    update t_item set is_used = 0
     where id in 
     <foreach item="item" collection="idList" open="(" separator="," close=")">  
     	#{item.id}  
     </foreach>
-  </delete>
+  </update>
   <select id="selectItemByItemTagId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
     a.id, a.hotel_id, a.name, a.text, a.tel, a.position, a.score, a.is_used
     from t_item a
     left join t_item_tag_association t on a.id = t.item_id 
-    where t.item_tag_id = #{0}
+    where t.item_tag_id = #{0} and a.is_used = 1
   </select>
   <select id="countByItemTagChild" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
     select count(i.id) 
-    from t_item i INNER JOIN t_item_tag_association ita on ita.item_id = i.id WHERE ita.item_tag_id = #{tagId,jdbcType=INTEGER}
+    from t_item i INNER JOIN t_item_tag_association ita on ita.item_id = i.id WHERE ita.item_tag_id = #{tagId,jdbcType=INTEGER} and i.is_used = 1
   </select>
   
   <select id="selectByItemTagChildOrderByScore" resultMap="BaseResultMap" parameterType="java.util.Map" >
     select 
     a.id, a.hotel_id, a.name, a.text, a.tel, a.position, a.score, a.is_used
-    from t_item a INNER JOIN t_item_tag_association ita on ita.item_id = a.id WHERE ita.item_tag_id = #{tagId,jdbcType=INTEGER}
+    from t_item a INNER JOIN t_item_tag_association ita on ita.item_id = a.id WHERE ita.item_tag_id = #{tagId,jdbcType=INTEGER} and a.is_used = 1
     <if test="hotelId != null and hotelId > 0">
         and a.hotel_id = #{hotelId,jdbcType=INTEGER}
     </if>
@@ -207,14 +207,14 @@
   <select id="selectItemByHotelAndTagName" resultMap="BaseResultMap" parameterType="java.util.Map" >
     select 
     a.id, a.hotel_id, a.name, a.text, a.tel, a.position, a.score, a.is_used
-    from t_item_tag_association ita left join t_Item_tag it on ita.item_tag_id = it.id left join t_item a on ita.item_id = a.id where it.name = #{tagName,jdbcType=VARCHAR} and a.hotel_id = #{hotelId,jdbcType=INTEGER}
+    from t_item_tag_association ita left join t_Item_tag it on ita.item_tag_id = it.id left join t_item a on ita.item_id = a.id where it.name = #{tagName,jdbcType=VARCHAR} and a.hotel_id = #{hotelId,jdbcType=INTEGER} and a.is_used = 1
   </select>
   
   <select id="selectByItemTagRootAndHotel" resultMap="BaseResultMap" parameterType="java.util.Map" >
     select 
     a.id, a.hotel_id, a.name, a.text, a.tel, a.position, a.score, a.is_used
     from t_item a inner join t_item_tag_association ita on ita.item_id = a.id left join t_Item_tag it on ita.item_tag_id = it.id
-    where it.parent_id = #{itemTagId,jdbcType=INTEGER} and a.hotel_id = #{hotelId,jdbcType=INTEGER} order by it.id
+    where it.parent_id = #{itemTagId,jdbcType=INTEGER} and a.hotel_id = #{hotelId,jdbcType=INTEGER} and a.is_used = 1 order by it.id
   </select>
   <select id="getItemVMByChildTagId" resultMap="resultItemVMMap" parameterType="java.lang.Integer">
       select 
