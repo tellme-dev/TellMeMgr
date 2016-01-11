@@ -583,6 +583,7 @@
     (select count(cc.id) from t_customer_collection cc where cc.target_id = b.id and cc.collection_type = 3) as collectionCount
     from t_bbs b
     where b.parent_id = #{parentId,jdbcType=INTEGER}
+    <include refid="query_sql" />
     <if test="pageEnd != null and pageSize != null and pageStart>-1 and pageSize>-1">
         limit 0, #{pageEnd}
     </if>
