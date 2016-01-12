@@ -119,6 +119,7 @@ public class BbsServiceImpl implements BbsService {
 		}
 	}
 	
+	@Transactional
 	@Override
 	public ListResult<BbsVM> loadBbsChildren(Page page,Integer pid) {
 		// TODO Auto-generated method stub
@@ -129,23 +130,25 @@ public class BbsServiceImpl implements BbsService {
 		map.put("parentId", pid);
 		map.put("deleteUserId", null);
 		List<BbsVM> ls = bbsMapper.selectByPid(map);
-		//List<BbsVM> list = getNodes(ls);
+		List<BbsVM> list = getNodes(ls);
 		int count = bbsMapper.countByMap(map);
-		ListResult<BbsVM> result = new ListResult<BbsVM>(count,ls);
+		ListResult<BbsVM> result = new ListResult<BbsVM>(count,list);
 		bbsMapper.updateBrowseCount(pid);//更新浏览次数
 		return result;
 	}
 	
 	private List<BbsVM> getNodes(List<BbsVM> ls){
+		List<BbsVM> list = new ArrayList<BbsVM>();
 		for(BbsVM bbs:ls){
 			Map<String,Object> map = new HashMap<String, Object>();
 			map.put("parentId", bbs.getId());
 		    map.put("deleteUserId", null);
 		    List<BbsVM> clist = bbsMapper.selectByPid(map);
 		    if(clist.size()>0){
+		    	bbs.setChildren(clist);
 		    }
+		    list.add(bbs);
 		}
-		List<BbsVM> list = new ArrayList<BbsVM>();
 		return list;
 	}
 	/*public ListResult<BbsVM> loadBbsTree(Page page,Integer pid) {
