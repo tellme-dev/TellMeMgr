@@ -1316,6 +1316,52 @@ public class CustomerController {
 		return new Result<String>("", false, "点赞失败");
 	}
 	
+	/**
+	 * 保存用户点赞（包括酒店(服务)、广告(专题)、论坛等）
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/saveBrowseHistory.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<String> saveBrowseHistory(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int browseType = -1;
+		int customerId = 0;
+		int targetId = 0;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("browseType")){
+				browseType = jsonObject.getInt("browseType");
+			}
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("targetId")){
+				targetId = jsonObject.getInt("targetId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<String>("", false, "json解析异常");
+		}
+		if(browseType < 0 || customerId < 1 || targetId < 1){
+			return new Result<String>("", false, "请求无效");
+		}
+		
+		CustomerBrowse browse = new CustomerBrowse();
+		browse.setCustomerId(customerId);
+		browse.setTargetType(browseType);
+		browse.setTargetId(targetId);
+		browse.setVisitTime(new Date());
+		
+		int bcount = customerBrowseService.insert(browse);
+		
+		if(bcount > 0){
+			return new Result<String>("", true, "");
+		}
+		return new Result<String>("", false, "浏览失败");
+	}
+	
 	@RequestMapping(value = "/saveShare.do", produces = "application/json;charset=UTF-8")
 	public @ResponseBody Result<String> saveShare(
 			@RequestParam(value = "json", required = false) String json)
@@ -1448,17 +1494,6 @@ public class CustomerController {
 	}
 	
 	
-	
-	/**
-	 * 保存浏览的页面（包括酒店，酒店项目，广告，发现，论坛等）
-	 * @param customerInfo
-	 * @return
-	 */
-	public @ResponseBody String saveBrowseHistory(
-			@RequestParam(value = "browseInfo", required = false) String browseInfo)
-	{
-		return null;
-	}
 	/**
 	 * 上传头像
 	 * @author jun
