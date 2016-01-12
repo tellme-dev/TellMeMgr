@@ -611,12 +611,11 @@ public class CustomerController {
 		//*********************************************
 		List<CustomerBrowseVM> vms = new ArrayList<CustomerBrowseVM>();
 		
-		Map<String, Object> imap = new HashMap<String, Object>();
-		imap.put("tagName", TAG_NAME_HOTEL_DEFAULT);
 		for(CustomerBrowse browse : browses){
 			switch (browse.getTargetType()) {
 			case BROWSE_TYPE_HOTEL:
-				Hotel hotel = hotelService.selectByPrimaryKey(browse.getTargetId());
+				Item item = itemService.selectByPrimaryKey(browse.getTargetId());
+				Hotel hotel = hotelService.selectByPrimaryKey(item.getHotelId());
 				//转存酒店基本数据
 				HotelListInfoVM vm = new HotelListInfoVM();
 				vm.setId(hotel.getId());
@@ -625,18 +624,13 @@ public class CustomerController {
 				vm.setLatitude(hotel.getLatitude());
 				vm.setLongitude(hotel.getLongitude());
 				
-				imap.put("hotelId", hotel.getId());
-				List<Item> introItem = itemService.selectItemByHotelAndTagName(imap);
-				if(introItem != null && introItem.size() > 0){
-					Item temp = introItem.get(0);
-					vm.setTel(temp.getTel());
-					vm.setAddress(temp.getPosition());
-					vm.setScore(temp.getScore());
-					List<ItemDetail> details = itemDetailService.selectByItemId(temp.getId());
-					if(details != null && details.size() > 0){
-						//仅获取第一张图片
-						vm.setImgUrl(details.get(0).getImageUrl());
-					}
+				vm.setTel(item.getTel());
+				vm.setAddress(item.getPosition());
+				vm.setScore(item.getScore());
+				List<ItemDetail> details = itemDetailService.selectByItemId(item.getId());
+				if(details != null && details.size() > 0){
+					//仅获取第一张图片
+					vm.setImgUrl(details.get(0).getImageUrl());
 				}
 				
 				//查询所有酒店所有的项目
@@ -752,12 +746,11 @@ public class CustomerController {
 		// 根据类型做相应的数据处理
 		//*********************************************
 		List<CustomerBrowseVM> vms = new ArrayList<CustomerBrowseVM>();
-		Map<String, Object> imap = new HashMap<String, Object>();
-		imap.put("tagName", TAG_NAME_HOTEL_DEFAULT);
 		for(CustomerCollection collection : collections){
 			switch (collection.getCollectionType()) {
 			case BROWSE_TYPE_HOTEL:
-				Hotel hotel = hotelService.selectByPrimaryKey(collection.getTargetId());
+				Item item = itemService.selectByPrimaryKey(collection.getTargetId());
+				Hotel hotel = hotelService.selectByPrimaryKey(item.getHotelId());
 				//转存酒店基本数据
 				HotelListInfoVM vm = new HotelListInfoVM();
 				vm.setId(hotel.getId());
@@ -766,18 +759,13 @@ public class CustomerController {
 				vm.setLatitude(hotel.getLatitude());
 				vm.setLongitude(hotel.getLongitude());
 				
-				imap.put("hotelId", hotel.getId());
-				List<Item> introItem = itemService.selectItemByHotelAndTagName(imap);
-				if(introItem != null && introItem.size() > 0){
-					Item temp = introItem.get(0);
-					vm.setTel(temp.getTel());
-					vm.setAddress(temp.getPosition());
-					vm.setScore(temp.getScore());
-					List<ItemDetail> details = itemDetailService.selectByItemId(temp.getId());
-					if(details != null && details.size() > 0){
-						//仅获取第一张图片
-						vm.setImgUrl(details.get(0).getImageUrl());
-					}
+				vm.setTel(item.getTel());
+				vm.setAddress(item.getPosition());
+				vm.setScore(item.getScore());
+				List<ItemDetail> details = itemDetailService.selectByItemId(item.getId());
+				if(details != null && details.size() > 0){
+					//仅获取第一张图片
+					vm.setImgUrl(details.get(0).getImageUrl());
 				}
 				
 				//查询所有酒店所有的项目

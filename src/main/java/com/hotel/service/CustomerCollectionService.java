@@ -16,4 +16,6 @@ public interface CustomerCollectionService {
 	int countByCustomer(int customerId);
 	
 	List<CustomerCollection> getPageCollectionByCustomer(Map<String, Object> map);
+	
+	int deleteByItem(int targetId);
 }

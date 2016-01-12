@@ -43,5 +43,11 @@ public class CustomerBrowseServiceImpl implements CustomerBrowseService{
 		return customerBrowseMapper.getPageByCustomer(map);
 	}
 
+	@Override
+	public int deleteByItem(int targetId) {
+		// TODO Auto-generated method stub
+		return customerBrowseMapper.deleteByItem(targetId);
+	}
+
 
 }

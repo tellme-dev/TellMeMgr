@@ -27,4 +27,6 @@ public interface ItemService {
 	List<ItemVM> getItemVMByChildTagId(int childTagId, int num);
 	
 	List<Item> selectItemByHotelAndTagName(Map<String, Object> map);
+	
+	Item selectByPrimaryKey(Integer id);
 }

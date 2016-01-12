@@ -61,4 +61,6 @@ public interface BbsMapper {
 	int countCommentByHotel(int targetId);
 
 	int insertSelective1(Bbs record);
+	
+	int deleteByItem(int targetId);
 }
