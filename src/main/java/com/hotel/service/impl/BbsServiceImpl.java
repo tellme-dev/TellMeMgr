@@ -323,4 +323,22 @@ public class BbsServiceImpl implements BbsService {
 		return bbsMapper.deleteByItem(targetId);
 	}
 
+	@Override
+	public int countDNewPraiseToCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countDNewPraiseToCustomer(customerId);
+	}
+
+	@Override
+	public int countDNewCommentToCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countDNewCommentToCustomer(customerId);
+	}
+
+	@Override
+	public int updateReadStatusRead(int id) {
+		// TODO Auto-generated method stub
+		return bbsMapper.updateReadStatusRead(id);
+	}
+
 }

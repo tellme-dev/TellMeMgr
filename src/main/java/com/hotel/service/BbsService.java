@@ -172,4 +172,7 @@ public interface BbsService {
 	 * @return
 	 */
 	int deleteByItem(int targetId);
+	int countDNewPraiseToCustomer(int customerId);
+	int countDNewCommentToCustomer(int customerId);
+	int updateReadStatusRead(int id);
 }

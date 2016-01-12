@@ -28,6 +28,8 @@ public class Bbs {
     private String text;//文字
 
     private Byte score;
+    
+    private int readStatus;//读取状态
 
     private Date createTime;
 
@@ -157,7 +159,15 @@ public class Bbs {
         this.score = score;
     }
 
-    public Date getCreateTime() {
+    public int getReadStatus() {
+		return readStatus;
+	}
+
+	public void setReadStatus(int readStatus) {
+		this.readStatus = readStatus;
+	}
+
+	public Date getCreateTime() {
         return createTime;
     }
 

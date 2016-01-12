@@ -435,9 +435,9 @@ public class CustomerController {
 		vm.setCountCollection(customerCollectionService.countByCustomer(customerId));
 		vm.setCountTopic(bbsService.countPostByCustomer(customerId));
 		//int countPBy = bbsService.countDPraiseByCustomer(customerId);
-		int countPTo = bbsService.countDPraiseToCustomer(customerId);
+		int countPTo = bbsService.countDNewPraiseToCustomer(customerId);
 		//int countCBy = bbsService.countDCommentByCustomer(customerId);
-		int countCTo = bbsService.countDCommentToCustomer(customerId);
+		int countCTo = bbsService.countDNewCommentToCustomer(customerId);
 		//vm.setCountDynamic(countPBy + countPTo + countCBy + countCTo);
 		vm.setCountDynamic(countPTo + countCTo);
 		
@@ -964,6 +964,41 @@ public class CustomerController {
 	}
 	
 	/**
+	 * 获取个人中心动态点赞数和评论数
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerNewDynamicCount.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<CountVM> getCustomerNewDynamicCount(@RequestParam(value = "json", required = false) String json){
+		int customerId = 0;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<CountVM>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new Result<CountVM>(null, false, "请求无效");
+		}
+		
+		//int countDPF = bbsService.countDPraiseByCustomer(customerId);
+		int countDPT = bbsService.countDNewPraiseToCustomer(customerId);
+		//int countDCF = bbsService.countDCommentByCustomer(customerId);
+		int countDCT = bbsService.countDNewCommentToCustomer(customerId);
+		CountVM vm = new CountVM();
+//		vm.setCountPraise(countDPF + countDPT);
+//		vm.setCountComments(countDCF + countDCT);
+		vm.setCountPraise(countDPT);
+		vm.setCountComments(countDCT);
+		
+		return new Result<CountVM>(vm, true, "");
+	}
+	
+	/**
 	 * 获取用户动态-点赞
 	 * @author LiuTaiXiong
 	 * @param json
@@ -1063,6 +1098,9 @@ public class CustomerController {
 				bbsDynamicVM.setTo(to);
 				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(b.getCustomerId()));
 				list.add(bbsDynamicVM);
+				if(b.getReadStatus() == 0){
+					bbsService.updateReadStatusRead(b.getId());
+				}
 			}
 		}
 		
@@ -1183,6 +1221,9 @@ public class CustomerController {
 					bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(b.getCustomerId()));
 					//list.add(bbsDynamicVM);
 					container.add(id, bbsDynamicVM);
+				}
+				if(b.getReadStatus() == 0){
+					bbsService.updateReadStatusRead(b.getId());
 				}
 			}
 			if(container.size() > 0){
