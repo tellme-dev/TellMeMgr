@@ -81,22 +81,25 @@ public class BbsServiceImpl implements BbsService {
 					dirPath.mkdirs();
 				}
 				File[] files = sourcefile.listFiles();
-				for(File file:files){
-					String name = file.getName();
-					//过滤出文件名以customerId开头的
-					if(name.startsWith(bbs.getCustomerId()+"_")){
-						file.renameTo(new File(toPath,file.getName()));
-						fileUrls.add("app/bbs/"+bbs.getId()+"/"+name);
+				//无图片
+				if(files != null){
+					for(File file:files){
+						String name = file.getName();
+						//过滤出文件名以customerId开头的
+						if(name.startsWith(bbs.getCustomerId()+"_")){
+							file.renameTo(new File(toPath,file.getName()));
+							fileUrls.add("app/bbs/"+bbs.getId()+"/"+name);
+						}
 					}
-				}
-				/*遍历 insert图片*/
-				for(String url:fileUrls){
-					BbsAttach ba = new BbsAttach();
-					ba.setBbsId(bbs.getId());
-					ba.setAttachType(1);
-					ba.setAttachUrl(url);
-					ba.setTimeStamp(new Date());
-					bbsAttachMapper.insertSelective(ba);
+					/*遍历 insert图片*/
+					for(String url:fileUrls){
+						BbsAttach ba = new BbsAttach();
+						ba.setBbsId(bbs.getId());
+						ba.setAttachType(1);
+						ba.setAttachUrl(url);
+						ba.setTimeStamp(new Date());
+						bbsAttachMapper.insertSelective(ba);
+					}
 				}
 			}
 			else if(bbs.getPostType() == 1){//回贴回复
