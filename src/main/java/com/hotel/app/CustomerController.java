@@ -227,6 +227,8 @@ public class CustomerController {
 		customer.setPsd(u.getPsd());
 		customer.setSalt(u.getSalt());
 		customer.setRegTime(new Date());
+		String name=u.getName().substring(0,3)+"****"+u.getName().substring(7);//隐藏中间四位电话号码作昵称
+		customer.setName(name);
 		
 		int temp = customerService.insert(customer);
 		if(temp ==-1){

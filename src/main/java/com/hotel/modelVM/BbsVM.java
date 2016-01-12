@@ -11,7 +11,16 @@ public class BbsVM extends Bbs {
 	private List<BbsAttach> bbsAttachUrls;
 	private Integer collectionCount;//收藏次数
 	private String categoryName;
+	private List<BbsVM> children;
+    
+	public List<BbsVM> getChildren() {
+		return children;
+	}
 
+	public void setChildren(List<BbsVM> children){
+		this.children = children;
+	}
+	
 	public String getCategoryName() {
 		return categoryName;
 	}
