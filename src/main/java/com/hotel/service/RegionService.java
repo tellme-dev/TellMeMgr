@@ -13,6 +13,6 @@ import com.hotel.model.Region;
 @Service
 public interface RegionService {
 	List<Region> getAllRegions();
-	List<Region> getNearAndHotRegionsByCustomer(int customerId,int defaultRegionNum);
+	List<Region> getNearAndHotRegions(String regionCode,int defaultRegionNum);
 	List<Region> getHistoricRegions(int customerId);
 }

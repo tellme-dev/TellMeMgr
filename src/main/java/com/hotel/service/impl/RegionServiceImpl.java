@@ -25,9 +25,11 @@ public class RegionServiceImpl implements RegionService {
 	}
 
 	@Override
-	public List<Region> getNearAndHotRegionsByCustomer(int customerId,int defaultRegionNum) {
+	public List<Region> getNearAndHotRegions(String regionCode,int defaultRegionNum) {
 		// TODO Auto-generated method stub
-		return regionMapper.getNearAndHotRegionsByCustomer(customerId,defaultRegionNum);
+		int code = Integer.parseInt(regionCode);
+		
+		return regionMapper.getNearAndHotRegions(String.valueOf(code/100),defaultRegionNum);
 	}
 
 	@Override

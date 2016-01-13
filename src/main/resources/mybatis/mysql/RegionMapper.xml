@@ -142,50 +142,14 @@
     from t_region where parent_id = #{cityId,jdbcType=INTEGER}
   </select>
   <select id="getHistoricRegions" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-  	select 
-		CASE a.`level`
-		WHEN 3 THEN a.parent_id 
-		WHEN 1 THEN a.id
-		when 2 then a.id
-		END AS id,
-		
-		CASE a.`level`
-		WHEN 3 THEN (SELECT f.`name` FROM t_region f WHERE f.id = a.parent_id)
-		WHEN 2 THEN a.`name`
-		WHEN 1 THEN a.`name`
-		END AS `name`,
-		
-		CASE a.`level`
-		WHEN 3 THEN (SELECT f.`parent_id` FROM t_region f WHERE f.id = a.parent_id)
-		WHEN 2 THEN a.`parent_id`
-		WHEN 1 THEN a.`parent_id`
-		END AS `parent_id`,
-		
-		CASE a.`level`
-		WHEN 3 THEN 2
-		WHEN 2 THEN 2
-		WHEN 1 THEN 1
-		END AS `level`,
-		
-		CASE a.`level`
-		WHEN 3 THEN (SELECT f.`path` FROM t_region f WHERE f.id = a.parent_id)
-		WHEN 2 THEN a.`path`
-		WHEN 1 THEN a.`path`
-		END AS `path`
-		
- 	FROM t_region a
-	LEFT JOIN t_hotle b on a.id = b.region_id
-	LEFT JOIN t_room_check c on b.id = c.hotel_id
-	LEFT JOIN t_customer  d on c.customer_id = d.id
-	where d.id = #{0}
-	GROUP BY name;
+SELECT a.* FROM t_region a
+LEFT JOIN t_hotle c ON a.id = c.region_id
+LEFT JOIN t_room_check b ON c.id = b.hotel_id
+WHERE b.customer_id = #{0}
   </select>
   
   <select id="getNearAndHotRegionsByCustomer" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-SELECT d.id,d.`name`,d.parent_id,d.path,d.level FROM(SELECT a.*,(SELECT count(*) FROM t_region b WHERE b.parent_id = a.id) AS total
-		FROM t_region a
-		WHERE  a.`level` = 2)AS d
-ORDER BY d.total DESC
-		LIMIT 0,#{1}
+SELECT * FROM t_region 
+WHERE t_region.`code` LIKE '%#{0}%'
   </select>
 </mapper>

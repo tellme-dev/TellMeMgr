@@ -41,4 +41,6 @@ public interface ItemMapper {
     List<Item> selectByItemTagRootAndHotel(Map<String, Object> map);
 
 	List<ItemVM> getItemVMByChildTagId(int childTagId, int num);
+
+	List<ItemVM> getItemVMByTagId(int tagId, int num);
 }

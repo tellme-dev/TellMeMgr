@@ -89,38 +89,13 @@ public class ItemTagController {
 	
 	private List<SwiperHotelItem> getBestItemsByTagId(int firstTagId) {
 		// TODO Auto-generated method stub
-		List<SwiperHotelItem> urlList = new ArrayList<SwiperHotelItem>();
-		List<ItemTag> childItemTagList = this.getChildItemTagList(firstTagId);
-		switch(childItemTagList.size()){
-		case 1:
-			urlList.addAll(this.getOrderedItemsByChildTagId(childItemTagList.get(0).getId(),4));
-			break;
-		case 2:
-			urlList.addAll(this.getOrderedItemsByChildTagId(childItemTagList.get(0).getId(), 2));
-			urlList.addAll(this.getOrderedItemsByChildTagId(childItemTagList.get(1).getId(), 2));
-			break;
-		case 3:
-			urlList.addAll(this.getOrderedItemsByChildTagId(childItemTagList.get(0).getId(), 2));
-			urlList.addAll(this.getOrderedItemsByChildTagId(childItemTagList.get(1).getId(), 1));
-			urlList.addAll(this.getOrderedItemsByChildTagId(childItemTagList.get(2).getId(), 1));
-			break;
-		default:
-			urlList.addAll(this.getOrderedItemsByChildTagId(childItemTagList.get(0).getId(), 1));
-			urlList.addAll(this.getOrderedItemsByChildTagId(childItemTagList.get(1).getId(), 1));
-			urlList.addAll(this.getOrderedItemsByChildTagId(childItemTagList.get(2).getId(), 1));
-			urlList.addAll(this.getOrderedItemsByChildTagId(childItemTagList.get(3).getId(), 1));
-			break;
-		}
-		//根据一级标签获取二级标签(1,1,1,1)(4)(2,2)(2,1,1)
-		//通过二级标签获取排名靠前的itemId
+		List<SwiperHotelItem> urlList = this.getOrderedItemsByTagId(firstTagId, 4);
 		return urlList;
 	}
-	private List<SwiperHotelItem> getOrderedItemsByChildTagId(
-			int childTagId, int num) {
+	private List<SwiperHotelItem> getOrderedItemsByTagId(int tagId, int num) {
 		// TODO Auto-generated method stub
-		//通过二级标签获取排名前num的item
 		List<SwiperHotelItem> result = new ArrayList<SwiperHotelItem>();
-		List<ItemVM> list = itemService.getItemVMByChildTagId(childTagId,num);
+		List<ItemVM> list = itemService.getItemVMByTagId(tagId,num);
 		if(list ==null||list.size() ==0){
 			return null;
 		}else{
@@ -132,7 +107,8 @@ public class ItemTagController {
 					item.setImageUrl(list.get(i).getItemDetails().get(0).getImageUrl());	
 				}
 				item.setItemId(list.get(i).getId());
-				item.setItemTagId(childTagId);
+				item.setItemTagId(list.get(i).getItemTags().get(0).getId());
+				result.add(item);
 			}
 		}
 		
