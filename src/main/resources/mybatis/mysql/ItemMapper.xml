@@ -225,4 +225,12 @@
 	ORDER BY a.score DESC
 	limit 0, #{1}
   </select>
+  <select id="getItemVMByTagId" resultMap="resultItemVMMap" parameterType="java.lang.Integer">
+    SELECT a.* from t_item a
+LEFT JOIN t_item_tag_association b on a.id = b.item_id
+LEFT JOIN t_Item_tag c on b.item_tag_id = c.id
+WHERE c.parent_id = #{0}
+ORDER BY a.score DESC
+LIMIT 0,#{1}
+  </select>
 </mapper>
