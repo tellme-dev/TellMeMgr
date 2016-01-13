@@ -479,7 +479,6 @@ public class CommonUtil {
         return todayEnd.getTime();  
     } 
     
-    
 	public static void main(String[] args) {
 		List<Point2D.Double> list = new ArrayList<Point2D.Double>();
 		Point2D.Double point1 = new Point2D.Double(116.295294,40.062139);
@@ -519,4 +518,5 @@ public class CommonUtil {
 		// }
 */
 	}
+	
 }

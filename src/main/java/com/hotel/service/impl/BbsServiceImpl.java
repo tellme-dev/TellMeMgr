@@ -119,6 +119,7 @@ public class BbsServiceImpl implements BbsService {
 		}
 	}
 	
+	@Transactional
 	@Override
 	public ListResult<BbsVM> loadBbsChildren(Page page,Integer pid) {
 		// TODO Auto-generated method stub
@@ -127,13 +128,29 @@ public class BbsServiceImpl implements BbsService {
 		map.put("pageSize", page.getPageSize());
 		map.put("pageEnd",page.getPageSize()*page.getPageNo());
 		map.put("parentId", pid);
+		map.put("deleteUserId", null);
 		List<BbsVM> ls = bbsMapper.selectByPid(map);
+		List<BbsVM> list = getNodes(ls);
 		int count = bbsMapper.countByMap(map);
-		ListResult<BbsVM> result = new ListResult<BbsVM>(count,ls);
+		ListResult<BbsVM> result = new ListResult<BbsVM>(count,list);
 		bbsMapper.updateBrowseCount(pid);//更新浏览次数
 		return result;
 	}
 	
+	private List<BbsVM> getNodes(List<BbsVM> ls){
+		List<BbsVM> list = new ArrayList<BbsVM>();
+		for(BbsVM bbs:ls){
+			Map<String,Object> map = new HashMap<String, Object>();
+			map.put("parentId", bbs.getId());
+		    map.put("deleteUserId", null);
+		    List<BbsVM> clist = bbsMapper.selectByPid(map);
+		    if(clist.size()>0){
+		    	bbs.setChildren(clist);
+		    }
+		    list.add(bbs);
+		}
+		return list;
+	}
 	/*public ListResult<BbsVM> loadBbsTree(Page page,Integer pid) {
 		// TODO Auto-generated method stub
 		Map<String,Object> map = new HashMap<String, Object>();
@@ -301,6 +318,30 @@ public class BbsServiceImpl implements BbsService {
 	public int countCommentByHotel(int targetId) {
 		// TODO Auto-generated method stub
 		return bbsMapper.countCommentByHotel(targetId);
+	}
+
+	@Override
+	public int deleteByItem(int targetId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.deleteByItem(targetId);
+	}
+
+	@Override
+	public int countDNewPraiseToCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countDNewPraiseToCustomer(customerId);
+	}
+
+	@Override
+	public int countDNewCommentToCustomer(int customerId) {
+		// TODO Auto-generated method stub
+		return bbsMapper.countDNewCommentToCustomer(customerId);
+	}
+
+	@Override
+	public int updateReadStatusRead(int id) {
+		// TODO Auto-generated method stub
+		return bbsMapper.updateReadStatusRead(id);
 	}
 
 }

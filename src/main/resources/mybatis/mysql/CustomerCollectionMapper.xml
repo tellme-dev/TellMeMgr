@@ -118,16 +118,21 @@
   <select id="countByCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
     select count(id) 
     from t_customer_collection
-    where customer_id = #{customerId,jdbcType=INTEGER}
+    where customer_id = #{customerId,jdbcType=INTEGER} and deleted_time is null
   </select>
   <select id="getPageCollectionByCustomer" resultMap="BaseResultMap" parameterType="java.util.Map" >
     select 
     <include refid="Base_Column_List" />
     from t_customer_collection
-    where customer_id = #{customerId,jdbcType=INTEGER} order by create_time desc 
+    where customer_id = #{customerId,jdbcType=INTEGER} and deleted_time is null order by create_time desc 
     <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
     	limit #{pageStart}, #{pageSize}
     </if>
   </select>
+  <update id="deleteByItem" parameterType="java.lang.Integer" >
+    update t_customer_collection
+    set deleted_time = NOW()
+    where collection_type = 1 and target_id = #{targetId,jdbcType=INTEGER}
+  </update>
   
 </mapper>

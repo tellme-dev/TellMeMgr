@@ -164,4 +164,15 @@ public interface BbsService {
 	 * @return
 	 */
 	ListResult<BbsAttach> loadBbsAttachByBbsId(int bbsId);
+	
+	/**
+	 * 逻辑删除酒店相关评论和赞...
+	 * @author LiuTaiXiong
+	 * @param targetId
+	 * @return
+	 */
+	int deleteByItem(int targetId);
+	int countDNewPraiseToCustomer(int customerId);
+	int countDNewCommentToCustomer(int customerId);
+	int updateReadStatusRead(int id);
 }

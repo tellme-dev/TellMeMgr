@@ -13,6 +13,8 @@ public class CustomerBrowse {
 
     private Date visitTime;
 
+    private Date deletedTime;
+
     public Integer getId() {
         return id;
     }
@@ -51,5 +53,13 @@ public class CustomerBrowse {
 
     public void setVisitTime(Date visitTime) {
         this.visitTime = visitTime;
+    }
+
+    public Date getDeletedTime() {
+        return deletedTime;
+    }
+
+    public void setDeletedTime(Date deletedTime) {
+        this.deletedTime = deletedTime;
     }
 }

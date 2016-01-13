@@ -15,6 +15,7 @@
     <result column="title" property="title" jdbcType="VARCHAR" />
     <result column="text" property="text" jdbcType="VARCHAR" />
     <result column="score" property="score" jdbcType="TINYINT" />
+    <result column="read_status" property="readStatus" jdbcType="TINYINT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="browse_count" property="browseCount" jdbcType="INTEGER" />
     <result column="agree_count" property="agreeCount" jdbcType="INTEGER" />
@@ -38,6 +39,7 @@
     <result column="title" property="title" jdbcType="VARCHAR" />
     <result column="text" property="text" jdbcType="VARCHAR" />
     <result column="score" property="score" jdbcType="TINYINT" />
+    <result column="read_status" property="readStatus" jdbcType="TINYINT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="browse_count" property="browseCount" jdbcType="INTEGER" />
     <result column="agree_count" property="agreeCount" jdbcType="INTEGER" />
@@ -63,6 +65,7 @@
     <result column="title" property="title" jdbcType="VARCHAR" />
     <result column="text" property="text" jdbcType="VARCHAR" />
     <result column="score" property="score" jdbcType="TINYINT" />
+    <result column="read_status" property="readStatus" jdbcType="TINYINT" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="browse_count" property="browseCount" jdbcType="INTEGER" />
     <result column="agree_count" property="agreeCount" jdbcType="INTEGER" />
@@ -81,7 +84,7 @@
   </resultMap>
   <sql id="Base_Column_List" >
     b.id, b.customer_id, b.bbs_type, b.category_id, b.post_type, b.target_type, b.target_id, b.parent_id, 
-    b.level, b.path, b.title, b.text, b.score, b.create_time, b.browse_count, b.agree_count, b.answer_count, 
+    b.level, b.path, b.title, b.text, b.score, b.read_status, b.create_time, b.browse_count, b.agree_count, b.answer_count, 
     b.share_count,b.delete_user_id, b.delete_time, b.time_stamp
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -583,6 +586,7 @@
     (select count(cc.id) from t_customer_collection cc where cc.target_id = b.id and cc.collection_type = 3) as collectionCount
     from t_bbs b
     where b.parent_id = #{parentId,jdbcType=INTEGER}
+    <include refid="query_sql" />
     <if test="pageEnd != null and pageSize != null and pageStart>-1 and pageSize>-1">
         limit 0, #{pageEnd}
     </if>
@@ -648,11 +652,17 @@
   <select id="countDPraiseToCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
     select count(id) from t_bbs where bbs_type = 3 and post_type = 2 and target_type = 0 and customer_id != #{customerId,jdbcType=INTEGER} and target_id in (select id from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and (post_type = 1 or post_type = 0) and target_type = 0 and delete_user_id is null)
   </select>
+  <select id="countDNewPraiseToCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+    select count(id) from t_bbs where bbs_type = 3 and post_type = 2 and target_type = 0 and customer_id != #{customerId,jdbcType=INTEGER} and (read_status=0 or read_status is null) and target_id in (select id from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and (post_type = 1 or post_type = 0) and target_type = 0 and delete_user_id is null)
+  </select>
   <select id="countDCommentByCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
     select count(id) from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and post_type = 1 and target_type = 0
   </select>
   <select id="countDCommentToCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
     select count(id) from t_bbs where bbs_type = 1 and post_type = 1 and target_type = 0 and customer_id != #{customerId,jdbcType=INTEGER} and parent_id in(select id from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and (post_type = 1 or post_type = 0) and target_type = 0 and delete_user_id is null)
+  </select>
+  <select id="countDNewCommentToCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
+    select count(id) from t_bbs where bbs_type = 1 and post_type = 1 and target_type = 0 and customer_id != #{customerId,jdbcType=INTEGER} and (read_status=0 or read_status is null) and parent_id in(select id from t_bbs where customer_id = #{customerId,jdbcType=INTEGER} and bbs_type = 1 and (post_type = 1 or post_type = 0) and target_type = 0 and delete_user_id is null)
   </select>
   
   <select id="getPageDPByCustomer" resultMap="BaseResultMap" parameterType="java.util.Map" >
@@ -693,5 +703,15 @@
     </if>
   </select>
 
+  <update id="deleteByItem" parameterType="java.lang.Integer" >
+    update t_bbs
+    set delete_user_id = 0,delete_time=now()
+    where target_type = 1 and target_id = #{targetId,jdbcType=INTEGER}
+  </update>
+  <update id="updateReadStatusRead" parameterType="java.lang.Integer" >
+    update t_bbs
+    set read_status = 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
   
 </mapper>
