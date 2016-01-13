@@ -27,6 +27,7 @@ import com.hotel.common.Result;
 import com.hotel.common.utils.BbsContainer;
 import com.hotel.common.utils.EndecryptUtils;
 import com.hotel.common.utils.GeneralUtil;
+import com.hotel.common.utils.PathConfig;
 import com.hotel.common.utils.StringUtil;
 import com.hotel.model.AdDetail;
 import com.hotel.model.Advertisement;
@@ -1550,16 +1551,15 @@ public class CustomerController {
     		HttpServletRequest request) { 
 		Result<Customer> result = null;
         try { 
-        	//String path = request.getSession().getServletContext().getRealPath("Photo"); 
         	String path = request.getSession().getServletContext().getRealPath("/")+"app/head";
-//        	String path = getClass().getResource("/").getFile().toString();
-//			path = path.substring(0, (path.length() - 16))+"washPhoto";
         	String fileName = customerImg.getOriginalFilename();
-        	
-        	File uploadFile = new File(path,fileName);
-        	if(!uploadFile.exists()){  
-        		uploadFile.mkdirs();  
+        	//String rootPath = PathConfig.getNewPathConfig();
+        	//String path = rootPath+"app/head";
+        	File filedir = new File(path);
+        	if(!filedir.exists()){  
+        		filedir.mkdirs();  
             }  
+        	File uploadFile = new File(path,fileName);
         	customerImg.transferTo(uploadFile); //保存
         	result = new Result<Customer>(null, true, "上传成功");
         	return result.toJson();

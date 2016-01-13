@@ -347,4 +347,13 @@ public class BbsServiceImpl implements BbsService {
 		return bbsMapper.updateReadStatusRead(id);
 	}
 
+	@Override
+	public ListResult<BbsVM> loadAdComment(Map<String, Object> map) {
+		// TODO Auto-generated method stub
+		int total = bbsMapper.countByMap(map);
+		List<BbsVM> ls = bbsMapper.selectByMap(map);
+		List<BbsVM> list = getNodes(ls);
+		return new ListResult<BbsVM>(total,list);
+	}
+
 }

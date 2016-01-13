@@ -17,11 +17,12 @@ import com.hotel.common.utils.Page;
 import com.hotel.dao.AdDetailMapper;
 import com.hotel.dao.AdvertisementMapper;
 import com.hotel.dao.BannerDetailMapper;
+import com.hotel.dao.BbsMapper;
 import com.hotel.model.AdDetail;
 import com.hotel.model.Advertisement;
 import com.hotel.model.BannerDetail;
+import com.hotel.model.Bbs;
 import com.hotel.modelVM.AdvertisementVM;
-import com.hotel.modelVM.BbsVM;
 import com.hotel.service.AdvertisementService;
 import com.hotel.viewmodel.AdvertisementWebVM;
 
@@ -35,6 +36,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	private AdDetailMapper adDetailMapper;
 	@Autowired
 	private BannerDetailMapper bannerDetailMapper;
+	@Autowired
+	private BbsMapper bbsMapper;
 
 	@Override
 	public List<AdvertisementWebVM> getAdPageList(Map<String,Object> map) {
@@ -233,5 +236,21 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("id", adId);
 		return advertisementMapper.selectByMap(map);
+	}
+
+	@Override
+	public void saveAdComment(Bbs bbs) {
+		// TODO Auto-generated method stub
+		//parentId,targetId,text,customerId前台传过来
+		bbs.setId(0);
+		bbs.setBbsType(2);
+		bbs.setTargetType(2);
+		bbs.setLevel(0);
+		bbs.setCreateTime(new Date());
+		bbs.setTimeStamp(new Date());
+		if(bbs.getParentId() != 0&&bbs.getParentId() != null){
+			bbs.setPostType(1);
+		}
+		bbsMapper.insertSelective1(bbs);
 	}
 }

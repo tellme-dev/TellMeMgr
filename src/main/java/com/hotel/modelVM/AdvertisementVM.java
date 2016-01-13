@@ -12,6 +12,16 @@ public class AdvertisementVM extends Advertisement{
 	private Integer agreeCount;
 	
 	private Integer collectionCount;
+	
+	private Integer answerCount;
+
+	public Integer getAnswerCount() {
+		return answerCount;
+	}
+
+	public void setAnswerCount(Integer answerCount) {
+		this.answerCount = answerCount;
+	}
 
 	public Integer getAgreeCount() {
 		return agreeCount;

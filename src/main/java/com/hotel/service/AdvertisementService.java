@@ -6,6 +6,7 @@ import java.util.Map;
 import com.hotel.common.ListResult;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Advertisement;
+import com.hotel.model.Bbs;
 import com.hotel.modelVM.AdvertisementVM;
 import com.hotel.viewmodel.AdvertisementWebVM;
 
@@ -35,5 +36,7 @@ public interface AdvertisementService {
 	ListResult<AdvertisementVM> loadAdListByHotelId(int hotelId);
 
 	AdvertisementVM loadAdById(int adId);
+
+	void saveAdComment(Bbs bbs);
 
 }

@@ -175,4 +175,6 @@ public interface BbsService {
 	int countDNewPraiseToCustomer(int customerId);
 	int countDNewCommentToCustomer(int customerId);
 	int updateReadStatusRead(int id);
+
+	ListResult<BbsVM> loadAdComment(Map<String, Object> map);
 }

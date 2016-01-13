@@ -14,6 +14,8 @@ import org.mybatis.generator.exception.InvalidConfigurationException;
 import org.mybatis.generator.exception.XMLParserException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 
+import com.hotel.common.utils.PathConfig;
+
 public class UnitTest {
 	@Test
 	public  void main()  {
