@@ -12,6 +12,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +35,9 @@ import com.hotel.model.ItemTagAssociation;
 import com.hotel.model.Region;
 import com.hotel.model.User;
 import com.hotel.service.BaseDataService;
+import com.hotel.service.BbsService;
+import com.hotel.service.CustomerBrowseService;
+import com.hotel.service.CustomerCollectionService;
 import com.hotel.service.FunctionService;
 import com.hotel.service.HotelService;
 import com.hotel.service.ItemDetailService;
@@ -61,6 +65,9 @@ public class HotelAction extends BaseAction {
 	private ItemDetailService itemDetailService;
 	@Resource(name="itemTagAssociationService")
 	private ItemTagAssociationService itemTagAssociationService;
+	@Autowired CustomerCollectionService customerCollectionService;
+	@Autowired CustomerBrowseService customerBrowseService;
+	@Autowired BbsService bbsService;
 
 	// [end]
 
@@ -515,7 +522,7 @@ public class HotelAction extends BaseAction {
 		if(projectId == null){
 			result.setMessage("参数不完整");
 		}
-		String path = request.getSession().getServletContext().getRealPath("/");
+		//String path = request.getSession().getServletContext().getRealPath("/");
 		List<HashMap<String, Integer>> list = new ArrayList<HashMap<String,Integer>>();
 		if(projectId.contains(",")){
 			String[] arr = projectId.split(",");
@@ -524,7 +531,10 @@ public class HotelAction extends BaseAction {
 				int iid = new Integer(id);
 				map.put("id", iid);
 				list.add(map);
-				deleteItemFiles(iid, path);
+				customerBrowseService.deleteByItem(iid);
+				customerCollectionService.deleteByItem(iid);
+				bbsService.deleteByItem(iid);
+				//deleteItemFiles(iid, path);
 			}
 			
 		}else{
@@ -532,14 +542,17 @@ public class HotelAction extends BaseAction {
 			int iid = new Integer(projectId);
 			map.put("id", iid);
 			list.add(map);
-			deleteItemFiles(iid, path);
+			customerBrowseService.deleteByItem(iid);
+			customerCollectionService.deleteByItem(iid);
+			bbsService.deleteByItem(iid);
+			//deleteItemFiles(iid, path);
 		}
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("idList", list);
 		
-		itemTagAssociationService.deleteByItemId(map);
-		itemDetailService.deleteByItemId(map);
+		//itemTagAssociationService.deleteByItemId(map);
+		//itemDetailService.deleteByItemId(map);
 		itemService.deleteByItemId(map);
 		result.setCode(1);
 		result.setMessage("");

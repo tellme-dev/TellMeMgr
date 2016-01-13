@@ -227,6 +227,8 @@ public class CustomerController {
 		customer.setPsd(u.getPsd());
 		customer.setSalt(u.getSalt());
 		customer.setRegTime(new Date());
+		String name=u.getName().substring(0,3)+"****"+u.getName().substring(7);//隐藏中间四位电话号码作昵称
+		customer.setName(name);
 		
 		int temp = customerService.insert(customer);
 		if(temp ==-1){
@@ -435,9 +437,9 @@ public class CustomerController {
 		vm.setCountCollection(customerCollectionService.countByCustomer(customerId));
 		vm.setCountTopic(bbsService.countPostByCustomer(customerId));
 		//int countPBy = bbsService.countDPraiseByCustomer(customerId);
-		int countPTo = bbsService.countDPraiseToCustomer(customerId);
+		int countPTo = bbsService.countDNewPraiseToCustomer(customerId);
 		//int countCBy = bbsService.countDCommentByCustomer(customerId);
-		int countCTo = bbsService.countDCommentToCustomer(customerId);
+		int countCTo = bbsService.countDNewCommentToCustomer(customerId);
 		//vm.setCountDynamic(countPBy + countPTo + countCBy + countCTo);
 		vm.setCountDynamic(countPTo + countCTo);
 		
@@ -526,8 +528,8 @@ public class CustomerController {
 					Region area = baseDataService.getRegionById(hotel.getRegionId());
 					String path = area.getPath();
 					String[] arr = path.split("\\.");
-					Region city = baseDataService.getRegionById(new Integer(arr[1]));
-					vm.setCity(city.getName());
+					//Region city = baseDataService.getRegionById(new Integer(arr[1]));
+					vm.setCity(arr[1]);
 				}
 				vm.setProjects(items);
 				
@@ -609,12 +611,11 @@ public class CustomerController {
 		//*********************************************
 		List<CustomerBrowseVM> vms = new ArrayList<CustomerBrowseVM>();
 		
-		Map<String, Object> imap = new HashMap<String, Object>();
-		imap.put("tagName", TAG_NAME_HOTEL_DEFAULT);
 		for(CustomerBrowse browse : browses){
 			switch (browse.getTargetType()) {
 			case BROWSE_TYPE_HOTEL:
-				Hotel hotel = hotelService.selectByPrimaryKey(browse.getTargetId());
+				Item item = itemService.selectByPrimaryKey(browse.getTargetId());
+				Hotel hotel = hotelService.selectByPrimaryKey(item.getHotelId());
 				//转存酒店基本数据
 				HotelListInfoVM vm = new HotelListInfoVM();
 				vm.setId(hotel.getId());
@@ -623,18 +624,13 @@ public class CustomerController {
 				vm.setLatitude(hotel.getLatitude());
 				vm.setLongitude(hotel.getLongitude());
 				
-				imap.put("hotelId", hotel.getId());
-				List<Item> introItem = itemService.selectItemByHotelAndTagName(imap);
-				if(introItem != null && introItem.size() > 0){
-					Item temp = introItem.get(0);
-					vm.setTel(temp.getTel());
-					vm.setAddress(temp.getPosition());
-					vm.setScore(temp.getScore());
-					List<ItemDetail> details = itemDetailService.selectByItemId(temp.getId());
-					if(details != null && details.size() > 0){
-						//仅获取第一张图片
-						vm.setImgUrl(details.get(0).getImageUrl());
-					}
+				vm.setTel(item.getTel());
+				vm.setAddress(item.getPosition());
+				vm.setScore(item.getScore());
+				List<ItemDetail> details = itemDetailService.selectByItemId(item.getId());
+				if(details != null && details.size() > 0){
+					//仅获取第一张图片
+					vm.setImgUrl(details.get(0).getImageUrl());
 				}
 				
 				//查询所有酒店所有的项目
@@ -645,8 +641,8 @@ public class CustomerController {
 					Region area = baseDataService.getRegionById(hotel.getRegionId());
 					String path = area.getPath();
 					String[] arr = path.split("\\.");
-					Region city = baseDataService.getRegionById(new Integer(arr[1]));
-					vm.setCity(city.getName());
+					//Region city = baseDataService.getRegionById(new Integer(arr[1]));
+					vm.setCity(arr[1]);
 				}
 				vm.setProjects(items);
 				
@@ -750,12 +746,11 @@ public class CustomerController {
 		// 根据类型做相应的数据处理
 		//*********************************************
 		List<CustomerBrowseVM> vms = new ArrayList<CustomerBrowseVM>();
-		Map<String, Object> imap = new HashMap<String, Object>();
-		imap.put("tagName", TAG_NAME_HOTEL_DEFAULT);
 		for(CustomerCollection collection : collections){
 			switch (collection.getCollectionType()) {
 			case BROWSE_TYPE_HOTEL:
-				Hotel hotel = hotelService.selectByPrimaryKey(collection.getTargetId());
+				Item item = itemService.selectByPrimaryKey(collection.getTargetId());
+				Hotel hotel = hotelService.selectByPrimaryKey(item.getHotelId());
 				//转存酒店基本数据
 				HotelListInfoVM vm = new HotelListInfoVM();
 				vm.setId(hotel.getId());
@@ -764,18 +759,13 @@ public class CustomerController {
 				vm.setLatitude(hotel.getLatitude());
 				vm.setLongitude(hotel.getLongitude());
 				
-				imap.put("hotelId", hotel.getId());
-				List<Item> introItem = itemService.selectItemByHotelAndTagName(imap);
-				if(introItem != null && introItem.size() > 0){
-					Item temp = introItem.get(0);
-					vm.setTel(temp.getTel());
-					vm.setAddress(temp.getPosition());
-					vm.setScore(temp.getScore());
-					List<ItemDetail> details = itemDetailService.selectByItemId(temp.getId());
-					if(details != null && details.size() > 0){
-						//仅获取第一张图片
-						vm.setImgUrl(details.get(0).getImageUrl());
-					}
+				vm.setTel(item.getTel());
+				vm.setAddress(item.getPosition());
+				vm.setScore(item.getScore());
+				List<ItemDetail> details = itemDetailService.selectByItemId(item.getId());
+				if(details != null && details.size() > 0){
+					//仅获取第一张图片
+					vm.setImgUrl(details.get(0).getImageUrl());
 				}
 				
 				//查询所有酒店所有的项目
@@ -786,8 +776,8 @@ public class CustomerController {
 					Region area = baseDataService.getRegionById(hotel.getRegionId());
 					String path = area.getPath();
 					String[] arr = path.split("\\.");
-					Region city = baseDataService.getRegionById(new Integer(arr[1]));
-					vm.setCity(city.getName());
+					//Region city = baseDataService.getRegionById(new Integer(arr[1]));
+					vm.setCity(arr[1]);
 				}
 				vm.setProjects(items);
 				
@@ -976,6 +966,41 @@ public class CustomerController {
 	}
 	
 	/**
+	 * 获取个人中心动态点赞数和评论数
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/getCustomerNewDynamicCount.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<CountVM> getCustomerNewDynamicCount(@RequestParam(value = "json", required = false) String json){
+		int customerId = 0;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<CountVM>(null, false, "json解析异常");
+		}
+		if(customerId < 1){
+			return new Result<CountVM>(null, false, "请求无效");
+		}
+		
+		//int countDPF = bbsService.countDPraiseByCustomer(customerId);
+		int countDPT = bbsService.countDNewPraiseToCustomer(customerId);
+		//int countDCF = bbsService.countDCommentByCustomer(customerId);
+		int countDCT = bbsService.countDNewCommentToCustomer(customerId);
+		CountVM vm = new CountVM();
+//		vm.setCountPraise(countDPF + countDPT);
+//		vm.setCountComments(countDCF + countDCT);
+		vm.setCountPraise(countDPT);
+		vm.setCountComments(countDCT);
+		
+		return new Result<CountVM>(vm, true, "");
+	}
+	
+	/**
 	 * 获取用户动态-点赞
 	 * @author LiuTaiXiong
 	 * @param json
@@ -1075,6 +1100,9 @@ public class CustomerController {
 				bbsDynamicVM.setTo(to);
 				bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(b.getCustomerId()));
 				list.add(bbsDynamicVM);
+				if(b.getReadStatus() == 0){
+					bbsService.updateReadStatusRead(b.getId());
+				}
 			}
 		}
 		
@@ -1195,6 +1223,9 @@ public class CustomerController {
 					bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(b.getCustomerId()));
 					//list.add(bbsDynamicVM);
 					container.add(id, bbsDynamicVM);
+				}
+				if(b.getReadStatus() == 0){
+					bbsService.updateReadStatusRead(b.getId());
 				}
 			}
 			if(container.size() > 0){
@@ -1326,6 +1357,52 @@ public class CustomerController {
 			return new Result<String>("", true, "");
 		}
 		return new Result<String>("", false, "点赞失败");
+	}
+	
+	/**
+	 * 保存用户点赞（包括酒店(服务)、广告(专题)、论坛等）
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/saveBrowseHistory.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<String> saveBrowseHistory(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int browseType = -1;
+		int customerId = 0;
+		int targetId = 0;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("browseType")){
+				browseType = jsonObject.getInt("browseType");
+			}
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("targetId")){
+				targetId = jsonObject.getInt("targetId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<String>("", false, "json解析异常");
+		}
+		if(browseType < 0 || customerId < 1 || targetId < 1){
+			return new Result<String>("", false, "请求无效");
+		}
+		
+		CustomerBrowse browse = new CustomerBrowse();
+		browse.setCustomerId(customerId);
+		browse.setTargetType(browseType);
+		browse.setTargetId(targetId);
+		browse.setVisitTime(new Date());
+		
+		int bcount = customerBrowseService.insert(browse);
+		
+		if(bcount > 0){
+			return new Result<String>("", true, "");
+		}
+		return new Result<String>("", false, "浏览失败");
 	}
 	
 	@RequestMapping(value = "/saveShare.do", produces = "application/json;charset=UTF-8")
@@ -1460,17 +1537,6 @@ public class CustomerController {
 	}
 	
 	
-	
-	/**
-	 * 保存浏览的页面（包括酒店，酒店项目，广告，发现，论坛等）
-	 * @param customerInfo
-	 * @return
-	 */
-	public @ResponseBody String saveBrowseHistory(
-			@RequestParam(value = "browseInfo", required = false) String browseInfo)
-	{
-		return null;
-	}
 	/**
 	 * 上传头像
 	 * @author jun

@@ -78,4 +78,10 @@ public class ItemServiceImpl implements ItemService{
 		return itemMapper.selectItemByHotelAndTagName(map);
 	}
 
+	@Override
+	public Item selectByPrimaryKey(Integer id) {
+		// TODO Auto-generated method stub
+		return itemMapper.selectByPrimaryKey(id);
+	}
+
 }

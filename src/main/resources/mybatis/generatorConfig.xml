@@ -40,7 +40,7 @@
             <property name="enableSubPackages" value="true"/>  
         </javaClientGenerator>  
          
-        <table tableName="t_rcu_cfg_item" domainObjectName="RcuCfgItem"
+        <table tableName="t_customer_browse" domainObjectName="CustomerBrowse"
            enableSelectByExample="false"
 	       enableDeleteByExample="false"
 	       enableCountByExample="false"

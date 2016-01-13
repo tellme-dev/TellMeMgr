@@ -289,6 +289,13 @@ function addFile(){
 		var reader = new FileReader();
 		reader.readAsDataURL(obj);
 		reader.onload = function(e){
+			var img = new Image();
+			img.src = this.result;
+			//
+			if(img.width < 300){
+				alert("图片宽度必须大于300");
+				return ;
+			}
 			addImgItem(obj, this.result);
 		};
 	}else{
@@ -335,7 +342,7 @@ function addImgItem(file, url){
 	var txt = document.createElement("textarea");
 	txt.className = "v_top wid300 ts14";
 	txt.rows= "3";
-	txt.maxLength = "100";
+	txt.maxLength = "255";
 	
 	var iconView = document.createElement("div");
 	iconView.className = "fl ml40";
@@ -460,6 +467,12 @@ var ObjectImgItemList = function(){
 	font-size: 15px;
 }
 
+.hint_red{
+	font-family: '微软雅黑';
+	font-size: 12px;
+	color: #FF5500;
+}
+
 .icon{
 	width: 32px;
 	height: 32px;
@@ -484,11 +497,6 @@ var ObjectImgItemList = function(){
 .txt_location{
 	font-size: 15px;
 	color: green;
-}
-.hint_red{
-	font-family: '微软雅黑';
-	font-size: 12px;
-	color: #FF5500;
 }
 .wid600{
 	width: 600px;
@@ -584,6 +592,7 @@ var ObjectImgItemList = function(){
 							<span class="yw-btn bg-green cur ts15" onclick="showTagdialog(true);">添加项目</span>
 							<!-- <span class="yw-btn bg-blue ml20 cur ts15" onclick="loadHotelInfo(false);">修改项目</span> -->
 							<span class="yw-btn bg-orange ml20 cur ts15" onclick="deleteProject(this);">删除项目</span>
+							<span class="ml20 hint_red">**酒店标签下属每个项目类型必须添加**</span>
 						</div>
 					</div>
 				</div>
@@ -633,7 +642,7 @@ var ObjectImgItemList = function(){
 	<div id="tagInfoWindow" class="easyui-window" title="项目设置" style="width:520px;height:680px;overflow:hidden;padding:10px;" iconCls="icon-info" closed="true" modal="true"   resizable="false" collapsible="false" minimizable="false" maximizable="false">
 		<form name="projectForm" id="projectForm" action="saveOrupdateHotelProject.do" method="post">
 			<div>
-				<span class="txt ts14">项目名称：</span><input id="project_name" name="projectName" type="text" class="yw-input wid428 ts14" />
+				<span class="txt ts14">项目名称：</span><input id="project_name" name="projectName" maxlength="255" type="text" class="yw-input wid428 ts14" />
 			</div>
 			<div class="mt10">
 				<span class="txt ts14">联系电话：</span><input id="project_tel" name="projectTel" type="text" class="yw-input wid428 ts14" />
@@ -656,12 +665,12 @@ var ObjectImgItemList = function(){
 			<div class="mt10">
 				<span class="txt ts14">项目描述：</span>
 				<!-- <input id="project_text" name="projectText" type="text" class="yw-input wid428 ts14" /> -->
-				<textarea id="project_text" name="projectText" rows="3" cols="" maxlength="100" class="v_top wid400 ts14"></textarea>
+				<textarea id="project_text" name="projectText" rows="3" cols="" maxlength="255" class="v_top wid400 ts14"></textarea>
 			</div>
 			<div class="mt10">
 				<span class="txt ts14">位置描述：</span>
 				<!-- <input id="project_position" name="projectPosition" type="text" class="yw-input wid428 ts14" /> -->
-				<textarea id=project_position name="projectPosition" rows="3" maxlength="100" cols="" class="v_top wid400 ts14"></textarea>
+				<textarea id=project_position name="projectPosition" rows="3" maxlength="255" cols="" class="v_top wid400 ts14"></textarea>
 			</div>
 			<input id="project_id" name="projectId" type="hidden" value="0"/>
 			<input name="hotelId" type="hidden" value="${hotelId}"/>
@@ -672,7 +681,7 @@ var ObjectImgItemList = function(){
 		</form>
 		<div class="divider mt20"></div>
 		<div class="mt10">
-			<div class="fl"><span class="txt ts14">图片：</span></div>
+			<div class="fl"><span class="txt ts14">图片：</span><span class="hint_red">**式支持png、jpg或jpeg，大小为300×?像素**</span></div>
 			<div class="cl"></div>
 		</div>
 			
@@ -683,7 +692,7 @@ var ObjectImgItemList = function(){
 		<div>
 			<div class="fl">
 				<div class="ml10 mt10">
-					<span class="txt ts14">文件：</span><input onchange="addFile()" id="item_file" type="file" accept="image/png, image/jpeg"/>
+					<span class="txt ts14">文件：</span><input onchange="addFile()" id="item_file" type="file" accept="image/png, image/jpeg, image/jpg"/>
 				</div>
 			</div>
 			<div class="fr">

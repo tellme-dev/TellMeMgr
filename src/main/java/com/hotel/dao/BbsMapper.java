@@ -47,8 +47,10 @@ public interface BbsMapper {
 	
 	int countDPraiseByCustomer(int customerId);
 	int countDPraiseToCustomer(int customerId);
+	int countDNewPraiseToCustomer(int customerId);
 	int countDCommentByCustomer(int customerId);
 	int countDCommentToCustomer(int customerId);
+	int countDNewCommentToCustomer(int customerId);
 	
 	List<Bbs> getPagePostByCustomer(Map<String, Object> map);
 	
@@ -61,4 +63,8 @@ public interface BbsMapper {
 	int countCommentByHotel(int targetId);
 
 	int insertSelective1(Bbs record);
+	
+	int deleteByItem(int targetId);
+	
+	int updateReadStatusRead(int id);
 }

@@ -63,7 +63,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		// TODO Auto-generated method stub
 		List<String> imageTexts = new ArrayList<String>();
 		List<String> imageUrls = ad.getImageUrlList();
-		List<Integer> adDetailIds = new ArrayList<Integer>();
+		List<Integer> adDetailIds = new ArrayList<Integer>();//存放的编辑时原有的图片id
 		List<Integer> delAdDetailIds = new ArrayList<Integer>();
 		//取出imageTexts
 		if(ad.getImageText() != null&&!"".equals(ad.getImageText())){

@@ -110,6 +110,9 @@ public class AdAction extends BaseAction {
 				/*查询社区列表*/
 				Map<String,Object> map = new HashMap<String,Object>();
 				map.put("parentId", 0);
+				map.put("bbsType", 1);
+				map.put("postType", 0);
+				map.put("deleteUserId", null);
 				List<BbsVM> list = bbsService.loadBbsList(map);
 				request.setAttribute("bbsList", list);
 //				/*查询项目tag*/
