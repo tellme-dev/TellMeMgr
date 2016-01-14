@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.hotel.model.Bbs;
 import com.hotel.model.Comment;
+import com.hotel.model.Reply;
 import com.hotel.modelVM.BbsVM;
 
 @MyBatisRepository
@@ -61,6 +62,7 @@ public interface BbsMapper {
 	
 	List<Comment> selectCommentByHotel(Map<String, Object> map);
 	int countCommentByHotel(int targetId);
+	List<Reply> selectReplyByHotelComment(String path);
 
 	int insertSelective1(Bbs record);
 	

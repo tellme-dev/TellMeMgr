@@ -31,6 +31,7 @@ import com.hotel.model.ItemTag;
 import com.hotel.model.ItemTagAssociation;
 import com.hotel.model.Region;
 import com.hotel.model.SearchText;
+import com.hotel.modelVM.CommentVM;
 import com.hotel.modelVM.HotelInfoVM;
 import com.hotel.modelVM.HotelListInfoVM;
 import com.hotel.modelVM.HotelParam;
@@ -426,7 +427,7 @@ public class HotelController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/commentListByHotelItem.do", produces = "application/json;charset=UTF-8")
-	public ListResult<Comment> commentListByHotelItem(@RequestParam(value = "json", required = false)String json, HttpServletRequest request, HttpServletResponse response) {
+	public ListResult<CommentVM> commentListByHotelItem(@RequestParam(value = "json", required = false)String json, HttpServletRequest request, HttpServletResponse response) {
 		int itemId = 0;
 		int pageNo = 1;
 		int pageSize = 10;
@@ -443,11 +444,11 @@ public class HotelController {
 		}
 		
 		if(itemId < 1){
-			ListResult<Comment> result = new ListResult<Comment>();
+			ListResult<CommentVM> result = new ListResult<CommentVM>();
 			result.setIsSuccess(false);
 			result.setTotal(0);
 			result.setMsg("请求参数无效");
-			result.setRows(new ArrayList<Comment>());
+			result.setRows(new ArrayList<CommentVM>());
 			return result;
 		}
 		
@@ -462,13 +463,23 @@ public class HotelController {
 		if(count%pageSize != 0){
 			total ++;
 		}
+		List<CommentVM> cvm = new ArrayList<CommentVM>();
+		if(comments != null && comments.size() > 0){
+			for(Comment comment : comments){
+				CommentVM vm = new CommentVM();
+				vm.setComment(comment);
+				//路径匹配查找
+				vm.setReplies(bbsService.selectReplyByHotelComment(itemId+"."+comment.getId()+"%"));
+				cvm.add(vm);
+			}
+		}
 		
 		//返回对象处理
-		ListResult<Comment> result = new ListResult<Comment>();
+		ListResult<CommentVM> result = new ListResult<CommentVM>();
 		result.setIsSuccess(true);
 		result.setTotal(total);
 		result.setMsg("");
-		result.setRows(comments);
+		result.setRows(cvm);
 		
 		return result;
 	}
@@ -971,7 +982,7 @@ public class HotelController {
 	 * @return
 	 */
 	@RequestMapping(value = "/saveHotelComment.do", produces = "application/json;charset=UTF-8")
-	public @ResponseBody Result<String> saveAgreeHistory(
+	public @ResponseBody Result<String> saveCommentHistory(
 			@RequestParam(value = "json", required = false) String json)
 	{
 		int customerId = 0;
@@ -1005,6 +1016,63 @@ public class HotelController {
 		bbs.setTargetId(targetId);
 		bbs.setParentId(0);
 		bbs.setLevel(0);
+		bbs.setText(text);
+		bbs.setCreateTime(new Date());
+	    bbs.setTimeStamp(new Date());
+		
+		int count = bbsService.insert(bbs);
+		if(count > 0){
+			return new Result<String>("", true, "");
+		}
+		return new Result<String>("", false, "评论失败");
+	}
+	
+	/**
+	 * 保存用户评论酒店
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/saveHotelReply.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<String> saveReplyHistory(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int customerId = 0;
+		int targetId = 0;
+		String text = "";
+		String path = "";
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("customerId")){
+				customerId = jsonObject.getInt("customerId");
+			}
+			if(jsonObject.containsKey("targetId")){
+				targetId = jsonObject.getInt("targetId");
+			}
+			if(jsonObject.containsKey("text")){
+				text = jsonObject.getString("text");
+			}
+			if(jsonObject.containsKey("path")){
+				path = jsonObject.getString("path");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<String>("", false, "json解析异常");
+		}
+		if(customerId < 1 || targetId < 1 || text.trim().equals("")){
+			return new Result<String>("", false, "请求无效");
+		}
+		
+		Bbs bbs = new Bbs();
+		bbs.setCustomerId(customerId);
+		bbs.setBbsType(2);
+		bbs.setCategoryId(0);
+		bbs.setPostType(1);
+		bbs.setTargetType(1);
+		bbs.setTargetId(targetId);
+		bbs.setParentId(targetId);
+		bbs.setLevel(2);
+		bbs.setPath(path);
 		bbs.setText(text);
 		bbs.setCreateTime(new Date());
 	    bbs.setTimeStamp(new Date());

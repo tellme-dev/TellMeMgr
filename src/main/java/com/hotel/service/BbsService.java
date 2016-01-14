@@ -11,6 +11,7 @@ import com.hotel.model.Bbs;
 import com.hotel.model.BbsAttach;
 import com.hotel.model.BbsCategory;
 import com.hotel.model.Comment;
+import com.hotel.model.Reply;
 import com.hotel.modelVM.BbsVM;
 
 public interface BbsService {
@@ -149,6 +150,7 @@ public interface BbsService {
 	 */
 	List<Comment> selectCommentByHotel(Map<String, Object> map);
 	int countCommentByHotel(int targetId);
+	List<Reply> selectReplyByHotelComment(String path);
 
 	/**
 	 * 删除指定主贴记录
