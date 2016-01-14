@@ -51,4 +51,13 @@ public class RoomCheckServiceImpl implements RoomCheckService {
 			roomCheckMapper.insertSelective(roomCheck);
 		}
 	}
+
+	@Override
+	public void checkout(Integer id) {
+		// TODO Auto-generated method stub
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("id", id);
+		map.put("checkoutTime", new Date());
+		roomCheckMapper.updateByMap(map);
+	}
 }

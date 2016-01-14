@@ -7,20 +7,20 @@ public class RoomCheckWebVM extends RoomCheck {
 	private String customerMobile;
 	private String hotelName;
 	private String roomNumber;
-	private String checkintime; //字符串格式的日期
-	private String checkouttime;
+	private String checkInTime; //字符串格式的日期
+	private String checkOutTime;
 	
-	public String getCheckintime() {
-		return checkintime;
+	public String getCheckInTime() {
+		return checkInTime;
 	}
-	public void setCheckintime(String checkintime) {
-		this.checkintime = checkintime;
+	public void setCheckInTime(String checkInTime) {
+		this.checkInTime = checkInTime;
 	}
-	public String getCheckouttime() {
-		return checkouttime;
+	public String getCheckOutTime() {
+		return checkOutTime;
 	}
-	public void setCheckouttime(String checkouttime) {
-		this.checkouttime = checkouttime;
+	public void setCheckOutTime(String checkOutTime) {
+		this.checkOutTime = checkOutTime;
 	}
 	public String getHotelName() {
 		return hotelName;

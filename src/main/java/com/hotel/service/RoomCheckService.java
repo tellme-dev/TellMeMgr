@@ -25,4 +25,6 @@ public interface RoomCheckService {
 	int getCheckPageListCount(Map<String, Object> map);
 
 	void saveorUpdateCheck(RoomCheckWebVM roomCheck);
+
+	void checkout(Integer id);
 }

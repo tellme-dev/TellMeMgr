@@ -53,6 +53,7 @@ public class CheckAction extends BaseAction {
 	
 	@RequestMapping(value = "/checkList.do", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public String logInitcheck(Page page,
+			RoomCheckWebVM roomCheck,
 			HttpServletRequest request,
 			HttpServletResponse response) {
 		/*分页参数*/
@@ -69,10 +70,14 @@ public class CheckAction extends BaseAction {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("pageStart",page.getPageStart());
 		map.put("pageSize",page.getPageSize());
+		if(!"".equals(roomCheck.getCustomerMobile())){
+			map.put("customerMobile", roomCheck.getCustomerMobile());
+		}
 		List<RoomCheckWebVM> list = roomCheckService.getCheckPageList(map);
 		int totalCount = roomCheckService.getCheckPageListCount(map);
 		page.setTotalCount(totalCount);
 		request.setAttribute("checklist", list);
+		request.setAttribute("roomCheck", roomCheck);
 		return "web/check/checkList";
 	}
 	
@@ -183,6 +188,20 @@ public class CheckAction extends BaseAction {
 			return json.toString();
 		}catch(Exception e){
 			return "";
+		}
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/jsonCheckout.do",method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+	public String checkout(
+			@RequestParam(value = "id", required = false) Integer id,
+			HttpServletRequest request,
+			HttpServletResponse response) {
+		try{
+			roomCheckService.checkout(id);
+			return new Result<RoomCheck>(null,true,"退房成功").toJson();
+		}catch(Exception e){
+			return new Result<RoomCheck>(null,false,"退房失败").toJson();
 		}
 	}
 

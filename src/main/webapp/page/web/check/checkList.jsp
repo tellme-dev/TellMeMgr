@@ -48,6 +48,27 @@ function pagesearch(){
 function gotoAdd(){
 	window.location.href="checkinfo.do?id=0";
 }
+function checkout(id){
+	var a= id;
+	$.messager.confirm('提示信息',"确认退房？",function(r){
+		if(r){
+			$.ajax({
+				url :  "jsonCheckout.do?id="+id,
+				type : "POST",
+				dataType : "json",
+				async : false,
+				success : function(req) {
+					if (req.isSuccess) {
+						window.location.href="checkList.do";
+						search();
+					} else {
+						$.messager.alert('提示', req.msg, "warning");
+					}
+				}
+			});
+		}
+    });
+}
 function showdialog(){
 	var wz = getDialogPosition($('#checkInfoWindow').get(0),100);
 	$('#checkInfoWindow').window({
@@ -67,7 +88,7 @@ function saveCheck(obj){
 		  			if(data.code==0){
 		  				$.messager.alert('保存信息',data.message,'info',function(){
 		  					$('#checkInfoWindow').window('close');
-		  					search();
+		  					//search();
 	        			});
 		  			}else{
 						$.messager.alert('错误信息',data.message,'error',function(){
@@ -100,9 +121,9 @@ function saveCheck(obj){
 								<!-- <button class="yw-btn bg-gray ml20 cur">满意度调查</button> -->
 							</div>
 							<div class="fr">
-								<%-- <input type="text" name="searchName" class="yw-input wid170"
-									placeholder="电话" value="${check.customerMobile}" />
-								<span class="yw-btn bg-orange ml30 cur" onclick="search();">开始查找</span> --%>
+								<input type="text" name="customerMobile" class="yw-input wid170"
+									placeholder="电话" value="${roomCheck.customerMobile}" />
+								<span class="yw-btn bg-orange ml30 cur" onclick="search();">开始查找</span>
 								<span class="yw-btn bg-green ml20 cur" onclick="gotoAdd();">新增入住信息</span>
 								<!-- <span class="yw-btn bg-blue ml20 cur" onclick="gotoEdit();">编辑用户</span>
 								<span class="yw-btn bg-orange ml20 cur" onclick="deleteCheck()">删除用户</span> -->
@@ -134,10 +155,10 @@ function saveCheck(obj){
 							<td>${item.customerMobile}</td> 
 							<td>${item.hotelName}</td> 
 							<td>${item.roomNumber}</td>
-							<td>${item.checkintime}</td> 
-							<td>${item.checkouttime}</td>
-							<c:if test="${item.checkouttime == null }">
-							<td><span class="yw-btn bg-orange ml20 cur">退房</span></td>
+							<td>${item.checkInTime}</td> 
+							<td>${item.checkOutTime}</td>
+							<c:if test="${item.checkOutTime == null }">
+							<td><span onclick="checkout(${item.id});" class="yw-btn bg-orange ml20 cur">退房</span></td>
 							</c:if>
 						</tr>
 					</c:forEach>

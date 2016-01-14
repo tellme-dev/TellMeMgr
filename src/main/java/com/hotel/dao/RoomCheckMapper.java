@@ -27,4 +27,6 @@ public interface RoomCheckMapper {
 	List<RoomCheckWebVM> getCheckPageList(Map<String, Object> map);
 
 	int getCheckPageListCount(Map<String, Object> map);
+
+	void updateByMap(Map<String, Object> map);
 }
