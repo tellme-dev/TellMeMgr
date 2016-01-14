@@ -9,8 +9,19 @@
     <result column="checkin_time" property="checkinTime" jdbcType="TIMESTAMP" />
     <result column="checkout_time" property="checkoutTime" jdbcType="TIMESTAMP" />
   </resultMap>
+  <resultMap id="WebVMResultMap" type="com.hotel.viewmodel.RoomCheckWebVM" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="hotel_id" property="hotelId" jdbcType="INTEGER" />
+    <result column="room_id" property="roomId" jdbcType="INTEGER" />
+    <result column="customer_id" property="customerId" jdbcType="INTEGER" />
+    <result column="checkin_time" property="checkinTime" jdbcType="TIMESTAMP" />
+    <result column="checkout_time" property="checkoutTime" jdbcType="TIMESTAMP" />
+  </resultMap>
   <sql id="Base_Column_List" >
     id, hotel_id, room_id, customer_id, checkin_time, checkout_time
+  </sql>
+  <sql id="BaseVM_Column_List" >
+    rc.id, rc.hotel_id, rc.room_id, rc.customer_id, rc.checkin_time as checkintime, rc.checkout_time as checkouttime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -118,4 +129,21 @@
     order by checkin_time desc
   </select>
   
+  <select id="getCheckPageList" resultMap="WebVMResultMap" parameterType="java.util.Map" >
+    select <include refid="BaseVM_Column_List" />,c.name as customerName,c.mobile as customerMobile,
+    h.name as hotelName, r.name as roomNumber
+    from t_room_check rc
+    left join t_customer c on c.id = rc.customer_id
+    left join t_hotle h on h.id = rc.hotel_id
+    left join t_room r on r.id = rc.room_id
+    order by checkin_time desc
+    <if test="pageStart != null and pageSize != null and pageStart>-1 and pageSize>-1">
+        limit #{pageStart}, #{pageSize}
+    </if>
+  </select>
+  
+  <select id="getCheckPageListCount" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(rc.id)
+    from t_room_check rc
+  </select>
 </mapper>

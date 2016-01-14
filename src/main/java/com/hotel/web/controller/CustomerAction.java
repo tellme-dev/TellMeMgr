@@ -53,7 +53,6 @@ public class CustomerAction extends BaseAction {
 		User user = new User();
 		user.setChildMenuList(lf);
 		request.getSession().setAttribute(Constants.USER_SESSION_NAME,user);
-		//page.setTotalCount(totalCount);
 		return "web/customer/customerList";
 	}
 	
