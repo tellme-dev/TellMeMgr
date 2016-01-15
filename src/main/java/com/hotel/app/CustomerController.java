@@ -27,7 +27,6 @@ import com.hotel.common.Result;
 import com.hotel.common.utils.BbsContainer;
 import com.hotel.common.utils.EndecryptUtils;
 import com.hotel.common.utils.GeneralUtil;
-import com.hotel.common.utils.PathConfig;
 import com.hotel.common.utils.StringUtil;
 import com.hotel.model.AdDetail;
 import com.hotel.model.Advertisement;
@@ -502,6 +501,7 @@ public class CustomerController {
 				HotelListInfoVM vm = new HotelListInfoVM();
 				vm.setId(hotel.getId());
 				vm.setName(hotel.getName());
+				vm.setLogo(hotel.getLogo());
 				vm.setText(hotel.getText());
 				vm.setLatitude(hotel.getLatitude());
 				vm.setLongitude(hotel.getLongitude());
@@ -834,7 +834,7 @@ public class CustomerController {
 	 * @return
 	 */
 	@RequestMapping(value = "/getCustomerTopic.do", produces = "application/json;charset=UTF-8")
-	public @ResponseBody ListResult<Bbs> getCustomerTopic(
+	public @ResponseBody ListResult<BbsVM> getCustomerTopic(
 			@RequestParam(value = "json", required = false) String json)
 	{
 		int customerId = 0;
@@ -853,13 +853,13 @@ public class CustomerController {
 			}
 		}catch(Exception e){
 			e.printStackTrace();
-			return new ListResult<Bbs>(null, false, "json解析异常");
+			return new ListResult<BbsVM>(null, false, "json解析异常");
 		}
 		if(customerId < 1){
-			return new ListResult<Bbs>(null, false, "请求无效");
+			return new ListResult<BbsVM>(null, false, "请求无效");
 		}
 		if(pageNumber < 1){
-			return new ListResult<Bbs>(null, false, "请求无效");
+			return new ListResult<BbsVM>(null, false, "请求无效");
 		}
 		
 		//获取数据
@@ -871,6 +871,14 @@ public class CustomerController {
 		//浏览记录数据获取
 		List<Bbs> bbs = bbsService.getPagePostByCustomer(map);
 		int count = bbsService.countPostByCustomer(customerId);
+		List<BbsVM> bvm = new ArrayList<BbsVM>();
+		for(Bbs b : bbs){
+			BbsVM vm = new BbsVM();
+			vm.setText(b.getText());
+			vm.setTitle(vm.getTitle());
+			vm.setBbsAttachUrls(bbsService.selectBaByBbsId(b.getId()));
+			bvm.add(vm);
+		}
 		
 		int pageCount = count/pageSize;
 		if(count%pageSize != 0){
@@ -878,11 +886,11 @@ public class CustomerController {
 		}
 		
 		//返回对象处理
-		ListResult<Bbs> result = new ListResult<Bbs>();
+		ListResult<BbsVM> result = new ListResult<BbsVM>();
 		result.setIsSuccess(true);
 		result.setTotal(pageCount);
 		result.setMsg("");
-		result.setRows(bbs);
+		result.setRows(bvm);
 		return result;
 	}
 	
@@ -1223,18 +1231,36 @@ public class CustomerController {
 					//bbsDynamicVM.setTo(to);
 					bbsDynamicVM.setCustomer(customerService.selectByPrimaryKey(b.getCustomerId()));
 					//list.add(bbsDynamicVM);
-					container.add(id, bbsDynamicVM);
+					container.add(b.getTargetType()+"-"+id, bbsDynamicVM);
 				}
 				if(b.getReadStatus() == 0){
 					bbsService.updateReadStatusRead(b.getId());
 				}
 			}
 			if(container.size() > 0){
-				for(Integer id : container.getIds()){
+				for(String sid : container.getIds()){
 					BbsCommentVM vm = new BbsCommentVM();
-					vm.setPost(bbsService.loadBbsById(id));
-					vm.setDynamics(container.getValues(id));
-					comments.add(vm);
+					
+					String[] tempArr = sid.split("-");
+					int type = new Integer(tempArr[0]);
+					int id = new Integer(tempArr[1]);
+					
+					vm.setTargetType(type);
+					//论坛
+					if(type == 0){
+						vm.setPost(bbsService.loadBbsById(id));
+						vm.setDynamics(container.getValues(sid));
+						comments.add(vm);
+					}
+					//酒店
+					if(type == 1){
+						
+					}
+					//广告
+					if(type == 2){
+						
+					}
+					
 				}
 			}
 		}

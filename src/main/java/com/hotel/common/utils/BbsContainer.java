@@ -9,12 +9,12 @@ import java.util.Set;
 import com.hotel.modelVM.BbsDynamicVM;
 
 public class BbsContainer {
-	private Map<Integer, List<BbsDynamicVM>> map;
+	private Map<String, List<BbsDynamicVM>> map;
 	public BbsContainer() {
-		map = new HashMap<Integer, List<BbsDynamicVM>>();
+		map = new HashMap<String, List<BbsDynamicVM>>();
 	}
 	
-	public void add(Integer id, BbsDynamicVM vm){
+	public void add(String id, BbsDynamicVM vm){
 		if(map.size() == 0){
 			List<BbsDynamicVM> list = new ArrayList<BbsDynamicVM>();
 			list.add(vm);
@@ -31,11 +31,11 @@ public class BbsContainer {
 		}
 	}
 	
-	public Set<Integer> getIds(){
+	public Set<String> getIds(){
 		return map.keySet();
 	}
 	
-	public List<BbsDynamicVM> getValues(Integer id){
+	public List<BbsDynamicVM> getValues(String id){
 		return map.get(id);
 	}
 	
