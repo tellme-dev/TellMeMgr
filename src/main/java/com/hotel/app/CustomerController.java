@@ -872,22 +872,22 @@ public class CustomerController {
 	public @ResponseBody Result<String> deleteCustomerCollection(
 			@RequestParam(value = "json", required = false) String json)
 	{
-		int browseId = 0;
+		int collectionId = 0;
 		try{
 			JSONObject jsonObject = JSONObject.fromObject(json);
-			if(jsonObject.containsKey("browseId")){
-				browseId = jsonObject.getInt("browseId");
+			if(jsonObject.containsKey("collectionId")){
+				collectionId = jsonObject.getInt("collectionId");
 			}
 		}catch(Exception e){
 			e.printStackTrace();
 			return new Result<String>(null, false, "json解析异常");
 		}
-		if(browseId < 1){
+		if(collectionId < 1){
 			return new Result<String>(null, false, "请求无效");
 		}
 		
 		//浏览记录数据获取
-		int count = customerCollectionService.deleteById(browseId);
+		int count = customerCollectionService.deleteById(collectionId);
 		if(count > 0){
 			return new Result<String>(null, true, "删除成功");
 		}
