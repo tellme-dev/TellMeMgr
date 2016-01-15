@@ -692,6 +692,38 @@ public class CustomerController {
 	}
 	
 	/**
+	 * 获取用户最近浏览
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/deleteCustomerBrowse.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<String> deleteCustomerBrowse(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int browseId = 0;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("browseId")){
+				browseId = jsonObject.getInt("browseId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<String>(null, false, "json解析异常");
+		}
+		if(browseId < 1){
+			return new Result<String>(null, false, "请求无效");
+		}
+		
+		//浏览记录数据获取
+		int count = customerBrowseService.deleteById(browseId);
+		if(count > 0){
+			return new Result<String>(null, true, "删除成功");
+		}
+		return new Result<String>(null, false, "删除失败");
+	}
+	
+	/**
 	 * 获取用户收藏
 	 * @author LiuTaiXiong
 	 * @param json
@@ -825,6 +857,38 @@ public class CustomerController {
 		res.setRows(vms);
 		
 		return res;
+	}
+	
+	/**
+	 * 获取用户最近浏览
+	 * @author LiuTaiXiong
+	 * @param json
+	 * @return
+	 */
+	@RequestMapping(value = "/deleteCustomerCollection.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody Result<String> deleteCustomerCollection(
+			@RequestParam(value = "json", required = false) String json)
+	{
+		int browseId = 0;
+		try{
+			JSONObject jsonObject = JSONObject.fromObject(json);
+			if(jsonObject.containsKey("browseId")){
+				browseId = jsonObject.getInt("browseId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<String>(null, false, "json解析异常");
+		}
+		if(browseId < 1){
+			return new Result<String>(null, false, "请求无效");
+		}
+		
+		//浏览记录数据获取
+		int count = customerCollectionService.deleteById(browseId);
+		if(count > 0){
+			return new Result<String>(null, true, "删除成功");
+		}
+		return new Result<String>(null, false, "删除失败");
 	}
 	
 	/**

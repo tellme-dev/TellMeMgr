@@ -18,4 +18,6 @@ public interface CustomerCollectionService {
 	List<CustomerCollection> getPageCollectionByCustomer(Map<String, Object> map);
 	
 	int deleteByItem(int targetId);
+	
+	int deleteById(int id);
 }
