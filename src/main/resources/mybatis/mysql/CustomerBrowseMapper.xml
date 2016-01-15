@@ -125,5 +125,9 @@
     update t_customer_browse set deleted_time = NOW()
     where target_type=1 and target_id = #{targetId,jdbcType=INTEGER}
   </update>
+  <update id="deleteById" parameterType="java.lang.Integer">
+    update t_customer_browse set deleted_time = NOW()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
   
 </mapper>

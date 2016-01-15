@@ -167,6 +167,8 @@ public interface BbsService {
 	 */
 	ListResult<BbsAttach> loadBbsAttachByBbsId(int bbsId);
 	
+	List<BbsAttach> selectBaByBbsId(Integer bbsId);
+	
 	/**
 	 * 逻辑删除酒店相关评论和赞...
 	 * @author LiuTaiXiong

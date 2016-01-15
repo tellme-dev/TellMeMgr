@@ -8,6 +8,7 @@ import com.hotel.model.Item;
 public class HotelListInfoVM {
 	private Integer id;
     private String name;
+    private String logo;
     private String text;
     private String tel;
     private BigDecimal longitude;
@@ -31,6 +32,12 @@ public class HotelListInfoVM {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public String getLogo() {
+		return logo;
+	}
+	public void setLogo(String logo) {
+		this.logo = logo;
 	}
 	public String getText() {
 		return text;

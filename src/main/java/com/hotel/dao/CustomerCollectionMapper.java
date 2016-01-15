@@ -28,4 +28,6 @@ public interface CustomerCollectionMapper {
     List<CustomerCollection> getPageCollectionByCustomer(Map<String, Object> map);
     
     int deleteByItem(int targetId);
+    
+    int deleteById(int id);
 }

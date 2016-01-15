@@ -362,4 +362,10 @@ public class BbsServiceImpl implements BbsService {
 		return bbsMapper.selectReplyByHotelComment(path);
 	}
 
+	@Override
+	public List<BbsAttach> selectBaByBbsId(Integer bbsId) {
+		// TODO Auto-generated method stub
+		return bbsAttachMapper.selectBaByBbsId(bbsId);
+	}
+
 }

@@ -53,4 +53,10 @@ public class CustomerCollectionServiceImpl implements CustomerCollectionService{
 		// TODO Auto-generated method stub
 		return customerCollectionMapper.deleteByItem(targetId);
 	}
+
+	@Override
+	public int deleteById(int id) {
+		// TODO Auto-generated method stub
+		return customerCollectionMapper.deleteById(id);
+	}
 }

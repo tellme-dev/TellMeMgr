@@ -21,6 +21,8 @@ public interface BbsAttachMapper {
     
     //
     BbsAttach selectByBbsId(Integer bbsId);
+    
+    List<BbsAttach> selectBaByBbsId(Integer bbsId);
 
 	int countByMap(Map<String, Object> map);
 

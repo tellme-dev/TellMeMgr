@@ -16,4 +16,6 @@ public interface CustomerBrowseService {
 	List<CustomerBrowse> getPageByCustomer(Map<String, Object> map);
 	
 	int deleteByItem(int targetId);
+	
+	int deleteById(int id);
 }
