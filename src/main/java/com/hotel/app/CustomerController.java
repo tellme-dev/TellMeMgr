@@ -1325,6 +1325,7 @@ public class CustomerController {
 						Item item = itemService.selectByPrimaryKey(id);
 						Hotel hotel = hotelService.selectByPrimaryKey(item.getHotelId());
 						bvm.setText(item.getText());
+						bvm.setId(item.getId());
 						
 						Customer customer = new Customer();
 						customer.setPhotoUrl(hotel.getLogo());
@@ -1341,6 +1342,7 @@ public class CustomerController {
 						BbsVM bvm = new BbsVM();
 						AdvertisementVM avm = advertisementService.loadAdById(id);
 						//bvm.setText(avm.getAdDetailList()..getText());
+						bvm.setId(avm.getId());
 						
 						Customer customer = new Customer();
 						customer.setName(avm.getName());
