@@ -242,7 +242,7 @@ public class AdController {
 			}
 			return result.toJson();
 		}catch(Exception e){
-			return new ListResult<BbsVM>(null,false,"保存失败").toJson();
+			return new ListResult<BbsVM>(null,false,"加载数据失败").toJson();
 		}
 	}
 }

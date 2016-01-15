@@ -101,4 +101,11 @@
       note = #{note,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  
+  <select id="selectRoomList" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_room
+    where hotel_id = #{hotelId,jdbcType=INTEGER}
+  </select>
 </mapper>

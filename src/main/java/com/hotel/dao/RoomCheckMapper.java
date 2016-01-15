@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.hotel.model.RoomCheck;
+import com.hotel.viewmodel.RoomCheckWebVM;
 
 @MyBatisRepository
 public interface RoomCheckMapper {
@@ -22,4 +23,10 @@ public interface RoomCheckMapper {
     int countHotelByCustomer(Integer customerId);
 
 	List<RoomCheck> selectByMap(Map<String, Object> map);
+
+	List<RoomCheckWebVM> getCheckPageList(Map<String, Object> map);
+
+	int getCheckPageListCount(Map<String, Object> map);
+
+	void updateByMap(Map<String, Object> map);
 }

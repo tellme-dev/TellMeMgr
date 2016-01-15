@@ -59,6 +59,9 @@ public class OccupancyController {
 					//且是正在入住中，返回入住的酒店信息
 					if(rc.getCheckoutTime() == null){
 						HotelVM hotel = hotelService.getHotelVMById(rc.getHotelId());
+						if(hotel == null){
+							return new Result<HotelVM>(null,false,"酒店不存在").toJson();
+						}
 						hotel.setRoomId(rc.getRoomId());
 						return new Result<HotelVM>(hotel,true,"获取入住酒店信息成功").toJson();
 					}
