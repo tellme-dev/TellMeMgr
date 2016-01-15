@@ -41,6 +41,7 @@ import com.hotel.model.Region;
 import com.hotel.model.User;
 import com.hotel.model.Varifycode;
 import com.hotel.modelVM.AdvertisementListInfoVM;
+import com.hotel.modelVM.AdvertisementVM;
 import com.hotel.modelVM.BbsCommentVM;
 import com.hotel.modelVM.BbsDynamicVM;
 import com.hotel.modelVM.BbsVM;
@@ -50,6 +51,7 @@ import com.hotel.modelVM.CustomerVM;
 import com.hotel.modelVM.HotelListInfoVM;
 import com.hotel.modelVM.RegisterData;
 import com.hotel.service.AdService;
+import com.hotel.service.AdvertisementService;
 import com.hotel.service.BaseDataService;
 import com.hotel.service.BbsService;
 import com.hotel.service.CustomerBrowseService;
@@ -87,6 +89,7 @@ public class CustomerController {
 	
 	@Autowired CustomerService customerService;
 	@Autowired AdService adService;
+	@Autowired AdvertisementService advertisementService;
 	@Autowired CustomerCollectionService customerCollectionService;
 	@Autowired VarifycodeService varifycodeService;
 	@Autowired BbsService bbsService;
@@ -1318,11 +1321,40 @@ public class CustomerController {
 					}
 					//酒店
 					if(type == 1){
+						BbsVM bvm = new BbsVM();
+						Item item = itemService.selectByPrimaryKey(id);
+						Hotel hotel = hotelService.selectByPrimaryKey(item.getHotelId());
+						bvm.setText(item.getText());
 						
+						Customer customer = new Customer();
+						customer.setPhotoUrl(hotel.getLogo());
+						customer.setName(item.getName());
+						
+						bvm.setCustomer(customer);
+						
+						vm.setPost(bvm);
+						vm.setDynamics(container.getValues(sid));
+						comments.add(vm);
 					}
 					//广告
 					if(type == 2){
+						BbsVM bvm = new BbsVM();
+						AdvertisementVM avm = advertisementService.loadAdById(id);
+						//bvm.setText(avm.getAdDetailList()..getText());
 						
+						Customer customer = new Customer();
+						customer.setName(avm.getName());
+						
+						if(avm.getAdDetailList() != null && avm.getAdDetailList().size() > 0){
+							bvm.setText(avm.getAdDetailList().get(0).getText());
+							customer.setPhotoUrl(avm.getAdDetailList().get(0).getImageUrl());
+						}
+						
+						bvm.setCustomer(customer);
+						
+						vm.setPost(bvm);
+						vm.setDynamics(container.getValues(sid));
+						comments.add(vm);
 					}
 					
 				}
