@@ -248,8 +248,13 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		bbs.setLevel(0);
 		bbs.setCreateTime(new Date());
 		bbs.setTimeStamp(new Date());
-		if(bbs.getParentId() != 0&&bbs.getParentId() != null){
+		if(bbs.getParentId() != 0&&bbs.getParentId() != null){//回复
 			bbs.setPostType(1);
+			bbs.setLevel(3);
+			bbs.setPath(bbs.getTargetId().toString()+"."+bbs.getParentId().toString());
+		}else{//评论
+			bbs.setLevel(2);
+			bbs.setPath(bbs.getTargetId().toString());
 		}
 		bbsMapper.insertSelective1(bbs);
 	}
