@@ -654,6 +654,7 @@ public class CustomerController {
 				vm.clear();
 				//设置数据对象
 				CustomerBrowseVM browseVM = new CustomerBrowseVM();
+				browseVM.setId(browse.getId());
 				browseVM.setType(BROWSE_TYPE_HOTEL);
 				browseVM.setHotel(vm);
 				vms.add(browseVM);
@@ -669,6 +670,7 @@ public class CustomerController {
 					avm.setText(detail.getText());
 				}
 				CustomerBrowseVM abrowseVM = new CustomerBrowseVM();
+				abrowseVM.setId(browse.getId());
 				abrowseVM.setType(BROWSE_TYPE_AD);
 				abrowseVM.setAdvertisement(avm);
 				vms.add(abrowseVM);
@@ -676,6 +678,7 @@ public class CustomerController {
 			case BROWSE_TYPE_BBS:
 				BbsVM bvm = bbsService.loadBbsById(browse.getTargetId());
 				CustomerBrowseVM bbrowseVM = new CustomerBrowseVM();
+				bbrowseVM.setId(browse.getId());
 				bbrowseVM.setType(BROWSE_TYPE_BBS);
 				bbrowseVM.setBbs(bvm);
 				vms.add(bbrowseVM);
@@ -821,6 +824,7 @@ public class CustomerController {
 				vm.clear();
 				//设置数据对象
 				CustomerBrowseVM browseVM = new CustomerBrowseVM();
+				browseVM.setId(collection.getId());
 				browseVM.setType(BROWSE_TYPE_HOTEL);
 				browseVM.setHotel(vm);
 				vms.add(browseVM);
@@ -836,6 +840,7 @@ public class CustomerController {
 					avm.setText(detail.getText());
 				}
 				CustomerBrowseVM abrowseVM = new CustomerBrowseVM();
+				abrowseVM.setId(collection.getId());
 				abrowseVM.setType(BROWSE_TYPE_AD);
 				abrowseVM.setAdvertisement(avm);
 				vms.add(abrowseVM);
@@ -843,6 +848,7 @@ public class CustomerController {
 			case BROWSE_TYPE_BBS:
 				BbsVM bvm = bbsService.loadBbsById(collection.getTargetId());
 				CustomerBrowseVM bbrowseVM = new CustomerBrowseVM();
+				bbrowseVM.setId(collection.getId());
 				bbrowseVM.setType(BROWSE_TYPE_BBS);
 				bbrowseVM.setBbs(bvm);
 				vms.add(bbrowseVM);
