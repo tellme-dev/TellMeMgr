@@ -1,5 +1,7 @@
 package com.hotel.common.utils;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -7,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
@@ -16,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -194,7 +198,13 @@ public class FileUtil {
 				uploadFile.mkdirs();
 			}
 			mf.transferTo(uploadFile);
+			//String[] filenames = fileName.split(".");
+			//a.jpg;
+			//a_1.jpg;
+			
 			imageUrl.add("image/ad/" + fileName);
+			
+			
 		}
 		request.setAttribute("files", loadFiles(request, path));
 		return imageUrl;
@@ -203,6 +213,30 @@ public class FileUtil {
 	public void downloadFile() {
 
 	}
+	
+	/** 
+	 * 改变图片的大小到宽为size，然后高随着宽等比例变化 
+	 * @param is 上传的图片的输入流 
+	 * @param os 改变了图片的大小后，把图片的流输出到目标OutputStream 
+	 * @param size 新图片的宽 
+	 * @param format 新图片的格式 
+	 * @throws IOException 
+	 */  
+	public static void resizeImage(InputStream is, OutputStream os, int size, String format) throws IOException {  
+	    BufferedImage prevImage = ImageIO.read(is);  
+	    double width = prevImage.getWidth();  
+	    double height = prevImage.getHeight();  
+	    double percent = size/width;  
+	    int newWidth = (int)(width * percent);  
+	    int newHeight = (int)(height * percent);  
+	    BufferedImage image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_BGR);  
+	    Graphics graphics = image.createGraphics();  
+	    graphics.drawImage(prevImage, 0, 0, newWidth, newHeight, null);  
+	    ImageIO.write(image, format, os);  
+	    os.flush();  
+	    is.close();  
+	    os.close();  
+	}  
 
 	/**
 	 * 文件保存路径
