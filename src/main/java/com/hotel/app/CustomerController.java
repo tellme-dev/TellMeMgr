@@ -1528,6 +1528,11 @@ public class CustomerController {
 		browse.setTargetId(targetId);
 		browse.setVisitTime(new Date());
 		
+		int tcount = customerBrowseService.countByBrowse(browse);
+		if(tcount > 0){
+			return new Result<String>("", true, "");
+		}
+		
 		int bcount = customerBrowseService.insert(browse);
 		
 		if(bcount > 0){

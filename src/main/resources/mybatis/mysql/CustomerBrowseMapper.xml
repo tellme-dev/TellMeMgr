@@ -120,6 +120,10 @@
     	limit #{pageStart}, #{pageSize}
     </if>
   </select>
+  <select id="countByBrowse" parameterType="com.hotel.model.CustomerBrowse" resultType="java.lang.Integer">
+    select count(id) from t_customer_browse 
+    where customer_id = #{customerId,jdbcType=INTEGER} and target_type = #{targetType,jdbcType=INTEGER} and target_id = #{targetId,jdbcType=INTEGER} and deleted_time is null
+  </select>
   
   <update id="deleteByItem" parameterType="java.lang.Integer">
     update t_customer_browse set deleted_time = NOW()

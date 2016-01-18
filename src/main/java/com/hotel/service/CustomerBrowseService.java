@@ -13,6 +13,8 @@ public interface CustomerBrowseService {
 	
 	int countByCustomer(int customerId);
 	
+	int countByBrowse(CustomerBrowse browse);
+	
 	List<CustomerBrowse> getPageByCustomer(Map<String, Object> map);
 	
 	int deleteByItem(int targetId);

@@ -55,5 +55,11 @@ public class CustomerBrowseServiceImpl implements CustomerBrowseService{
 		return customerBrowseMapper.deleteById(id);
 	}
 
+	@Override
+	public int countByBrowse(CustomerBrowse browse) {
+		// TODO Auto-generated method stub
+		return customerBrowseMapper.countByBrowse(browse);
+	}
+
 
 }
