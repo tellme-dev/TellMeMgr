@@ -1416,17 +1416,26 @@ public class CustomerController {
 		collection.setCreateTime(new Date());
 		
 		//查询是否存在相同的记录
-		int collectionTimes = customerCollectionService.countByCustomerCollection(collection);
+		//int collectionTimes = customerCollectionService.countByCustomerCollection(collection);
+		CustomerCollection coll = customerCollectionService.selectByCustomerCollection(collection);
 		//已收藏
-		if(collectionTimes > 0){
-			return new Result<String>("", false, "您已收藏");
+		if(coll != null && coll.getId() != null){
+			if(coll.getDeletedTime() == null){
+				return new Result<String>("", false, "您已收藏");
+			}else{
+				int count = customerCollectionService.resetById(coll.getId());
+				if(count > 0){
+					return new Result<String>("", true, "收藏成功");
+				}
+				return new Result<String>("", false, "收藏失败");
+			}
+		}else{
+			int count = customerCollectionService.insert(collection);
+			if(count > 0){
+				return new Result<String>("", true, "收藏成功");
+			}
+			return new Result<String>("", false, "收藏失败");
 		}
-		
-		int count = customerCollectionService.insert(collection);
-		if(count > 0){
-			return new Result<String>("", true, "收藏成功");
-		}
-		return new Result<String>("", false, "收藏失败");
 	}
 	
 	/**
@@ -1528,17 +1537,23 @@ public class CustomerController {
 		browse.setTargetId(targetId);
 		browse.setVisitTime(new Date());
 		
-		int tcount = customerBrowseService.countByBrowse(browse);
-		if(tcount > 0){
-			return new Result<String>("", true, "");
+		//int tcount = customerBrowseService.countByBrowse(browse);
+		CustomerBrowse cb = customerBrowseService.selectByBrowse(browse);
+		if(cb != null && cb.getId() != null){
+			if(cb.getDeletedTime() == null){
+				return new Result<String>("", false, "您已浏览");
+			}else{
+				customerBrowseService.resetById(cb.getId());
+				return new Result<String>("", true, "");
+			}
+		}else{
+			int bcount = customerBrowseService.insert(browse);
+			
+			if(bcount > 0){
+				return new Result<String>("", true, "");
+			}
+			return new Result<String>("", false, "浏览失败");
 		}
-		
-		int bcount = customerBrowseService.insert(browse);
-		
-		if(bcount > 0){
-			return new Result<String>("", true, "");
-		}
-		return new Result<String>("", false, "浏览失败");
 	}
 	
 	@RequestMapping(value = "/saveShare.do", produces = "application/json;charset=UTF-8")
