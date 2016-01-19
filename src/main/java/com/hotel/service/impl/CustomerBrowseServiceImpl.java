@@ -61,5 +61,17 @@ public class CustomerBrowseServiceImpl implements CustomerBrowseService{
 		return customerBrowseMapper.countByBrowse(browse);
 	}
 
+	@Override
+	public CustomerBrowse selectByBrowse(CustomerBrowse browse) {
+		// TODO Auto-generated method stub
+		return customerBrowseMapper.selectByBrowse(browse);
+	}
+
+	@Override
+	public int resetById(int id) {
+		// TODO Auto-generated method stub
+		return customerBrowseMapper.resetById(id);
+	}
+
 
 }

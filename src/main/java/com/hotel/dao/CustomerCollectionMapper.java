@@ -23,6 +23,8 @@ public interface CustomerCollectionMapper {
     
     int countByCustomerCollection(CustomerCollection record);
     
+    CustomerCollection selectByCustomerCollection(CustomerCollection record);
+    
     int countByCustomer(int customerId);
     
     List<CustomerCollection> getPageCollectionByCustomer(Map<String, Object> map);
@@ -30,4 +32,6 @@ public interface CustomerCollectionMapper {
     int deleteByItem(int targetId);
     
     int deleteById(int id);
+    
+    int resetById(int id);
 }
