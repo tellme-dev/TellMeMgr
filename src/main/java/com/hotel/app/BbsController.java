@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.hotel.common.ListResult;
 import com.hotel.common.Result;
 import com.hotel.common.utils.FileUtil;
+import com.hotel.common.utils.ImageCompress;
 import com.hotel.common.utils.Page;
 import com.hotel.model.Bbs;
 import com.hotel.model.BbsAttach;
@@ -189,6 +190,7 @@ public class BbsController {
         		uploadFile.mkdirs();  
             }  
         	bbsPhoto.transferTo(uploadFile); //保存
+        	ImageCompress.imageCompress(path+"/", fileName, fileName, 1.0f, 0.75f);
         	result = new Result<Bbs>(null, true, "上传成功");
         	return result.toJson();
         }catch(Exception e){

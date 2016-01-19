@@ -187,7 +187,7 @@ public class FileUtil {
 		for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
 			MultipartFile mf = entity.getValue();
 			String name = mf.getOriginalFilename();
-			String suffix = name.substring(name.lastIndexOf(".")+1);
+			String suffix = name.substring(name.lastIndexOf(".")+1);//文件格式
 			Map<String,Object> m = GeneralUtil.getCurrentDate();
 			String time = (String) m.get("currentTime");
 			fileName = time + CommonUtil.getRandom(4) + "." + suffix;
@@ -198,10 +198,10 @@ public class FileUtil {
 				uploadFile.mkdirs();
 			}
 			mf.transferTo(uploadFile);
-			//String[] filenames = fileName.split(".");
-			//a.jpg;
-			//a_1.jpg;
-			
+			//压缩图片
+			//String toFileName = "c_"+fileName;//重命名
+			ImageCompress.imageCompress(savePath+"/", fileName, fileName, 1.0f, 0.75f);
+			//new File(savePath+"/"+fileName).delete();//删除原图片
 			imageUrl.add("image/ad/" + fileName);
 			
 			
@@ -214,30 +214,6 @@ public class FileUtil {
 
 	}
 	
-	/** 
-	 * 改变图片的大小到宽为size，然后高随着宽等比例变化 
-	 * @param is 上传的图片的输入流 
-	 * @param os 改变了图片的大小后，把图片的流输出到目标OutputStream 
-	 * @param size 新图片的宽 
-	 * @param format 新图片的格式 
-	 * @throws IOException 
-	 */  
-	public static void resizeImage(InputStream is, OutputStream os, int size, String format) throws IOException {  
-	    BufferedImage prevImage = ImageIO.read(is);  
-	    double width = prevImage.getWidth();  
-	    double height = prevImage.getHeight();  
-	    double percent = size/width;  
-	    int newWidth = (int)(width * percent);  
-	    int newHeight = (int)(height * percent);  
-	    BufferedImage image = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_BGR);  
-	    Graphics graphics = image.createGraphics();  
-	    graphics.drawImage(prevImage, 0, 0, newWidth, newHeight, null);  
-	    ImageIO.write(image, format, os);  
-	    os.flush();  
-	    is.close();  
-	    os.close();  
-	}  
-
 	/**
 	 * 文件保存路径
 	 * 
