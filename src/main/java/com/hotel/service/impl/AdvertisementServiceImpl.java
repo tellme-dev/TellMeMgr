@@ -225,6 +225,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("targetType", 1);
 		map.put("targetId", hotelId);
+		map.put("isUsed", true);
 		int total = advertisementMapper.countByMap(map);
 		List<AdvertisementVM> list = advertisementMapper.selectAdListByMap(map);
 		return new ListResult<AdvertisementVM>(total,list);

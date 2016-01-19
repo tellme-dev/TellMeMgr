@@ -147,7 +147,6 @@ public class BbsController {
 			HttpServletRequest request){
 		JSONObject jObj = JSONObject.fromObject(bbsParam);
 		BbsVM bbs = (BbsVM) JSONObject.toBean(jObj,BbsVM.class);
-		int id = bbs.getCustomerId();
 		/*if(bbs.getCustomerId()==null||){
 			
 		}*/
@@ -182,15 +181,15 @@ public class BbsController {
         	String fileName = bbsPhoto.getOriginalFilename();
         	//分割出customerId作为左后一级的文件夹
         	String[] str = fileName.split("_");
-        	String customerID = str[0];
-        	path = path +"/"+ customerID;
+        	String uuid = str[0];
+        	path = path +"/"+ uuid;
         	
         	File uploadFile = new File(path,fileName);
         	if(!uploadFile.exists()){  
         		uploadFile.mkdirs();  
             }  
         	bbsPhoto.transferTo(uploadFile); //保存
-        	ImageCompress.imageCompress(path+"/", fileName, fileName, 1.0f, 0.75f);
+        	//ImageCompress.imageCompress(path+"/", fileName, fileName, 1.0f, 0.75f);
         	result = new Result<Bbs>(null, true, "上传成功");
         	return result.toJson();
         }catch(Exception e){
@@ -205,13 +204,13 @@ public class BbsController {
 			HttpServletRequest request){
 		JSONObject jObj = JSONObject.fromObject(param);
 		String fileUrl = "";
-		int customerId = 0;
+		int uuid = 0;
 		try{
 			if(jObj.containsKey("fileUrl")){
 				fileUrl = jObj.getString("fileUrl");
 			}
-			if(jObj.containsKey("customerId")){
-				customerId = jObj.getInt("customerId");
+			if(jObj.containsKey("uuid")){
+				uuid = jObj.getInt("uuid");
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -220,15 +219,15 @@ public class BbsController {
 		Result<Bbs> result = null;
 		try{
 			//删除对应的图片
-			if(fileUrl != ""&&customerId == 0){
+			if(!"".equals(fileUrl)&&uuid == 0){
 				String path = request.getSession().getServletContext().getRealPath("/")+fileUrl;//fileUrl是文件相对路径
 				boolean isSuccess = (new File(path)).delete();
 				result = new Result<Bbs>(null, true,"删除照片成功");
 				return result.toJson();
 			}
 			//删除整个文件夹
-			if(customerId != 0){
-				String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp/"+customerId;
+			if(uuid != 0){
+				String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp/"+uuid;
 				String msg = "";
 				try{
 

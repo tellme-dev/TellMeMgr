@@ -88,13 +88,14 @@ public class ImageCompress {
             System.out.println("图片：" + fileName + "，压缩时间：" + (end - start)
                     + "ms");
         } catch (FileNotFoundException fnf) {
+        	fnf.printStackTrace();
         } catch (IOException ioe) {
             System.out.println("1111111111111");
             //ioe.printStackTrace();
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-
+        	System.out.println("1111111111111");
         }
     }
 
