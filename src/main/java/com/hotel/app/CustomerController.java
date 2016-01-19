@@ -623,6 +623,7 @@ public class CustomerController {
 				//转存酒店基本数据
 				HotelListInfoVM vm = new HotelListInfoVM();
 				vm.setId(hotel.getId());
+				vm.setLogo(hotel.getLogo());
 				vm.setName(hotel.getName());
 				vm.setText(hotel.getText());
 				vm.setLatitude(hotel.getLatitude());
@@ -794,6 +795,7 @@ public class CustomerController {
 				HotelListInfoVM vm = new HotelListInfoVM();
 				vm.setId(hotel.getId());
 				vm.setName(hotel.getName());
+				vm.setLogo(hotel.getLogo());
 				vm.setText(hotel.getText());
 				vm.setLatitude(hotel.getLatitude());
 				vm.setLongitude(hotel.getLongitude());
