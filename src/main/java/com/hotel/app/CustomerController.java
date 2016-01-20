@@ -950,8 +950,9 @@ public class CustomerController {
 		List<BbsVM> bvm = new ArrayList<BbsVM>();
 		for(Bbs b : bbs){
 			BbsVM vm = new BbsVM();
+			vm.setId(b.getId());
 			vm.setText(b.getText());
-			vm.setTitle(vm.getTitle());
+			vm.setTitle(b.getTitle());
 			vm.setBbsAttachUrls(bbsService.selectBaByBbsId(b.getId()));
 			bvm.add(vm);
 		}
