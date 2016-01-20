@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hotel.common.ListResult;
 import com.hotel.common.utils.Page;
+import com.hotel.common.utils.PathConfig;
 import com.hotel.dao.BbsAttachMapper;
 import com.hotel.dao.BbsCategoryMapper;
 import com.hotel.dao.BbsMapper;
@@ -74,8 +75,11 @@ public class BbsServiceImpl implements BbsService {
 				bbsMapper.insertSelective(bbs);
 				/*将临时文件中的图片移动到目标文件夹*/
 				List<String> fileUrls = new ArrayList<String>();//存放图片Url
-				String sourcePath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp/"+bbs.getUuid();
-				String toPath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/"+bbs.getId();
+				//String sourcePath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp/"+bbs.getUuid();
+				//String toPath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/"+bbs.getId();
+				String rootPath = PathConfig.getNewPathConfig();
+				String sourcePath = rootPath + "app/bbs/temp/"+bbs.getUuid();
+				String toPath = rootPath+"app/bbs/"+bbs.getId();
 				File sourcefile = new File(sourcePath);
 				File dirPath = new File(toPath);
 				if(!dirPath.exists()){
@@ -89,7 +93,7 @@ public class BbsServiceImpl implements BbsService {
 						//过滤出文件名以uuid开头的
 						if(name.startsWith(bbs.getUuid()+"_")){
 							file.renameTo(new File(toPath,file.getName()));
-							fileUrls.add("app/bbs/"+bbs.getId()+"/"+name);
+							fileUrls.add("picture/app/bbs/"+bbs.getId()+"/"+name);
 						}
 					}
 					/*遍历 insert图片*/

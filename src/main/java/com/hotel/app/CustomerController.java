@@ -27,6 +27,7 @@ import com.hotel.common.Result;
 import com.hotel.common.utils.BbsContainer;
 import com.hotel.common.utils.EndecryptUtils;
 import com.hotel.common.utils.GeneralUtil;
+import com.hotel.common.utils.PathConfig;
 import com.hotel.common.utils.StringUtil;
 import com.hotel.model.AdDetail;
 import com.hotel.model.Advertisement;
@@ -1703,10 +1704,10 @@ public class CustomerController {
     		HttpServletRequest request) { 
 		Result<Customer> result = null;
         try { 
-        	String path = request.getSession().getServletContext().getRealPath("/")+"app/head";
+        	//String path = request.getSession().getServletContext().getRealPath("/")+"app/head";
         	String fileName = customerImg.getOriginalFilename();
-        	//String rootPath = PathConfig.getNewPathConfig();
-        	//String path = rootPath+"app/head";
+        	String rootPath = PathConfig.getNewPathConfig();
+        	String path = rootPath+"app/head";
         	File filedir = new File(path);
         	if(!filedir.exists()){  
         		filedir.mkdirs();  

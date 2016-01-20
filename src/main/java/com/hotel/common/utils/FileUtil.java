@@ -15,6 +15,7 @@ import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -188,9 +189,7 @@ public class FileUtil {
 			MultipartFile mf = entity.getValue();
 			String name = mf.getOriginalFilename();
 			String suffix = name.substring(name.lastIndexOf(".")+1);//文件格式
-			Map<String,Object> m = GeneralUtil.getCurrentDate();
-			String time = (String) m.get("currentTime");
-			fileName = time + CommonUtil.getRandom(4) + "." + suffix;
+			fileName = new Date().getTime() + CommonUtil.getRandom(4) + "." + suffix;
 			// File uploadFile = new File(savePath + fileName);
 			File uploadFile = new File(savePath, fileName);
 			// 如果路徑不存在 自動創建
@@ -202,7 +201,7 @@ public class FileUtil {
 			//String toFileName = "c_"+fileName;//重命名
 			ImageCompress.imageCompress(savePath+"/", fileName, fileName, 1.0f, 0.75f);
 			//new File(savePath+"/"+fileName).delete();//删除原图片
-			imageUrl.add("image/ad/" + fileName);
+			imageUrl.add("picture/ad/" + fileName);
 			
 			
 		}

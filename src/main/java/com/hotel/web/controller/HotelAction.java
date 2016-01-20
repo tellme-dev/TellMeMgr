@@ -25,6 +25,7 @@ import com.hotel.common.utils.Constants;
 import com.hotel.common.utils.FileUtil;
 import com.hotel.common.utils.ImgBase64;
 import com.hotel.common.utils.Page;
+import com.hotel.common.utils.PathConfig;
 import com.hotel.model.Function;
 import com.hotel.model.Hotel;
 import com.hotel.model.Item;
@@ -137,10 +138,12 @@ public class HotelAction extends BaseAction {
 		}
 		String url = null;
 		if(file != null && !file.trim().equals("")){
-			String path = request.getSession().getServletContext().getRealPath("/");
+			//String path = request.getSession().getServletContext().getRealPath("/");
+			String rootPath = PathConfig.getNewPathConfig();
 			String savePath = "hotel"+File.separator+"logo"+File.separator;
 			String fileName = new Date().getTime()+"";
-			String filePath = path + savePath;
+			//String filePath = path + savePath;
+			String filePath = rootPath + savePath;
 			File fl = new File(filePath);
 			if(!fl.exists()){
 				fl.mkdirs();
@@ -151,7 +154,7 @@ public class HotelAction extends BaseAction {
 				fileName += "."+suffix;
 				//arr[0]
 				ImgBase64.GenerateImage(arr[1], filePath+fileName);
-				url = "hotel/logo/"+fileName;
+				url = "picture/hotel/logo/"+fileName;
 			}
 			
 		}
@@ -304,10 +307,11 @@ public class HotelAction extends BaseAction {
 					String fileText = request.getParameter("fileText"+i);
 					if(file != null){
 						
-						String path = request.getSession().getServletContext().getRealPath("/");
+						//String path = request.getSession().getServletContext().getRealPath("/");
+						String rootPath = PathConfig.getNewPathConfig();
 						String savePath = "hotel"+File.separator+"item"+File.separator+"h"+hotelId+File.separator;
 						String fileName = hotelId + "_" + new Date().getTime();
-						String filePath = path + savePath;
+						String filePath = rootPath + savePath;
 						File fl = new File(filePath);
 						if(!fl.exists()){
 							fl.mkdirs();
@@ -321,7 +325,7 @@ public class HotelAction extends BaseAction {
 						//arr[0]
 						ImgBase64.GenerateImage(arr[1], filePath+fileName);
 						
-						detail.setImageUrl("hotel/item/h"+hotelId+"/" + fileName);
+						detail.setImageUrl("picture/hotel/item/h"+hotelId+"/" + fileName);
 						
 					}
 					if(fileText != null){

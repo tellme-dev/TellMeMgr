@@ -20,6 +20,7 @@ import com.hotel.common.Result;
 import com.hotel.common.utils.FileUtil;
 import com.hotel.common.utils.ImageCompress;
 import com.hotel.common.utils.Page;
+import com.hotel.common.utils.PathConfig;
 import com.hotel.model.Bbs;
 import com.hotel.model.BbsAttach;
 import com.hotel.model.BbsCategory;
@@ -174,10 +175,9 @@ public class BbsController {
     		HttpServletRequest request) { 
 		Result<Bbs> result = null;
         try { 
-        	//String path = request.getSession().getServletContext().getRealPath("Photo"); 
-        	String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
-//        	String path = getClass().getResource("/").getFile().toString();
-//			path = path.substring(0, (path.length() - 16))+"washPhoto";
+        	//String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
+        	String rootPath = PathConfig.getNewPathConfig();
+        	String path = rootPath+"app/bbs/temp";
         	String fileName = bbsPhoto.getOriginalFilename();
         	//分割出customerId作为左后一级的文件夹
         	String[] str = fileName.split("_");
