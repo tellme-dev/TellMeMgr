@@ -1,5 +1,7 @@
 package com.hotel.common.utils;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -7,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.nio.channels.FileChannel;
@@ -16,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -183,7 +187,7 @@ public class FileUtil {
 		for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
 			MultipartFile mf = entity.getValue();
 			String name = mf.getOriginalFilename();
-			String suffix = name.substring(name.lastIndexOf(".")+1);
+			String suffix = name.substring(name.lastIndexOf(".")+1);//文件格式
 			Map<String,Object> m = GeneralUtil.getCurrentDate();
 			String time = (String) m.get("currentTime");
 			fileName = time + CommonUtil.getRandom(4) + "." + suffix;
@@ -194,7 +198,13 @@ public class FileUtil {
 				uploadFile.mkdirs();
 			}
 			mf.transferTo(uploadFile);
+			//压缩图片
+			//String toFileName = "c_"+fileName;//重命名
+			ImageCompress.imageCompress(savePath+"/", fileName, fileName, 1.0f, 0.75f);
+			//new File(savePath+"/"+fileName).delete();//删除原图片
 			imageUrl.add("image/ad/" + fileName);
+			
+			
 		}
 		request.setAttribute("files", loadFiles(request, path));
 		return imageUrl;
@@ -203,7 +213,7 @@ public class FileUtil {
 	public void downloadFile() {
 
 	}
-
+	
 	/**
 	 * 文件保存路径
 	 * 

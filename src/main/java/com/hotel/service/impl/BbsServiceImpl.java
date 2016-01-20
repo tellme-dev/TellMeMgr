@@ -74,7 +74,7 @@ public class BbsServiceImpl implements BbsService {
 				bbsMapper.insertSelective(bbs);
 				/*将临时文件中的图片移动到目标文件夹*/
 				List<String> fileUrls = new ArrayList<String>();//存放图片Url
-				String sourcePath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp/"+bbs.getCustomerId();
+				String sourcePath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp/"+bbs.getUuid();
 				String toPath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/"+bbs.getId();
 				File sourcefile = new File(sourcePath);
 				File dirPath = new File(toPath);
@@ -86,8 +86,8 @@ public class BbsServiceImpl implements BbsService {
 				if(files != null){
 					for(File file:files){
 						String name = file.getName();
-						//过滤出文件名以customerId开头的
-						if(name.startsWith(bbs.getCustomerId()+"_")){
+						//过滤出文件名以uuid开头的
+						if(name.startsWith(bbs.getUuid()+"_")){
 							file.renameTo(new File(toPath,file.getName()));
 							fileUrls.add("app/bbs/"+bbs.getId()+"/"+name);
 						}
