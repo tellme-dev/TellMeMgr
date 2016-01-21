@@ -46,7 +46,8 @@
   	where a.id = #{id,jdbcType=INTEGER}
   </select>
   <select id="getAdList" resultMap="resultAdvertisementMap" parameterType="java.lang.Integer" >
-  	select *
+  	select <include refid="Base_Column_List" />,
+  	(select count(cc.id) from t_customer_collection cc where cc.collection_type = 2 and cc.target_id = #{id,jdbcType=INTEGER}) as collectionCount
   	from t_ad a
   	where a.id= #{id,jdbcType=INTEGER}
   </select>

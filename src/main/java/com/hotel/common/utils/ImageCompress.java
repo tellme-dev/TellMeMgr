@@ -101,7 +101,7 @@ public class ImageCompress {
 
     public static void imageCompress(String path, String fileName,
             String toFileName, float scale) {
-        imageCompress(path, fileName, toFileName, scale, 0.75f);
+        imageCompress(path, fileName, toFileName, scale, 0.1f);
     }
 
 //    private static float getRatio(int width, int height, int maxWidth,

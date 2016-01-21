@@ -116,6 +116,18 @@ public class BbsController {
 		Result<BbsVM> result = new Result<BbsVM>();
 		try{
 			BbsVM b = bbsService.loadBbsById(bbsId);
+			/*添加用户是否已点赞*/
+			Bbs bbs = new Bbs();
+			bbs.setCustomerId(customerId);
+			bbs.setBbsType(3);
+			bbs.setTargetType(b.getTargetType());
+			bbs.setTargetId(b.getId());
+			int count = bbsService.countByBbs(bbs);
+			if(count>0){
+				b.setIsAgreed(true);
+			}else{
+				b.setIsAgreed(false);
+			}
 			/*添加用户是否已收藏*/
 			CustomerCollection cc = new CustomerCollection();
 			cc.setCustomerId(customerId);
