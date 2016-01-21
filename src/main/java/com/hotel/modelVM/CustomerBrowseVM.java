@@ -2,11 +2,19 @@ package com.hotel.modelVM;
 
 
 public class CustomerBrowseVM {
+	private int id;
 	private int type;
 	private HotelListInfoVM hotel;
 	private AdvertisementListInfoVM advertisement;
 	private BbsVM bbs;
 	
+	
+	public int getId() {
+		return id;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public int getType() {
 		return type;
 	}

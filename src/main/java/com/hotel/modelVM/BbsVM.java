@@ -12,7 +12,34 @@ public class BbsVM extends Bbs {
 	private Integer collectionCount;//收藏次数
 	private String categoryName;
 	private List<BbsVM> children;
-    
+	private String uuid;//随机数 上传图片时作文件夹
+	private Boolean isAgreed;
+	private Boolean isCollected;
+
+	public Boolean getIsCollected() {
+		return isCollected;
+	}
+
+	public void setIsCollected(Boolean isCollected) {
+		this.isCollected = isCollected;
+	}
+
+	public Boolean getIsAgreed() {
+		return isAgreed;
+	}
+
+	public void setIsAgreed(Boolean isAgreed) {
+		this.isAgreed = isAgreed;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
+
 	public List<BbsVM> getChildren() {
 		return children;
 	}

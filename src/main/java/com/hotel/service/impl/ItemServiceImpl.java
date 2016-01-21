@@ -84,4 +84,10 @@ public class ItemServiceImpl implements ItemService{
 		return itemMapper.selectByPrimaryKey(id);
 	}
 
+	@Override
+	public List<ItemVM> getItemVMByTagId(int tagId, int num) {
+		// TODO Auto-generated method stub
+		return itemMapper.getItemVMByTagId(tagId,num);
+	}
+
 }

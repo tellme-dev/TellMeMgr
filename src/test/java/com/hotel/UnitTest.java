@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -14,11 +15,18 @@ import org.mybatis.generator.exception.InvalidConfigurationException;
 import org.mybatis.generator.exception.XMLParserException;
 import org.mybatis.generator.internal.DefaultShellCallback;
 
+import com.hotel.common.utils.GeneralUtil;
+import com.hotel.common.utils.PathConfig;
+
 public class UnitTest {
 	@Test
 	public  void main()  {
-        genCfg();
+		test();
     }
+	public void test(){
+		String time = GeneralUtil.dateToStrLong(new Date());
+		System.out.println(new Date().getTime());
+	}
 	
 	public void genCfg(){
 		List<String> warnings = new ArrayList<String>();

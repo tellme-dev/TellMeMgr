@@ -11,6 +11,7 @@ import com.hotel.model.Bbs;
 import com.hotel.model.BbsAttach;
 import com.hotel.model.BbsCategory;
 import com.hotel.model.Comment;
+import com.hotel.model.Reply;
 import com.hotel.modelVM.BbsVM;
 
 public interface BbsService {
@@ -26,10 +27,11 @@ public interface BbsService {
 	 *  最新活动： type=1 ，热门话题：type=2 ,吐槽专区：type=3，达人推荐：type=4
 	 * @author jun
 	 * @param page 
+	 * @param customerId 
 	 * @param categoryId
 	 * @return 
 	 */
-	ListResult<BbsVM> loadBbsListByType(Page page, int type);
+	ListResult<BbsVM> loadBbsListByType(Page page, int type, int customerId);
 	/**
 	 * @author jun
 	 * @return
@@ -149,6 +151,7 @@ public interface BbsService {
 	 */
 	List<Comment> selectCommentByHotel(Map<String, Object> map);
 	int countCommentByHotel(int targetId);
+	List<Reply> selectReplyByHotelComment(String path);
 
 	/**
 	 * 删除指定主贴记录
@@ -165,6 +168,8 @@ public interface BbsService {
 	 */
 	ListResult<BbsAttach> loadBbsAttachByBbsId(int bbsId);
 	
+	List<BbsAttach> selectBaByBbsId(Integer bbsId);
+	
 	/**
 	 * 逻辑删除酒店相关评论和赞...
 	 * @author LiuTaiXiong
@@ -175,4 +180,6 @@ public interface BbsService {
 	int countDNewPraiseToCustomer(int customerId);
 	int countDNewCommentToCustomer(int customerId);
 	int updateReadStatusRead(int id);
+
+	ListResult<BbsVM> loadAdComment(Map<String, Object> map);
 }

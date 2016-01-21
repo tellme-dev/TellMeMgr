@@ -23,7 +23,13 @@ public interface CustomerBrowseMapper {
     
     int countByCustomer(int customerId);
     
+    int countByBrowse(CustomerBrowse browse);
+    
+    CustomerBrowse selectByBrowse(CustomerBrowse browse);
+    
     List<CustomerBrowse> getPageByCustomer(Map<String, Object> map);
     
     int deleteByItem(int targetId);
+    int deleteById(int id);
+    int resetById(int id);
 }

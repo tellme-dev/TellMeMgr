@@ -48,8 +48,12 @@ public class RegionController {
 	{
 		JSONObject object = JSONObject.fromObject(customerId);
 		int id = 0;
+		String regionCode = "";
 		if(object.containsKey("customerId")){
 			id = object.getInt("customerId");
+		}
+		if(object.containsKey("regionCode")){
+			regionCode = object.getString("regionCode");
 		}
 		RegionData result = new RegionData();
 		List<RegionVM> temp = this.getAllRegions();
@@ -60,7 +64,7 @@ public class RegionController {
 		
 		result.setHistoricRegions(this.getHistoricRegions(id));
 		
-		result.setHotAndNearRegions(this.getNearAndHotRegionsByCustomer(id,DEFAULT_REGION_NUM));
+		result.setHotAndNearRegions(this.getNearAndHotRegions(regionCode,DEFAULT_REGION_NUM));
 		
 		return new Result<RegionData>(result,true,"获取城市信息成功").toJson();
 	}
@@ -88,8 +92,8 @@ public class RegionController {
 	 * @param customerId
 	 * @return
 	 */
-	private List<RegionVM> getNearAndHotRegionsByCustomer(int customerId,int defaultRegionNum){
-		List<Region> temp = regionService.getNearAndHotRegionsByCustomer(customerId, defaultRegionNum);
+	private List<RegionVM> getNearAndHotRegions(String regionCode,int defaultRegionNum){
+		List<Region> temp = regionService.getNearAndHotRegions(regionCode, defaultRegionNum);
 		List<RegionVM> result = new ArrayList<RegionVM>();
 		if(temp ==null||temp.size() ==0){
 			return null;

@@ -120,10 +120,28 @@
     	limit #{pageStart}, #{pageSize}
     </if>
   </select>
+  <select id="countByBrowse" parameterType="com.hotel.model.CustomerBrowse" resultType="java.lang.Integer">
+    select count(id) from t_customer_browse 
+    where customer_id = #{customerId,jdbcType=INTEGER} and target_type = #{targetType,jdbcType=INTEGER} and target_id = #{targetId,jdbcType=INTEGER} and deleted_time is null
+  </select>
+  <select id="selectByBrowse" parameterType="com.hotel.model.CustomerBrowse" resultType="com.hotel.model.CustomerBrowse">
+    select 
+	<include refid="Base_Column_List" /> 
+	from t_customer_browse 
+    where customer_id = #{customerId,jdbcType=INTEGER} and target_type = #{targetType,jdbcType=INTEGER} and target_id = #{targetId,jdbcType=INTEGER}
+  </select>
   
   <update id="deleteByItem" parameterType="java.lang.Integer">
     update t_customer_browse set deleted_time = NOW()
     where target_type=1 and target_id = #{targetId,jdbcType=INTEGER}
+  </update>
+  <update id="deleteById" parameterType="java.lang.Integer">
+    update t_customer_browse set deleted_time = NOW()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="resetById" parameterType="java.lang.Integer">
+    update t_customer_browse set deleted_time = null, visit_time = NOW()
+    where id = #{id,jdbcType=INTEGER}
   </update>
   
 </mapper>

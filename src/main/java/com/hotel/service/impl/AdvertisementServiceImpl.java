@@ -17,11 +17,12 @@ import com.hotel.common.utils.Page;
 import com.hotel.dao.AdDetailMapper;
 import com.hotel.dao.AdvertisementMapper;
 import com.hotel.dao.BannerDetailMapper;
+import com.hotel.dao.BbsMapper;
 import com.hotel.model.AdDetail;
 import com.hotel.model.Advertisement;
 import com.hotel.model.BannerDetail;
+import com.hotel.model.Bbs;
 import com.hotel.modelVM.AdvertisementVM;
-import com.hotel.modelVM.BbsVM;
 import com.hotel.service.AdvertisementService;
 import com.hotel.viewmodel.AdvertisementWebVM;
 
@@ -35,6 +36,8 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 	private AdDetailMapper adDetailMapper;
 	@Autowired
 	private BannerDetailMapper bannerDetailMapper;
+	@Autowired
+	private BbsMapper bbsMapper;
 
 	@Override
 	public List<AdvertisementWebVM> getAdPageList(Map<String,Object> map) {
@@ -209,6 +212,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		map.put("pageNo", page.getPageNo());
 		map.put("pageSize", page.getPageSize());
 		map.put("pageEnd",page.getPageSize()*page.getPageNo());
+		map.put("isUsed", true);
 		map.put("positionType", 3);
 		List<AdvertisementVM> list = advertisementMapper.selectWithPage(map);
 		int total = advertisementMapper.countByMap(map);
@@ -222,6 +226,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("targetType", 1);
 		map.put("targetId", hotelId);
+		map.put("isUsed", true);
 		int total = advertisementMapper.countByMap(map);
 		List<AdvertisementVM> list = advertisementMapper.selectAdListByMap(map);
 		return new ListResult<AdvertisementVM>(total,list);
@@ -233,5 +238,26 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("id", adId);
 		return advertisementMapper.selectByMap(map);
+	}
+
+	@Override
+	public void saveAdComment(Bbs bbs) {
+		// TODO Auto-generated method stub
+		//parentId,targetId,text,customerId前台传过来
+		bbs.setId(0);
+		bbs.setBbsType(2);
+		bbs.setTargetType(2);
+		bbs.setLevel(0);
+		bbs.setCreateTime(new Date());
+		bbs.setTimeStamp(new Date());
+		if(bbs.getParentId() != 0&&bbs.getParentId() != null){//回复
+			bbs.setPostType(1);
+			bbs.setLevel(3);
+			bbs.setPath(bbs.getTargetId().toString()+"."+bbs.getParentId().toString());
+		}else{//评论
+			bbs.setLevel(2);
+			bbs.setPath(bbs.getTargetId().toString());
+		}
+		bbsMapper.insertSelective1(bbs);
 	}
 }

@@ -114,6 +114,12 @@
     from t_customer_collection
     where customer_id = #{customerId,jdbcType=INTEGER} and collection_type = #{collectionType,jdbcType=INTEGER} and target_id = #{targetId,jdbcType=INTEGER}
   </select>
+  <select id="selectByCustomerCollection" resultType="com.hotel.model.CustomerCollection" parameterType="com.hotel.model.CustomerCollection" >
+    select 
+    <include refid="Base_Column_List" /> 
+    from t_customer_collection
+    where customer_id = #{customerId,jdbcType=INTEGER} and collection_type = #{collectionType,jdbcType=INTEGER} and target_id = #{targetId,jdbcType=INTEGER}
+  </select>
   
   <select id="countByCustomer" resultType="java.lang.Integer" parameterType="java.lang.Integer" >
     select count(id) 
@@ -133,6 +139,16 @@
     update t_customer_collection
     set deleted_time = NOW()
     where collection_type = 1 and target_id = #{targetId,jdbcType=INTEGER}
+  </update>
+  <update id="deleteById" parameterType="java.lang.Integer" >
+    update t_customer_collection
+    set deleted_time = NOW()
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="resetById" parameterType="java.lang.Integer" >
+    update t_customer_collection
+    set deleted_time = null, create_time = NOW()
+    where id = #{id,jdbcType=INTEGER}
   </update>
   
 </mapper>
