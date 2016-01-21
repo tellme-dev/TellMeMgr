@@ -1503,6 +1503,56 @@ public class CustomerController {
 		return new Result<String>("", false, "点赞失败");
 	}
 	
+//	/**
+//	 * 查询是否点赞
+//	 * @param json
+//	 * @return
+//	 */
+//	@RequestMapping(value = "/getIsPraised.do", produces = "application/json;charset=UTF-8")
+//	public @ResponseBody Result<String> getIsPraised(
+//			@RequestParam(value = "json", required = false) String json)
+//	{
+//		int praiseType = -1;
+//		int customerId = 0;
+//		int targetId = 0;
+//		try{
+//			JSONObject jsonObject = JSONObject.fromObject(json);
+//			if(jsonObject.containsKey("praiseType")){
+//				praiseType = jsonObject.getInt("praiseType");
+//			}
+//			if(jsonObject.containsKey("customerId")){
+//				customerId = jsonObject.getInt("customerId");
+//			}
+//			if(jsonObject.containsKey("targetId")){
+//				targetId = jsonObject.getInt("targetId");
+//			}
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			return new Result<String>("", false, "json解析异常");
+//		}
+//		if(praiseType < 0 || customerId < 1 || targetId < 1){
+//			return new Result<String>("", false, "请求无效");
+//		}
+//		
+//		Bbs bbs = new Bbs();
+//		bbs.setCustomerId(customerId);
+//		bbs.setBbsType(3);
+//		bbs.setTargetType(praiseType);
+//		bbs.setTargetId(targetId);
+//		try{
+//			//相同数据检查
+//			int bbsCount = bbsService.countByBbs(bbs);
+//			//已点赞
+//			if(bbsCount > 0){
+//				return new Result<String>(null, true, "您已点赞");
+//			}else{//未点赞
+//				return new Result<String>(null, true, "未点赞");
+//			}
+//		}catch(Exception e){
+//			return new Result<String>(null, false, "获取数据错误");
+//		}
+//	}
+	
 	/**
 	 * 保存用户点赞（包括酒店(服务)、广告(专题)、论坛等）
 	 * @author LiuTaiXiong

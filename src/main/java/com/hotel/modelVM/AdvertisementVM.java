@@ -14,6 +14,34 @@ public class AdvertisementVM extends Advertisement{
 	private Integer collectionCount;
 	
 	private Integer answerCount;
+	
+	private Boolean isAgreed;
+	
+	private Boolean isCollected;
+
+	public Boolean getIsCollected() {
+		return isCollected;
+	}
+
+	public void setIsCollected(Boolean isCollected) {
+		this.isCollected = isCollected;
+	}
+
+	public List<AdDetail> getAdDetails() {
+		return adDetails;
+	}
+
+	public void setAdDetails(List<AdDetail> adDetails) {
+		this.adDetails = adDetails;
+	}
+
+	public Boolean getIsAgreed() {
+		return isAgreed;
+	}
+
+	public void setIsAgreed(Boolean isAgreed) {
+		this.isAgreed = isAgreed;
+	}
 
 	public Integer getAnswerCount() {
 		return answerCount;

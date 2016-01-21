@@ -230,7 +230,7 @@
 		LEFT JOIN t_Item_tag c ON b.item_tag_id = c.id
 		LEFT JOIN t_item_detail d on a.id = d.item_id
 		LEFT JOIN t_hotle e on a.hotel_id = e.id
-		WHERE c.id = 62
+		WHERE c.id = 59
 		GROUP BY a.hotel_id
 		ORDER BY a.score DESC
 		LIMIT 0,#{0};
@@ -240,7 +240,7 @@
 	LEFT JOIN t_item b on a.id = b.hotel_id
 	LEFT JOIN t_item_tag_association c on b.id = c.item_id
 	LEFT JOIN t_Item_tag d on  c.item_tag_id = d.id
-	WHERE instr(a.name,#{0})>0 or instr(a.text,#{0})>0 and d.id = 1
+	WHERE instr(a.name,#{0})>0 and d.id = 59 or instr(a.text,#{0})>0 and d.id = 59
 	ORDER BY b.score DESC
 	LIMIT 0,5;
   </select>

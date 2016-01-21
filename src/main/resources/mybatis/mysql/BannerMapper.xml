@@ -95,7 +95,7 @@
 		when 1 THEN '首页顶部' 
 		when 2 THEN '首页底部'
 		when 3 THEN '发现'  END as position,
-    (SELECT GROUP_CONCAT(a.name) FROM t_banner_detail bad,t_ad a WHERE bad.banner_id = b.id and a.id = bad.ad_id) as adName
+    (SELECT GROUP_CONCAT(a.name) FROM t_banner_detail bad,t_ad a WHERE bad.banner_id = b.id and a.id = bad.ad_id and a.is_used = 1) as adName
     from t_banner b
   </select>
   <select id="countByMap" resultType="java.lang.Integer" parameterType="java.util.Map" >
@@ -110,7 +110,7 @@
 		when 2 THEN '首页底部'
 		when 3 THEN '发现'  END as position,
     (SELECT GROUP_CONCAT(bad.ad_id) FROM t_banner_detail bad WHERE bad.banner_id = b.id) as adIds,
-    (SELECT GROUP_CONCAT(a.name) FROM t_banner_detail bad,t_ad a WHERE bad.banner_id = b.id and a.id = bad.ad_id) as adName
+    (SELECT GROUP_CONCAT(a.name) FROM t_banner_detail bad,t_ad a WHERE bad.banner_id = b.id and a.id = bad.ad_id and a,is_used = 1) as adName
     from t_banner b
     where 1=1
     <if test="id != null" >

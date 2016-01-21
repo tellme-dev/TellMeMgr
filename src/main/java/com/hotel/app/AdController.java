@@ -25,11 +25,13 @@ import com.hotel.common.Result;
 import com.hotel.common.utils.Page;
 import com.hotel.common.utils.PathConfig;
 import com.hotel.model.Bbs;
+import com.hotel.model.CustomerCollection;
 import com.hotel.modelVM.AdParam;
 import com.hotel.modelVM.AdvertisementVM;
 import com.hotel.modelVM.BbsVM;
 import com.hotel.service.AdvertisementService;
 import com.hotel.service.BbsService;
+import com.hotel.service.CustomerCollectionService;
 import com.hotel.service.HotelService;
 import com.hotel.service.ItemTagService;
 
@@ -51,6 +53,8 @@ public class AdController {
 	@Autowired ItemTagService itemTagService;
 	
 	@Autowired BbsService bbsService;
+	
+	@Autowired CustomerCollectionService customerCollectionService;
 	/**
 	 * 查询获取广告信息
 	 * @param request
@@ -147,6 +151,7 @@ public class AdController {
 		}
 	}
 	/**
+	 * @jun
 	 * 加载单个广告信息
 	 */
 	@ResponseBody
@@ -157,9 +162,13 @@ public class AdController {
 	{
 		JSONObject jObj = JSONObject.fromObject(adParam);
 		int adId = 0;
+		int customerId = -1;
 		try{
 			if(jObj.containsKey("id")){
 				adId = jObj.getInt("id");
+			}
+			if(jObj.containsKey("customerId")){
+				customerId = jObj.getInt("customerId");
 			}
 		}catch(Exception e){
 			e.printStackTrace();
@@ -168,6 +177,29 @@ public class AdController {
 		
         try{
         	AdvertisementVM ad = adService.loadAdById(adId);
+        	/*添加用户是否已点赞*/
+        	Bbs bbs = new Bbs();
+        	bbs.setCustomerId(customerId);
+        	bbs.setBbsType(3);
+        	bbs.setTargetType(2);
+        	bbs.setTargetId(ad.getId());
+        	int count = bbsService.countByBbs(bbs);
+        	if(count>0){//已赞
+        		ad.setIsAgreed(true);
+        	}else{
+        		ad.setIsAgreed(false);
+        	}
+        	/*添加用户是否已收藏*/
+			CustomerCollection cc = new CustomerCollection();
+			cc.setCustomerId(customerId);
+			cc.setCollectionType(2);
+			cc.setTargetId(ad.getId());
+			CustomerCollection col = customerCollectionService.selectByCustomerCollection(cc);
+			if(col!=null){
+				ad.setIsCollected(true);
+			}else{
+				ad.setIsCollected(false);
+			}
         	return new Result<AdvertisementVM>(ad,true,"加载数据成功").toJson();
 		}catch(Exception e){
 			

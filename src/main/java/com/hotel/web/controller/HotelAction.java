@@ -23,6 +23,7 @@ import com.hotel.common.BaseResult;
 import com.hotel.common.JsonResult;
 import com.hotel.common.utils.Constants;
 import com.hotel.common.utils.FileUtil;
+import com.hotel.common.utils.ImageCompress;
 import com.hotel.common.utils.ImgBase64;
 import com.hotel.common.utils.Page;
 import com.hotel.common.utils.PathConfig;
@@ -155,6 +156,7 @@ public class HotelAction extends BaseAction {
 				//arr[0]
 				ImgBase64.GenerateImage(arr[1], filePath+fileName);
 				url = "picture/hotel/logo/"+fileName;
+				ImageCompress.imageCompress(filePath+"/", fileName, fileName, 1.0f, 0.75f);
 			}
 			
 		}
@@ -324,7 +326,7 @@ public class HotelAction extends BaseAction {
 						fileName += "."+suffix;
 						//arr[0]
 						ImgBase64.GenerateImage(arr[1], filePath+fileName);
-						
+						ImageCompress.imageCompress(filePath+"/", fileName, fileName, 1.0f, 0.3f);
 						detail.setImageUrl("picture/hotel/item/h"+hotelId+"/" + fileName);
 						
 					}

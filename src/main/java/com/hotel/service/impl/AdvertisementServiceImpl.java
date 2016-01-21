@@ -212,6 +212,7 @@ public class AdvertisementServiceImpl implements AdvertisementService {
 		map.put("pageNo", page.getPageNo());
 		map.put("pageSize", page.getPageSize());
 		map.put("pageEnd",page.getPageSize()*page.getPageNo());
+		map.put("isUsed", true);
 		map.put("positionType", 3);
 		List<AdvertisementVM> list = advertisementMapper.selectWithPage(map);
 		int total = advertisementMapper.countByMap(map);
