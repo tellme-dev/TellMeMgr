@@ -1,6 +1,5 @@
 package com.hotel.app;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.hotel.common.ListResult;
+import com.hotel.common.Result;
+import com.hotel.link.SocketRouter;
 import com.hotel.modelVM.RcuVM;
 import com.hotel.service.RcuService;
 
@@ -41,6 +42,16 @@ public class RcuController {
 			return new ListResult<>(null, false, "未查询到任何RCU信息").toJson();
 		}
 		return new ListResult<>(list,true,"查询RCU成功").toJson();
+	}
+	
+	@RequestMapping(value = "sendACOrder.do", produces = "application/json;charset=UTF-8")
+	public @ResponseBody String sendACOrder(
+			@RequestParam(value = "lampOrder", required = false) String lampOrder,
+			HttpServletRequest request)
+	{
+		JSONObject jObj = JSONObject.fromObject(lampOrder);
+		SocketRouter.execute(jObj);
+		return "";
 	}
 
 }

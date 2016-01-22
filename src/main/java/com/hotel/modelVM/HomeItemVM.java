@@ -41,7 +41,7 @@ public class HomeItemVM {
 		this.hotelItems = hotelItems;
 	}
 	public HomeItemVM(String name){
-		this.itemTagId = 0;//0针对是"更多"
+		this.itemTagId = 8;//0针对是"更多"
 		this.name = name;
 		this.defaultImageUrl = "app/images/b.png";
 		this.hotelItems = new ArrayList<SwiperHotelItem>();
