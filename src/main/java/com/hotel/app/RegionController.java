@@ -1,7 +1,6 @@
 package com.hotel.app;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.hotel.common.ListResult;
 import com.hotel.common.Result;
 import com.hotel.common.utils.PinYinUtil;
 import com.hotel.model.Region;

@@ -197,10 +197,18 @@ public class FileUtil {
 				uploadFile.mkdirs();
 			}
 			mf.transferTo(uploadFile);
-			//压缩图片
-			//String toFileName = "c_"+fileName;//重命名
-			ImageCompress.imageCompress(savePath+"/", fileName, fileName, 1.0f, 0.75f);
-			//new File(savePath+"/"+fileName).delete();//删除原图片
+			
+			/*取图片大小，小于100k则不压缩*/
+			File f = new File(savePath+"/"+fileName);
+	        if (f.exists() && f.isFile()){  
+	        	if(f.length()>102400){
+					//压缩图片
+				    ImageCompress.imageCompress(savePath+"/", fileName, fileName, 1.0f, 0.25f);
+				 }
+	        }else{  
+	            System.out.println("file doesn't exist or is not a file");  
+	        }  
+			 
 			imageUrl.add("picture/ad/" + fileName);
 			
 			

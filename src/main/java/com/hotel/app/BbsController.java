@@ -229,7 +229,16 @@ public class BbsController {
         		uploadFile.mkdirs();  
             }  
         	bbsPhoto.transferTo(uploadFile); //保存
-        	//ImageCompress.imageCompress(path+"/", fileName, fileName, 1.0f, 0.75f);
+        	/*取图片大小，小于100k则不压缩*/
+			File f = new File(path+"/"+fileName);
+	        if (f.exists() && f.isFile()){  
+	        	if(f.length()>102400){
+					//压缩图片
+				    ImageCompress.imageCompress(path+"/", fileName, fileName, 0.2f, 0.5f);
+				 }
+	        }else{  
+	            System.out.println("file doesn't exist or is not a file");  
+	        }  
         	result = new Result<Bbs>(null, true, "上传成功");
         	return result.toJson();
         }catch(Exception e){
@@ -370,9 +379,13 @@ public class BbsController {
 	{
 		Result<Bbs> result = null;
 		try{
-			String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
-			String toPath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/bbs-id";
-			FileUtil.copyToOtherPath2(path, toPath,1);
+			String path = request.getSession().getServletContext().getRealPath("/")+"hotel/item";
+			File sourcefile = new File(path);
+			File[] files = sourcefile.listFiles();
+			for(File file:files){
+				String name = file.getName();
+				ImageCompress.imageCompress(path+"/", name, name, 0.2f, 0.5f);
+			}
 			result = new Result<Bbs>(null, true, "yes");
 			return result.toJson();
 		}catch(Exception e){

@@ -80,7 +80,7 @@ public class ImageCompress {
             JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
             JPEGEncodeParam param = encoder
                     .getDefaultJPEGEncodeParam(mBufferedImage);
-            param.setQuality(0.2f, true);// 压缩质量：quality
+            param.setQuality(quality, true);// 压缩质量：quality
             encoder.setJPEGEncodeParam(param);
             encoder.encode(mBufferedImage);
             out.close();

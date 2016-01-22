@@ -27,6 +27,7 @@ import com.hotel.common.Result;
 import com.hotel.common.utils.BbsContainer;
 import com.hotel.common.utils.EndecryptUtils;
 import com.hotel.common.utils.GeneralUtil;
+import com.hotel.common.utils.ImageCompress;
 import com.hotel.common.utils.PathConfig;
 import com.hotel.common.utils.StringUtil;
 import com.hotel.model.AdDetail;
@@ -1765,6 +1766,16 @@ public class CustomerController {
             }  
         	File uploadFile = new File(path,fileName);
         	customerImg.transferTo(uploadFile); //保存
+        	/*取图片大小，小于100k则不压缩*/
+			File f = new File(path+"/"+fileName);
+	        if (f.exists() && f.isFile()){  
+	        	if(f.length()>102400){
+					//压缩图片
+				    ImageCompress.imageCompress(path+"/", fileName, fileName, 0.2f, 0.5f);
+				 }
+	        }else{  
+	            System.out.println("file doesn't exist or is not a file");  
+	        }
         	result = new Result<Customer>(null, true, "上传成功");
         	return result.toJson();
         }catch(Exception e){
