@@ -80,7 +80,7 @@ public class ImageCompress {
             JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
             JPEGEncodeParam param = encoder
                     .getDefaultJPEGEncodeParam(mBufferedImage);
-            param.setQuality(quality, true);// 默认0.75
+            param.setQuality(0.2f, true);// 压缩质量：quality
             encoder.setJPEGEncodeParam(param);
             encoder.encode(mBufferedImage);
             out.close();
@@ -101,7 +101,7 @@ public class ImageCompress {
 
     public static void imageCompress(String path, String fileName,
             String toFileName, float scale) {
-        imageCompress(path, fileName, toFileName, scale, 0.75f);
+        imageCompress(path, fileName, toFileName, scale, 0.1f);
     }
 
 //    private static float getRatio(int width, int height, int maxWidth,

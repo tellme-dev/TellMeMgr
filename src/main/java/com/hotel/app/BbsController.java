@@ -20,18 +20,23 @@ import com.hotel.common.Result;
 import com.hotel.common.utils.FileUtil;
 import com.hotel.common.utils.ImageCompress;
 import com.hotel.common.utils.Page;
+import com.hotel.common.utils.PathConfig;
 import com.hotel.model.Bbs;
 import com.hotel.model.BbsAttach;
 import com.hotel.model.BbsCategory;
+import com.hotel.model.CustomerCollection;
 import com.hotel.model.SearchText;
 import com.hotel.modelVM.BbsVM;
 import com.hotel.service.BbsService;
+import com.hotel.service.CustomerCollectionService;
 
 @Controller
 @RequestMapping("/app/bbs")
 public class BbsController {
 	
 	@Autowired BbsService bbsService;
+	
+	@Autowired CustomerCollectionService customerCollectionService;
 	/**
 	 * 获取社区分类标签
 	 * @author jun
@@ -68,11 +73,12 @@ public class BbsController {
 		int type = jObj.getInt("type");// 最新活动： type=1 ，热门话题：type=2 ,吐槽专区：type=3，达人推荐：type=4
 		int pageNo = jObj.getInt("pageNo");
 		int pageSize = jObj.getInt("pageSize");
+		int customerId = jObj.getInt("customerId");//未登录状态：0
 		try{
 			Page page = new Page();
 			page.setPageNo(pageNo);
 			page.setPageSize(pageSize);
-			ListResult<BbsVM> result = bbsService.loadBbsListByType(page,type);
+			ListResult<BbsVM> result = bbsService.loadBbsListByType(page,type,customerId);
 			return result.toJson();
 		}catch(Exception e){
 			ListResult<BbsVM> result = new ListResult<BbsVM>(null, false, "获取数据失败");
@@ -93,11 +99,46 @@ public class BbsController {
 			@RequestParam(value = "bbsParam", required = false) String bbsParam,
 			HttpServletRequest request){
 		JSONObject jObj = JSONObject.fromObject(bbsParam);
-		Bbs bbs = (Bbs) JSONObject.toBean(jObj,Bbs.class);
-		int id = bbs.getId();
+		//Bbs bbs = (Bbs) JSONObject.toBean(jObj,Bbs.class);
+		int bbsId = 0;
+		int customerId = 0;
+		try{
+			if(jObj.containsKey("id")){
+				bbsId = jObj.getInt("id");
+			}
+			if(jObj.containsKey("customerId")){
+				customerId = jObj.getInt("customerId");
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+			return new Result<String>("", false, "json解析异常").toJson();
+		}
 		Result<BbsVM> result = new Result<BbsVM>();
 		try{
-			BbsVM b = bbsService.loadBbsById(id);
+			BbsVM b = bbsService.loadBbsById(bbsId);
+			/*添加用户是否已点赞*/
+			Bbs bbs = new Bbs();
+			bbs.setCustomerId(customerId);
+			bbs.setBbsType(3);
+			bbs.setTargetType(b.getTargetType());
+			bbs.setTargetId(b.getId());
+			int count = bbsService.countByBbs(bbs);
+			if(count>0){
+				b.setIsAgreed(true);
+			}else{
+				b.setIsAgreed(false);
+			}
+			/*添加用户是否已收藏*/
+			CustomerCollection cc = new CustomerCollection();
+			cc.setCustomerId(customerId);
+			cc.setCollectionType(3);
+			cc.setTargetId(b.getId());
+			CustomerCollection col = customerCollectionService.selectByCustomerCollection(cc);
+			if(col!=null){
+				b.setIsCollected(true);
+			}else{
+				b.setIsCollected(false);
+			}
 			result = new Result<BbsVM>(b,true,"获取数据成功");
 			return result.toJson();
 		}catch(Exception e){
@@ -174,10 +215,9 @@ public class BbsController {
     		HttpServletRequest request) { 
 		Result<Bbs> result = null;
         try { 
-        	//String path = request.getSession().getServletContext().getRealPath("Photo"); 
-        	String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
-//        	String path = getClass().getResource("/").getFile().toString();
-//			path = path.substring(0, (path.length() - 16))+"washPhoto";
+        	//String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
+        	String rootPath = PathConfig.getNewPathConfig();
+        	String path = rootPath+"app/bbs/temp";
         	String fileName = bbsPhoto.getOriginalFilename();
         	//分割出customerId作为左后一级的文件夹
         	String[] str = fileName.split("_");

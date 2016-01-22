@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hotel.common.ListResult;
 import com.hotel.common.utils.Page;
+import com.hotel.common.utils.PathConfig;
 import com.hotel.dao.BbsAttachMapper;
 import com.hotel.dao.BbsCategoryMapper;
 import com.hotel.dao.BbsMapper;
+import com.hotel.dao.CustomerCollectionMapper;
 import com.hotel.model.Bbs;
 import com.hotel.model.BbsAttach;
 import com.hotel.model.BbsCategory;
 import com.hotel.model.Comment;
+import com.hotel.model.CustomerCollection;
 import com.hotel.model.Reply;
 import com.hotel.modelVM.BbsVM;
 import com.hotel.service.BbsService;
@@ -34,6 +38,8 @@ public class BbsServiceImpl implements BbsService {
 	@Autowired BbsCategoryMapper bbsCategoryMapper;
 	
 	@Autowired BbsAttachMapper bbsAttachMapper;
+	
+	@Autowired CustomerCollectionMapper customerCollectionMapper;
 
 	@Override
 	public ListResult<BbsCategory> loadBbsCategoryList() {
@@ -44,7 +50,7 @@ public class BbsServiceImpl implements BbsService {
 	}
 
 	@Override
-	public ListResult<BbsVM> loadBbsListByType(Page page,int type) {
+	public ListResult<BbsVM> loadBbsListByType(Page page,int type,int customerId) {
 		// TODO Auto-generated method stub
 		Map<String,Object> map = new HashMap<String, Object>();
 		map.put("pageNo", page.getPageNo());
@@ -54,8 +60,34 @@ public class BbsServiceImpl implements BbsService {
 		map.put("bbsType", 1);//属于论坛
 		map.put("deleteUserId", null);
 		map.put("type", type);
-		List<BbsVM> list = bbsMapper.selectByMap(map);
 		int total = bbsMapper.countByMap(map);
+		List<BbsVM> list = bbsMapper.selectByMap(map);
+		
+		for(BbsVM bbsVM:list){
+			/*添加用户是否已点赞*/
+			Bbs bbs = new Bbs();
+			bbs.setCustomerId(customerId);
+			bbs.setBbsType(3);
+			bbs.setTargetType(bbsVM.getTargetType());
+			bbs.setTargetId(bbsVM.getId());
+			int count = bbsMapper.countByBbs(bbs);
+			if(count>0){
+				bbsVM.setIsAgreed(true);
+			}else{
+				bbsVM.setIsAgreed(false);
+			}
+			/*添加用户是否已收藏*/
+			CustomerCollection cc = new CustomerCollection();
+			cc.setCustomerId(customerId);
+			cc.setCollectionType(3);
+			cc.setTargetId(bbsVM.getId());
+			CustomerCollection col = customerCollectionMapper.selectByCustomerCollection(cc);
+			if(col!=null){
+				bbsVM.setIsCollected(true);
+			}else{
+				bbsVM.setIsCollected(false);
+			}
+		}
 		ListResult<BbsVM> result = new ListResult<BbsVM>(total,list);
 		return result;
 	}
@@ -74,8 +106,11 @@ public class BbsServiceImpl implements BbsService {
 				bbsMapper.insertSelective(bbs);
 				/*将临时文件中的图片移动到目标文件夹*/
 				List<String> fileUrls = new ArrayList<String>();//存放图片Url
-				String sourcePath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp/"+bbs.getUuid();
-				String toPath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/"+bbs.getId();
+				//String sourcePath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp/"+bbs.getUuid();
+				//String toPath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/"+bbs.getId();
+				String rootPath = PathConfig.getNewPathConfig();
+				String sourcePath = rootPath + "app/bbs/temp/"+bbs.getUuid();
+				String toPath = rootPath+"app/bbs/"+bbs.getId();
 				File sourcefile = new File(sourcePath);
 				File dirPath = new File(toPath);
 				if(!dirPath.exists()){
@@ -89,7 +124,7 @@ public class BbsServiceImpl implements BbsService {
 						//过滤出文件名以uuid开头的
 						if(name.startsWith(bbs.getUuid()+"_")){
 							file.renameTo(new File(toPath,file.getName()));
-							fileUrls.add("app/bbs/"+bbs.getId()+"/"+name);
+							fileUrls.add("picture/app/bbs/"+bbs.getId()+"/"+name);
 						}
 					}
 					/*遍历 insert图片*/

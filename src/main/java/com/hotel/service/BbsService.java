@@ -27,10 +27,11 @@ public interface BbsService {
 	 *  最新活动： type=1 ，热门话题：type=2 ,吐槽专区：type=3，达人推荐：type=4
 	 * @author jun
 	 * @param page 
+	 * @param customerId 
 	 * @param categoryId
 	 * @return 
 	 */
-	ListResult<BbsVM> loadBbsListByType(Page page, int type);
+	ListResult<BbsVM> loadBbsListByType(Page page, int type, int customerId);
 	/**
 	 * @author jun
 	 * @return

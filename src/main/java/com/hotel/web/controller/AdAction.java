@@ -23,6 +23,7 @@ import com.hotel.common.Result;
 import com.hotel.common.utils.Constants;
 import com.hotel.common.utils.FileUtil;
 import com.hotel.common.utils.Page;
+import com.hotel.common.utils.PathConfig;
 import com.hotel.model.Advertisement;
 import com.hotel.model.Function;
 import com.hotel.model.Hotel;
@@ -141,8 +142,9 @@ public class AdAction extends BaseAction {
 					//创建一个通用的多部分解析器  
 			        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());  
 			        //判断 request 是否有文件上传,即多部分请求  
-			        if(multipartResolver.isMultipart(request)){  
-			        	List<String> imageUrl = FileUtil.uploadMultiFile2(request, "image/ad", FileUtil.RELATIVELY_PATH);
+			        if(multipartResolver.isMultipart(request)){ 
+			        	String rootPath = PathConfig.getNewPathConfig();//获取绝对路径
+			        	List<String> imageUrl = FileUtil.uploadMultiFile2(request, rootPath+"ad", FileUtil.ABSOLUTE_PATH);
 			        	ad.setImageUrlList(imageUrl);
 			        }
 			        if(ad.getBbsId()!=null&&!"".equals(ad.getBbsId())){

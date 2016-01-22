@@ -69,4 +69,6 @@ public interface BbsMapper {
 	int deleteByItem(int targetId);
 	
 	int updateReadStatusRead(int id);
+
+	List<BbsVM> selectListByMap(Map<String, Object> map);
 }

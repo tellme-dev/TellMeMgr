@@ -84,7 +84,7 @@ public class BannerAction {
 			/*根据Id查询所选择的banner详情*/
 			banner = bannerService.loadBannerById(id);
 			request.setAttribute("bannerinfo", banner);
-			/*根据bannerId该banner下的广告*/
+			/*根据bannerId查询该banner下的广告*/
 			bdList = bannerService.loadBannerDetailListByBannerId(id);
 			request.setAttribute("type", Constants.EDIT_TYPE);
 		}else{

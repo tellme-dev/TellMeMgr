@@ -46,7 +46,8 @@
   	where a.id = #{id,jdbcType=INTEGER}
   </select>
   <select id="getAdList" resultMap="resultAdvertisementMap" parameterType="java.lang.Integer" >
-  	select *
+  	select <include refid="Base_Column_List" />,
+  	(select count(cc.id) from t_customer_collection cc where cc.collection_type = 2 and cc.target_id = #{id,jdbcType=INTEGER}) as collectionCount
   	from t_ad a
   	where a.id= #{id,jdbcType=INTEGER}
   </select>
@@ -268,6 +269,9 @@
     <if test="positionType != null">
         and b.position_type = #{positionType,jdbcType=INTEGER}
     </if>
+    <if test="isUsed != null" >
+        and a.is_used = #{isUsed,jdbcType=BIT}
+      </if>
     ORDER BY bd.sort
   	<if test="pageEnd != null and pageSize != null and pageStart>-1 and pageSize>-1">
         limit 0, #{pageEnd}
