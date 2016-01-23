@@ -112,13 +112,16 @@ public class BbsServiceImpl implements BbsService {
 				String sourcePath = rootPath + "app/bbs/temp/"+bbs.getUuid();
 				String toPath = rootPath+"app/bbs/"+bbs.getId();
 				File sourcefile = new File(sourcePath);
-				File dirPath = new File(toPath);
-				if(!dirPath.exists()){
-					dirPath.mkdirs();
-				}
+				
 				File[] files = sourcefile.listFiles();
-				//无图片
+				//有图片，移动图片到目标目录
 				if(files != null){
+					//创建目标文件夹
+					File dirPath = new File(toPath);
+					if(!dirPath.exists()){
+						dirPath.mkdirs();
+					}
+					//遍历并移动
 					for(File file:files){
 						String name = file.getName();
 						//过滤出文件名以uuid开头的
@@ -126,6 +129,11 @@ public class BbsServiceImpl implements BbsService {
 							file.renameTo(new File(toPath,file.getName()));
 							fileUrls.add("picture/app/bbs/"+bbs.getId()+"/"+name);
 						}
+					}
+					//移动完后删除文件夹
+					File[] files2 = sourcefile.listFiles();
+					if(files2 == null){
+						sourcefile.delete();
 					}
 					/*遍历 insert图片*/
 					for(String url:fileUrls){

@@ -1,5 +1,6 @@
 package com.hotel.app;
 
+import java.awt.Image;
 import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -1766,12 +1767,20 @@ public class CustomerController {
             }  
         	File uploadFile = new File(path,fileName);
         	customerImg.transferTo(uploadFile); //保存
-        	/*取图片大小，小于100k则不压缩*/
+        	/*取图片大小，小于200k则不压缩*/
 			File f = new File(path+"/"+fileName);
 	        if (f.exists() && f.isFile()){  
-	        	if(f.length()>102400){
-					//压缩图片
-				    ImageCompress.imageCompress(path+"/", fileName, fileName, 0.2f, 0.5f);
+	        	if(f.length()>204800){
+				    Image image = javax.imageio.ImageIO.read(f);
+		            int imageWidth = image.getWidth(null);
+		            int imageHeight = image.getHeight(null);
+		            //手机长图压缩方式
+		            if(imageWidth<imageHeight&&imageWidth>2000){
+		            	ImageCompress.imageCompress(path+"/", fileName, fileName, 0.2f, 0.5f);
+		            }else{
+		            	//压缩手机相册选择的其他图片
+		            	ImageCompress.imageCompress(path+"/", fileName, fileName, 1.0f,540,3000);
+		            }
 				 }
 	        }else{  
 	            System.out.println("file doesn't exist or is not a file");  
