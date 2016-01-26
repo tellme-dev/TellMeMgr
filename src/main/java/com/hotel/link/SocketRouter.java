@@ -130,12 +130,12 @@ public class SocketRouter {
 				String result="#@" + jo.toString() +"@#";
 				rcuSession.write(result); //转发到rcu
 
-			}else if ("ctst".equals(type) && "rcu".equals(dst) && rcuSession !=null ){
+			}else if ("ctst".equals(type) && "svr".equals(dst) && rcuSession !=null ){
 				/**
 				 * 控制命令 
 				 * 发送都rcu端
 				 */
-				String result="#@" + jo.toString() +"@#";
+				String result=jo.toString() +"@#";
 				rcuSession.write(result);
 				
 			}else if("ctrc".equals(type) && "app".equals(dst) && appSession !=null){
