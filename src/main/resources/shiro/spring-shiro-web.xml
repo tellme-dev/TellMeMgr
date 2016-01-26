@@ -117,6 +117,7 @@
                 /source/** = anon
                 /image/** = anon
                 /hotel/** = anon
+                /appWs/** = anon
                 /picture/** = anon
                 /unauthorized.jsp = anon
                 /login.jsp = authc
