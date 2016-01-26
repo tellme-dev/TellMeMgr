@@ -73,14 +73,10 @@ public class ImageCompress {
 
             FileOutputStream out = new FileOutputStream(path + toFileName);
             System.out.println(path + toFileName);
-            // JPEGEncodeParam param =
-            // encoder.getDefaultJPEGEncodeParam(bufferedImage);
-            // param.setQuality(0.9f, true);
-            // encoder.setJPEGEncodeParam(param);
             JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
             JPEGEncodeParam param = encoder
                     .getDefaultJPEGEncodeParam(mBufferedImage);
-            param.setQuality(0.2f, true);// 压缩质量：quality
+            param.setQuality(quality, true);// 压缩质量：quality
             encoder.setJPEGEncodeParam(param);
             encoder.encode(mBufferedImage);
             out.close();
@@ -98,24 +94,84 @@ public class ImageCompress {
         	System.out.println("1111111111111");
         }
     }
+    
+    public static void imageCompress(String path, String fileName,
+            String toFileName, float quality,int width,int height) {//String toFileName, float scale, float quality, int width, int height)
+        try { // 原图路径 原图名称 目标路径 压缩比率0.5 0.75 原图宽度 原图高度
+            long start = System.currentTimeMillis();
+            Image image = javax.imageio.ImageIO.read(new File(path + fileName));
+            int imageWidth = image.getWidth(null);
+            int imageHeight = image.getHeight(null);
+//            if (scale > 0.5)
+//                scale = 0.5f;// 默认压缩比为0.5，压缩比越大，对内存要去越高，可能导致内存溢出
+            // 按比例计算出来的压缩比
+            float realscale = getRatio(imageWidth, imageHeight, width, height);
+            float finalScale = Math.min(1.0f, realscale);// 取压缩比最小的进行压缩
+            imageWidth = (int) (finalScale * imageWidth);
+            imageHeight = (int) (finalScale * imageHeight);
+
+            image = image.getScaledInstance(imageWidth, imageHeight,
+                    Image.SCALE_AREA_AVERAGING);
+            // Make a BufferedImage from the Image.
+            BufferedImage mBufferedImage = new BufferedImage(imageWidth,
+                    imageHeight, BufferedImage.TYPE_INT_RGB);
+            Graphics2D g2 = mBufferedImage.createGraphics();
+
+            g2.drawImage(image, 0, 0, imageWidth, imageHeight, Color.white,
+                    null);
+            g2.dispose();
+
+            float[] kernelData2 = { -0.125f, -0.125f, -0.125f, -0.125f, 2,
+                    -0.125f, -0.125f, -0.125f, -0.125f };
+            Kernel kernel = new Kernel(3, 3, kernelData2);
+            ConvolveOp cOp = new ConvolveOp(kernel, ConvolveOp.EDGE_NO_OP, null);
+            mBufferedImage = cOp.filter(mBufferedImage, null);
+
+            FileOutputStream out = new FileOutputStream(path + toFileName);
+            System.out.println(path + toFileName);
+            // JPEGEncodeParam param =
+            // encoder.getDefaultJPEGEncodeParam(bufferedImage);
+            // param.setQuality(0.9f, true);
+            // encoder.setJPEGEncodeParam(param);
+            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(out);
+            JPEGEncodeParam param = encoder
+                    .getDefaultJPEGEncodeParam(mBufferedImage);
+            param.setQuality(quality, true);// 压缩质量：quality
+            encoder.setJPEGEncodeParam(param);
+            encoder.encode(mBufferedImage);
+            out.close();
+            long end = System.currentTimeMillis();
+            System.out.println("图片：" + fileName + "，压缩时间：" + (end - start)
+                    + "ms");
+        } catch (FileNotFoundException fnf) {
+        	fnf.printStackTrace();
+        } catch (IOException ioe) {
+            System.out.println("1111111111111");
+            //ioe.printStackTrace();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+        	System.out.println("压缩成功");
+        }
+    }
 
     public static void imageCompress(String path, String fileName,
             String toFileName, float scale) {
-        imageCompress(path, fileName, toFileName, scale, 0.75f);
+        imageCompress(path, fileName, toFileName, scale, 0.1f);
     }
 
-//    private static float getRatio(int width, int height, int maxWidth,
-//            int maxHeight) {// 获得压缩比率的方法
-//        float Ratio = 1.0f;
-//        float widthRatio;
-//        float heightRatio;
-//        widthRatio = (float) maxWidth / width;
-//        heightRatio = (float) maxHeight / height;
-//        if (widthRatio < 1.0 || heightRatio < 1.0) {
-//            Ratio = widthRatio <= heightRatio ? widthRatio : heightRatio;
-//        }
-//        return Ratio;
-//    }
+    private static float getRatio(int width, int height, int maxWidth,
+            int maxHeight) {// 获得压缩比率的方法
+        float Ratio = 1.0f;
+        float widthRatio;
+        float heightRatio;
+        widthRatio = (float) maxWidth / width;
+        heightRatio = (float) maxHeight / height;
+        if (widthRatio < 1.0 || heightRatio < 1.0) {
+            Ratio = widthRatio <= heightRatio ? widthRatio : heightRatio;
+        }
+        return Ratio;
+    }
 
     public static byte[] convertImage2Type(String imageFile, String imageType)
             throws Exception {// 图片格式转换

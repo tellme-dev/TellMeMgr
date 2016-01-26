@@ -156,7 +156,17 @@ public class HotelAction extends BaseAction {
 				//arr[0]
 				ImgBase64.GenerateImage(arr[1], filePath+fileName);
 				url = "picture/hotel/logo/"+fileName;
-				ImageCompress.imageCompress(filePath+"/", fileName, fileName, 1.0f, 0.75f);
+				/*取图片大小，小于200k则不压缩*/
+				File f = new File(filePath+"/"+fileName);
+		        if (f.exists() && f.isFile()){  
+		        	if(f.length()>204800){
+						//压缩图片
+					    //ImageCompress.imageCompress(filePath+"/", fileName, fileName, 1.0f, 0.25f);
+					    ImageCompress.imageCompress(filePath+"/", fileName, fileName, 1.0f,540,3000);
+					 }
+		        }else{  
+		            System.out.println("file doesn't exist or is not a file");  
+		        }
 			}
 			
 		}
@@ -326,7 +336,18 @@ public class HotelAction extends BaseAction {
 						fileName += "."+suffix;
 						//arr[0]
 						ImgBase64.GenerateImage(arr[1], filePath+fileName);
-						ImageCompress.imageCompress(filePath+"/", fileName, fileName, 1.0f, 0.3f);
+						/*取图片大小，小于200k则不压缩*/
+						File f = new File(filePath+"/"+fileName);
+				        if (f.exists() && f.isFile()){  
+				        	if(f.length()>204800){
+								//压缩图片
+							    //ImageCompress.imageCompress(filePath+"/", fileName, fileName, 1.0f, 0.25f);
+				        		ImageCompress.imageCompress(filePath+"/", fileName, fileName, 1.0f,540,3000);
+							 }
+				        }else{  
+				            System.out.println("file doesn't exist or is not a file");  
+				        }  
+				        
 						detail.setImageUrl("picture/hotel/item/h"+hotelId+"/" + fileName);
 						
 					}

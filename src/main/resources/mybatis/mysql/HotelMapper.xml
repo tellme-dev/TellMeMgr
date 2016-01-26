@@ -248,19 +248,21 @@
   <select id="countByMap" resultType="java.lang.Integer" parameterType="java.util.Map">
     select count(*)
     from t_hotle h 
+    left join t_region r on r.id = h.region_id
     where 1=1
     <if test="regionId != null" >
-        and h.region_id = #{regionId,jdbcType=INTEGER}
+        and r.code like CONCAT(#{regionId,jdbcType=VARCHAR},'%')
     </if>
   </select>
   
   <select id="selectHotelListByMap" resultMap="resultHotelVMMap" parameterType="java.util.Map" >
     select 
-    <include refid="Base_Column_List" />
+    h.id, h.name, h.logo, h.text, h.region_id, h.longitude, h.latitude
     from t_hotle h
-    where 1=1 
+    left join t_region r on r.id = h.region_id
+    where 1=1
     <if test="regionId != null" >
-        and h.region_id = #{regionId,jdbcType=INTEGER}
+        and r.code like CONCAT(#{regionId,jdbcType=VARCHAR},'%')
     </if>
   </select>
 </mapper>

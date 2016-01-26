@@ -1,5 +1,6 @@
 package com.hotel.app;
 
+import java.awt.Image;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
@@ -116,6 +117,18 @@ public class BbsController {
 		Result<BbsVM> result = new Result<BbsVM>();
 		try{
 			BbsVM b = bbsService.loadBbsById(bbsId);
+			/*添加用户是否已点赞*/
+			Bbs bbs = new Bbs();
+			bbs.setCustomerId(customerId);
+			bbs.setBbsType(3);
+			bbs.setTargetType(b.getTargetType());
+			bbs.setTargetId(b.getId());
+			int count = bbsService.countByBbs(bbs);
+			if(count>0){
+				b.setIsAgreed(true);
+			}else{
+				b.setIsAgreed(false);
+			}
 			/*添加用户是否已收藏*/
 			CustomerCollection cc = new CustomerCollection();
 			cc.setCustomerId(customerId);
@@ -217,7 +230,24 @@ public class BbsController {
         		uploadFile.mkdirs();  
             }  
         	bbsPhoto.transferTo(uploadFile); //保存
-        	//ImageCompress.imageCompress(path+"/", fileName, fileName, 1.0f, 0.75f);
+        	/*取图片大小，小于200k则不压缩*/
+			File f = new File(path+"/"+fileName);
+	        if (f.exists() && f.isFile()){  
+	        	if(f.length()>204800){
+				    Image image = javax.imageio.ImageIO.read(f);
+		            int imageWidth = image.getWidth(null);
+		            int imageHeight = image.getHeight(null);
+		            //手机长图压缩方式
+		            if(imageWidth<imageHeight&&imageWidth>2000){
+		            	ImageCompress.imageCompress(path+"/", fileName, fileName, 0.2f, 0.5f);
+		            }else{
+		            	//压缩手机相册选择的其他图片
+		            	ImageCompress.imageCompress(path+"/", fileName, fileName, 1.0f,540,3000);
+		            }
+				 }
+	        }else{  
+	            System.out.println("file doesn't exist or is not a file");  
+	        }  
         	result = new Result<Bbs>(null, true, "上传成功");
         	return result.toJson();
         }catch(Exception e){
@@ -246,16 +276,19 @@ public class BbsController {
 		}
 		Result<Bbs> result = null;
 		try{
+			String rootPath = PathConfig.getNewPathConfig();
 			//删除对应的图片
 			if(!"".equals(fileUrl)&&uuid == 0){
-				String path = request.getSession().getServletContext().getRealPath("/")+fileUrl;//fileUrl是文件相对路径
+				//String path = request.getSession().getServletContext().getRealPath("/")+fileUrl;//fileUrl是文件相对路径
+				String path = rootPath+fileUrl.replace("picture/", "");
 				boolean isSuccess = (new File(path)).delete();
 				result = new Result<Bbs>(null, true,"删除照片成功");
 				return result.toJson();
 			}
 			//删除整个文件夹
 			if(uuid != 0){
-				String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp/"+uuid;
+				//String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp/"+uuid;
+				String path = rootPath+"app/bbs/temp/"+uuid;
 				String msg = "";
 				try{
 
@@ -358,9 +391,18 @@ public class BbsController {
 	{
 		Result<Bbs> result = null;
 		try{
-			String path = request.getSession().getServletContext().getRealPath("/")+"app/bbs/temp";
-			String toPath = request.getSession().getServletContext().getRealPath("/")+"app/bbs/bbs-id";
-			FileUtil.copyToOtherPath2(path, toPath,1);
+			String path = request.getSession().getServletContext().getRealPath("/")+"hotel/item";
+			File sourcefile = new File(path);
+			File[] files = sourcefile.listFiles();
+			for(File file:files){
+				String name = file.getName();
+				Image image = javax.imageio.ImageIO.read(file);
+	            int imageWidth = image.getWidth(null);
+	            int imageHeight = image.getHeight(null);
+	            int a = 1;
+				//ImageCompress.imageCompress(path+"/", name, name, 1.0f,380,960);
+				ImageCompress.imageCompress(path+"/", name, name, 0.2f, 1f);
+			}
 			result = new Result<Bbs>(null, true, "yes");
 			return result.toJson();
 		}catch(Exception e){

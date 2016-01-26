@@ -16,6 +16,7 @@
     var type;//0为新增；1为编辑
     var j = 1;
     var delAdDetailIds = "";//存放删除的图片id
+    var stri = [];//存放删除图片标签序号
     $(document).ready(function(){
     	type = ${type};
     	initHotel();
@@ -233,7 +234,13 @@
     	//遍历文件 判断是否有空的
     	var file = $("#tab1 input[type='file']");
     	for(var j=0;j<file.length;j++){
-    	   var url = $("#file_"+(j+1)).val();
+    	      //已删除的图片序号是空缺的
+    	      for(var x=0;x<stri.length;x++){
+    	    	  if(j+1==stri[x]){
+    	    		  j++;
+    	    	  }
+    	      }
+    	      var url = $("#file_"+(j+1)).val();
 			if(url == ""||url == null){
     		   $.messager.alert('提示信息', "请选择图片！", "warning");
     		   return;
@@ -306,6 +313,7 @@
         $("#tab1").append(html);
     }
     function del_f(i){
+    	stri.push(i);
          var a = document.getElementById("tr_"+i);
          a.remove();
          //document.getElementById("tab1").removeChild(document.getElementById("tr_"+i));  

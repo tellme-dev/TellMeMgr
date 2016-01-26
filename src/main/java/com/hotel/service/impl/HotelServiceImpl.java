@@ -164,7 +164,7 @@ public class HotelServiceImpl implements HotelService{
 	}
 
 	@Override
-	public ListResult<HotelVM> getHotelListByRegionId(int regionId) {
+	public ListResult<HotelVM> getHotelListByRegionId(String regionId) {
 		// TODO Auto-generated method stub
 		Map<String,Object> map = new HashMap<String,Object>();
 		map.put("regionId", regionId);
