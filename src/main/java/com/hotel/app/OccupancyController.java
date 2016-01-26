@@ -81,7 +81,7 @@ public class OccupancyController {
 	 * @return
 	 */
 	public String getHotelListByRegionId(int regionId){
-		ListResult<HotelVM> result = hotelService.getHotelListByRegionId(regionId);
+		ListResult<HotelVM> result = hotelService.getHotelListByRegionId(String.valueOf(regionId/100));
 		return result.toJson();
 	}
 }

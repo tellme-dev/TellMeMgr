@@ -43,5 +43,5 @@ public interface HotelService {
 
 	List<HotelParam> fullTextSearchOfHotel(String text);
 
-	ListResult<HotelVM> getHotelListByRegionId(int regionId);
+	ListResult<HotelVM> getHotelListByRegionId(String regionId);
 }
